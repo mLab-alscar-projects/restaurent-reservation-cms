@@ -3,6 +3,9 @@ import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+// SCREENS
+import SplashScreenChild from './components/SplashScreen';
+
 
 // SPLASH SCREEN
 const SplashScreen = ({ navigation }) => {
@@ -14,11 +17,17 @@ const SplashScreen = ({ navigation }) => {
 
   return (
     <View style={styles.splashContainer}>
-      <Text style={styles.splashText}>Welcome to My App!</Text>
+
+      <View style={styles.splashLogo}>
+        <SplashScreenChild />
+      </View>
+
       <ActivityIndicator size="large" color="#0000ff" />
+
     </View>
   );
 };
+// ENDS
 
 // Login Screen Component
 const LoginScreen = ({ navigation }) => {
@@ -68,16 +77,26 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  splashContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
+
+  // SPLASH
+  splashContainer: 
+  {
+      flex: 1,
+      backgroundColor: '#fff',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: 40
   },
-  splashText: {
-    fontSize: 24,
-    marginBottom: 20,
+
+
+  splashLogo: 
+  {
+      width: '100%',
+      height: 400,
   },
+
+  // ENDS
+
   container: {
     flex: 1,
     backgroundColor: '#fff',
