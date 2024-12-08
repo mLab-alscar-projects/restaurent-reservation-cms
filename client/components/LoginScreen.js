@@ -50,8 +50,21 @@ const LoginScreen = ({ navigation }) => {
             {/* BUTTON */}
             <View style={styles.buttonWrapper}>
 
-                <Pressable style={styles.button}> 
-                    <Text style={styles.ButtonText}>Login</Text>
+      <Pressable style={styles.button} onPress={()=> navigation.replace('Home')}> 
+                    <Text style={styles.buttonText}>Login</Text>
+                </Pressable>
+        
+            </View>
+
+            {/* BUTTON */}
+            <View style={styles.lastChild}>
+
+                <Pressable > 
+                    <Text style={styles.forgottenPasswordText}>Forgot Password ?</Text>
+                </Pressable>
+
+                <Pressable> 
+                    <Text style={styles.forgottenPasswordText}>Dont Have an Account? Sign up</Text>
                 </Pressable>
         
             </View>
@@ -123,7 +136,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 40,
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 10
+        gap: 15
     },
 
     inputWrapper: 
@@ -157,6 +170,8 @@ const styles = StyleSheet.create({
         color: 'rgba(0, 0, 0,.5)',
         borderColor: 'rgba(0, 0, 0,.5)',
         width: "100%",
+        height: 35,
+
     },
     
     buttonWrapper: 
@@ -176,13 +191,38 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: '#7BC5C1'
     },
+
+    buttonText: 
+    {
+        width: '100%',
+        fontSize: 18,
+        letterSpacing: 1,
+        color: 'rgba(0, 0, 0,.5)',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        textTransform: 'uppercase'
+    },
 // ENDS
     
     
 // LAST
     lastChild: 
     {
-   
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 7
+    },
+
+    forgottenPasswordText: 
+    {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 7,
+        fontSize: 15,
+        color: 'rgba(0, 0, 0,.5)',
+        letterSpacing: 1,
     },
 
   

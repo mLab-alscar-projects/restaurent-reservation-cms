@@ -62,7 +62,8 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         width: '100%',
         textAlign: 'center',
-        color: '#231934'
+        color: '#231934',
+        // transform: [{ rotate: '-8deg' }], 
     },
 
     // ENDS
