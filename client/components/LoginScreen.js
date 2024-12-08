@@ -1,6 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native';
+
+// SCREENS
 import SplashScreenChild from './SplashScreen';
+
+// ICONS
+import Zocial from 'react-native-vector-icons/Zocial';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const LoginScreen = ({ navigation }) => {
  
@@ -17,7 +23,41 @@ const LoginScreen = ({ navigation }) => {
         {/* ENDS */}
 
         {/* SECOND CHILD */}
-        <View style={styles.secondChild}></View>
+        <View style={styles.secondChild}>
+
+            {/* EMAIL */}
+            <View style={styles.inputWrapper}>
+                <View style={styles.label}> 
+                    <Zocial name='email' size={20} color={'rgba(0, 0, 0,.5)'}/>
+                    <Text style={styles.labelText}>Email</Text>
+                </View>
+                <TextInput
+                    style={styles.input}
+                />
+            </View>
+
+            {/* PASSWORD */}
+            <View style={styles.inputWrapper}>
+                <View style={styles.label}> 
+                    <MaterialIcons name='lock' size={20} color={'rgba(0, 0, 0,.5)'}/>
+                    <Text style={styles.labelText}>Password</Text>
+                </View>
+                <TextInput
+                    style={styles.input}
+                />
+            </View>
+
+            {/* BUTTON */}
+            <View style={styles.buttonWrapper}>
+
+                <Pressable style={styles.button}> 
+                    <Text style={styles.ButtonText}>Login</Text>
+                </Pressable>
+        
+            </View>
+        
+
+        </View>
         {/* ENDS */}
       
     </View>
@@ -80,11 +120,62 @@ const styles = StyleSheet.create({
     {
         width: '100%',
         height: "60%",
+        paddingHorizontal: 40,
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 9
+        gap: 10
     },
 
+    inputWrapper: 
+    {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        flexDirection: 'column',
+        paddingVertical: 10,
+    },
+    
+    label: 
+    {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        gap: 10,
+    },
+
+    labelText: 
+    {
+        fontSize: 16,
+        letterSpacing: 1,
+        color: 'rgba(0, 0, 0,.5)'
+    },
+    
+    input: 
+    {
+        fontSize: 16,
+        borderBottomWidth: 3,
+        color: 'rgba(0, 0, 0,.5)',
+        borderColor: 'rgba(0, 0, 0,.5)',
+        width: "100%",
+    },
+    
+    buttonWrapper: 
+    {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 10,
+    },
+
+    button: 
+    {
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 50,
+        borderRadius: 10,
+        backgroundColor: '#7BC5C1'
+    },
 // ENDS
     
     
