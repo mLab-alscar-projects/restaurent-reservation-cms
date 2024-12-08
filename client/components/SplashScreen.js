@@ -45,8 +45,8 @@ const styles = StyleSheet.create({
     // IMAGE
     image: 
     {
-        height: 250,
-        width: 250,
+        height: '100%',
+        width: '100%',
         resizeMode: 'contain',
     },
 
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         width: '100%',
         textAlign: 'center',
-
+        color: '#231934'
     },
 
     // ENDS

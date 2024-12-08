@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 // SCREENS
 import SplashScreenChild from './components/SplashScreen';
+import LoginScreen from './components/LoginScreen';
 
 
 // SPLASH SCREEN
@@ -29,16 +30,6 @@ const SplashScreen = ({ navigation }) => {
 };
 // ENDS
 
-// Login Screen Component
-const LoginScreen = ({ navigation }) => {
-  return (
-    <View style={styles.container}>
-      <Text>Login Screen</Text>
-      {/* Add your login form here */}
-      <Text onPress={() => navigation.replace('Home')}>Go to Home</Text>
-    </View>
-  );
-};
 
 // Home Screen Component
 const HomeScreen = () => {
@@ -93,6 +84,7 @@ const styles = StyleSheet.create({
   {
       width: '100%',
       height: 400,
+      padding: 50
   },
 
   // ENDS
