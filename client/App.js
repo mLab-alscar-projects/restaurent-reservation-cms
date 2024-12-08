@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 // SCREENS
 import SplashScreenChild from './components/SplashScreen';
 import LoginScreen from './components/LoginScreen';
+import HomeScreen from './components/HomeScreen';
 
 
 // SPLASH SCREEN
@@ -15,6 +16,8 @@ const SplashScreen = ({ navigation }) => {
       navigation.replace('Login');
     }, 3000); 
   }, [navigation]);
+  // ENDS
+  
 
   return (
     <View style={styles.splashContainer}>
@@ -31,16 +34,7 @@ const SplashScreen = ({ navigation }) => {
 // ENDS
 
 
-// Home Screen Component
-const HomeScreen = () => {
-  return (
-    <View style={styles.container}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-};
-
-// Stack Navigator
+// STACK NAVIGATOR
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -89,10 +83,4 @@ const styles = StyleSheet.create({
 
   // ENDS
 
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 });
