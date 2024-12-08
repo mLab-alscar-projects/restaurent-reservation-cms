@@ -7,9 +7,14 @@ const HomeScreen = ({ navigation }) => {
     <View style={styles.Parent}>
         {/* FIRST CHILD */}
         <View style={styles.firstChild}>
-            <View style={styles.child}></View>
-            <View style={styles.skewedBottom} />
+            <View style={styles.child}>
 
+                <Pressable style={styles.progressCont}>
+
+                </Pressable>
+
+            </View>
+            {/* <View style={styles.skewedBottom} /> */}
         </View>
         {/* ENDS */}
 
@@ -17,20 +22,23 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.secondChild}>
 
             {/* NAVIGATION BUTTONS */}
-            <View style={styles.navigationWrapper}>
+            {/* <View style={styles.navigationWrapper}>
                 <Pressable style={styles.button}><Text style={styles.text}>KFC</Text></Pressable>
                 <Pressable style={styles.button}><Text style={styles.text}>MacD</Text></Pressable>
                 <Pressable style={styles.button}><Text style={styles.text}>Chicken</Text></Pressable>
-            </View>
+            </View> */}
             {/* ENDS */}
 
-            <Text style={styles.subTitle}>Restaurant Tables</Text>
+            {/* <Text style={styles.subTitle}>Restaurant Tables</Text> */}
 
             {/* UPDATES TABS */}
             <View style={styles.tabWrapper}>
-                <Pressable style={styles.tab}><Text>KFC</Text></Pressable>
-                <Pressable style={styles.tab}><Text>MacD</Text></Pressable>
-                <Pressable style={styles.tab}><Text>Chicken</Text></Pressable>
+                <Pressable style={styles.tab}>
+
+                </Pressable>
+                <Pressable style={styles.tab}>
+
+                </Pressable>
             </View>
             {/* ENDS */}
 
@@ -62,7 +70,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        height: '40%',
+        height: '50%',
         width: '100%',
         paddingHorizontal: 10,
         backgroundColor: '#97CBDC',
@@ -71,27 +79,27 @@ const styles = StyleSheet.create({
 
     child: 
     {
-        justifyContent: 'flex-start',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         flexDirection: 'column',
         height: '100%',
         width: '100%',
-        borderBottomLeftRadius: 10,
-        borderBottomRightRadius: 10,
+        padding: 10,
+        gap: 20,
     },
-
-    skewedBottom: 
+    
+    progressCont: 
     {
-        position: 'absolute',
-        bottom: -25,
-        width: 380,
-        height: 50,
-        backgroundColor: '#97CBDC',
-        transform: [{ rotate: '-8deg' }], 
-        borderBottomLeftRadius: 10, 
-        borderBottomRightRadius: 10,
-        zIndex: 10
-      },
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        height: 200,
+        width: '100%',
+        backgroundColor: 'rgba(255, 255, 255, .5)',
+        zIndex: 1,
+        position: 'relative'
+    },
 
 // ENDS
     
@@ -156,7 +164,7 @@ const styles = StyleSheet.create({
     {
         justifyContent: 'space-between',
         alignItems: 'center',
-        flexDirection: 'column',
+        flexDirection: 'row',
         width: '100%',
         backgroundColor: '#fff',
         borderRadius: 10,
@@ -169,11 +177,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'row',
-        height: 60,
-        width: '100%',
+        height: 320,
+        width: 200,
         backgroundColor: '#7BC5C1',
         borderRadius: 7,
-        padding: 10
+        padding: 10,
+        zIndex: 1
     },
 
 // ENDS
