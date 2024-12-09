@@ -27,7 +27,7 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.iconContainer}>
-          <Pressable style={styles.iconButton}>
+          <Pressable style={styles.iconButton} onPress={()=> navigation.navigate('Notification')}>
             <Text style={styles.iconText}>🔔</Text>
           </Pressable>
           <Pressable style={styles.iconButton}>

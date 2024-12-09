@@ -8,6 +8,9 @@ import SplashScreenChild from './components/SplashScreen';
 import LoginScreen from './components/LoginScreen';
 import HomeScreen from './components/HomeScreen';
 import RestaurantScreen from './components/Restaurant';
+import NotificationScreen from './components/NotificationScreen';
+import ReservationsScreen from './components/ReservationsScreen';
+
 
 
 // SPLASH SCREEN
@@ -64,6 +67,44 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle: 'Restaurant Menu', 
+            headerStyle: {
+              backgroundColor: '#3498db', 
+            },
+            headerTitleStyle: {
+              color: '#fff', 
+              fontSize: 18,
+              fontWeight: 'bold',
+              letterSpacing: 1
+            },
+            headerTintColor: 'yellow', 
+          }}
+        />
+
+        <Stack.Screen
+          name="ReservationsScreen"
+          component={ReservationsScreen}
+          options={{
+            headerShown: true,
+            headerTitle: 'Reservations', 
+            headerStyle: {
+              backgroundColor: '#3498db', 
+            },
+            headerTitleStyle: {
+              color: '#fff', 
+              fontSize: 18,
+              fontWeight: 'bold',
+              letterSpacing: 1
+            },
+            headerTintColor: 'yellow', 
+          }}
+        />
+
+        <Stack.Screen
+          name="Notification"
+          component={NotificationScreen}
+          options={{
+            headerShown: true,
+            headerTitle: 'Notifications', 
             headerStyle: {
               backgroundColor: '#3498db', 
             },
