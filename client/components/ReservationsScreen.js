@@ -38,7 +38,25 @@ const ReservationsScreen = () => {
       status: "Pending",
       imageUri: require('../assets/burger.jpg')
     },
-    // ... other reservations
+    {
+      id: 3,
+      restaurant: "Foodies' Delight",
+      date: "Dec 22, 2024",
+      time: "6:45 PM", 
+      guests: 4,
+      status: "Pending",
+      imageUri: require('../assets/burger.jpg')
+    },
+    {
+      id: 4,
+      restaurant: "Foodies' Delight",
+      date: "Dec 22, 2024",
+      time: "6:45 PM", 
+      guests: 4,
+      status: "Pending",
+      imageUri: require('../assets/burger.jpg')
+    },
+
   ];
 
   return (
@@ -78,7 +96,7 @@ const ReservationsScreen = () => {
       </LinearGradient>
 
       <ScrollView 
-        style={styles.reservationListContainer}
+        contentContainerStyle={styles.reservationListContainer}
         showsVerticalScrollIndicator={false}
       >
         {reservations.map((reservation, index) => (
@@ -162,28 +180,34 @@ const styles = StyleSheet.create({
   activeFilterButton: {
     backgroundColor: 'white',
   },
+
   filterButtonText: {
     color: 'rgba(255,255,255,0.7)',
     fontWeight: '600',
     textAlign: 'center'
   },
-  activeFilterButtonText: {
+
+  activeFilterButtonText: 
+  {
     color: '#1e3c72',
   },
-  reservationListContainer: {
+
+  reservationListContainer: 
+  {
     paddingHorizontal: 20,
-    marginTop: 20,
+    paddingVertical: 20,
   },
+
   reservationCard: {
     height: 250,
     borderRadius: 25,
-    marginBottom: 20,
     overflow: 'hidden',
     elevation: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
+    marginBottom: 15
   },
   restaurantImage: {
     position: 'absolute',

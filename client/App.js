@@ -10,6 +10,7 @@ import HomeScreen from './components/HomeScreen';
 import RestaurantScreen from './components/Restaurant';
 import NotificationScreen from './components/NotificationScreen';
 import ReservationsScreen from './components/ReservationsScreen';
+import ProfileScreen from './components/Profile';
 
 
 
@@ -106,6 +107,25 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle: 'Notifications', 
+            headerStyle: {
+              backgroundColor: '#3498db', 
+            },
+            headerTitleStyle: {
+              color: '#fff', 
+              fontSize: 18,
+              fontWeight: 'bold',
+              letterSpacing: 1
+            },
+            headerTintColor: 'yellow', 
+          }}
+        />
+
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{
+            headerShown: true,
+            headerTitle: 'Profile', 
             headerStyle: {
               backgroundColor: '#3498db', 
             },

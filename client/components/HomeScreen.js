@@ -6,7 +6,6 @@ import {
   Pressable, 
   Image, 
   Dimensions, 
-  ScrollView 
 } from 'react-native';
 
 // SCREEN DIMENSIONS
@@ -19,7 +18,9 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.topNavigation}>
         <View style={styles.profileContainer}>
           <View style={styles.profileImagePlaceholder}>
-            <Text style={styles.profileInitials}>OP</Text>
+            <Pressable onPress={()=> navigation.navigate('Profile')}>
+              <Text style={styles.profileInitials}>OP</Text>
+            </Pressable>
           </View>
           <View>
             <Text style={styles.greetingText}>Hello, Oscar</Text>
