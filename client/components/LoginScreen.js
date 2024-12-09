@@ -50,25 +50,11 @@ const LoginScreen = ({ navigation }) => {
             {/* BUTTON */}
             <View style={styles.buttonWrapper}>
 
-      <Pressable style={styles.button} onPress={()=> navigation.replace('Home')}> 
-                    <Text style={styles.buttonText}>Login</Text>
-                </Pressable>
+            <Pressable style={styles.button} onPress={()=> navigation.replace('Home')}> 
+                <Text style={styles.buttonText}>Login</Text>
+            </Pressable>
         
             </View>
-
-            {/* BUTTON */}
-            <View style={styles.lastChild}>
-
-                <Pressable > 
-                    <Text style={styles.forgottenPasswordText}>Forgot Password ?</Text>
-                </Pressable>
-
-                <Pressable> 
-                    <Text style={styles.forgottenPasswordText}>Dont Have an Account? Sign up</Text>
-                </Pressable>
-        
-            </View>
-        
 
         </View>
         {/* ENDS */}
@@ -170,7 +156,7 @@ const styles = StyleSheet.create({
         color: 'rgba(0, 0, 0,.5)',
         borderColor: 'rgba(0, 0, 0,.5)',
         width: "100%",
-        height: 35,
+        height: 40,
 
     },
     

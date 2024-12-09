@@ -1,192 +1,315 @@
 import React from 'react';
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  Pressable, 
+  Image, 
+  Dimensions, 
+  ScrollView 
+} from 'react-native';
+
+// SCREEN DIMENSIONS
+const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
- 
   return (
-    <View style={styles.Parent}>
-        {/* FIRST CHILD */}
-        <View style={styles.firstChild}>
-            <View style={styles.child}>
-
-                <Pressable style={styles.progressCont}>
-
-                </Pressable>
-
-            </View>
-            {/* <View style={styles.skewedBottom} /> */}
+    <ScrollView style={styles.parent}>
+      {/* TOP NAVIGATION SECTION */}
+      <View style={styles.topNavigation}>
+        <View style={styles.profileContainer}>
+          <View style={styles.profileImagePlaceholder}>
+            <Text style={styles.profileInitials}>OP</Text>
+          </View>
+          <View>
+            <Text style={styles.greetingText}>Hello, Oscar</Text>
+            <Text style={styles.subGreetingText}>Productivity Dashboard</Text>
+          </View>
         </View>
-        {/* ENDS */}
-
-        {/* SECOND CHILD */}
-        <View style={styles.secondChild}>
-
-            {/* NAVIGATION BUTTONS */}
-            {/* <View style={styles.navigationWrapper}>
-                <Pressable style={styles.button}><Text style={styles.text}>KFC</Text></Pressable>
-                <Pressable style={styles.button}><Text style={styles.text}>MacD</Text></Pressable>
-                <Pressable style={styles.button}><Text style={styles.text}>Chicken</Text></Pressable>
-            </View> */}
-            {/* ENDS */}
-
-            {/* <Text style={styles.subTitle}>Restaurant Tables</Text> */}
-
-            {/* UPDATES TABS */}
-            <View style={styles.tabWrapper}>
-                <Pressable style={styles.tab}>
-
-                </Pressable>
-                <Pressable style={styles.tab}>
-
-                </Pressable>
-            </View>
-            {/* ENDS */}
-
+        <View style={styles.iconContainer}>
+          <Pressable style={styles.iconButton}>
+            <Text style={styles.iconText}>🔔</Text>
+          </Pressable>
+          <Pressable style={styles.iconButton}>
+            <Text style={styles.iconText}>⚙️</Text>
+          </Pressable>
         </View>
-        {/* ENDS */}
-      
-    </View>
+      </View>
+
+      {/* PRODUCTIVITY INSIGHTS */}
+      <View style={styles.insightsContainer}>
+        <View style={styles.primaryInsightCard}>
+          <View style={styles.chartTitleContainer}>
+            <Text style={styles.chartTitle}>Weekly Productivity</Text>
+            <Text style={styles.trendIcon}>📈</Text>
+          </View>
+          
+          {/* MOCK CHART VISUALIZATION */}
+          <View style={styles.chartContainer}>
+            {[65, 59, 80, 81, 56].map((value, index) => (
+              <View 
+                key={index} 
+                style={[
+                  styles.chartBar, 
+                  { height: value, backgroundColor: `rgba(52, 152, 219, ${value/100})` }
+                ]} 
+              />
+            ))}
+          </View>
+          
+          <View style={styles.statsContainer}>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>45</Text>
+              <Text style={styles.statLabel}>Tables reserved</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Text style={styles.statValue}>26h</Text>
+              <Text style={styles.statLabel}>Worked</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      {/* RESTAURANT BOOKING SECTION */}
+      <View style={styles.bookingSection}>
+        <Text style={styles.sectionTitle}>Restaurant Bookings</Text>
+        <View style={styles.bookingCarousel}>
+          {[
+            { name: "Eat'in", tables: 7, color: '#3498db' },
+            { name: "Foodies' Delight", tables: 3, color: '#2ecc71' }
+          ].map((restaurant, index) => (
+            <View key={index} style={[styles.bookingCard, { backgroundColor: restaurant.color }]}>
+              <View style={styles.bookingOverlay}>
+                <Text style={styles.restaurantName}>{restaurant.name}</Text>
+                <Text style={styles.availabilityText}>{restaurant.tables} Tables Available</Text>
+                <Pressable style={styles.bookButton}>
+                  <Text style={styles.bookButtonText}>Book Now</Text>
+                </Pressable>
+              </View>
+            </View>
+          ))}
+        </View>
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  parent: 
+  {
+    flex: 1,
+    backgroundColor: '#f4f7fa',
+  },
+  
+  // TOP NAVIGATION STYLES
+  topNavigation: 
+  {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 20,
+  },
 
-// PARENT
-    Parent: 
-    {
-        flex: 1,
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexDirection: 'column',
-        backgroundColor: '#f9f9f9',
-        height: '100%',
-        width: '100%',
-    },
-// ENDS
+  profileContainer: 
+  {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
 
-// FIRST
-    firstChild: 
-    {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        height: '50%',
-        width: '100%',
-        paddingHorizontal: 10,
-        backgroundColor: '#97CBDC',
-        position: 'relative',
-    },
+  profileImagePlaceholder: 
+  {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#3498db',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 15,
+  },
 
-    child: 
-    {
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        flexDirection: 'column',
-        height: '100%',
-        width: '100%',
-        padding: 10,
-        gap: 20,
-    },
-    
-    progressCont: 
-    {
-        borderRadius: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
-        height: 200,
-        width: '100%',
-        backgroundColor: 'rgba(255, 255, 255, .5)',
-        zIndex: 1,
-        position: 'relative'
-    },
+  profileInitials: 
+  {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 
-// ENDS
-    
-    
-// SECOND
-    secondChild: 
-    {
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        flexDirection: 'column',
-        height: '50%',
-        width: '100%',
-        paddingHorizontal: 10,
-        paddingVertical: 15,
-        gap: 20
-    },
+  greetingText: 
+  {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2c3e50',
+  },
 
-    navigationWrapper: 
-    {
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexDirection: 'row',
-        height: 60,
-        width: '100%',
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 5,
-        gap: 5
-    },
+  subGreetingText: 
+  {
+    fontSize: 14,
+    color: '#7f8c8d',
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    gap: 15,
+  },
 
-    button: 
-    {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        height: '100%',
-        width: '32%',
-        backgroundColor: '#7BC5C1',
-        borderRadius: 7,
-        padding: 10
-    },
+  iconButton: 
+  {
+    padding: 10,
+  },
 
-    text: 
-    {
-        fontSize: 16,
-        color: '#000',
-        fontWeight: 'bold',
-        letterSpacing: 1
-    },
+  iconText: 
+  {
+    fontSize: 20,
+  },
 
-    subTitle: 
-    {
-        fontSize: 24,
-        color: '#000',
-        fontWeight: 'bold',
-        letterSpacing: 2,
-        width: '100%', 
+  // PRODUCTIVITY INSIGHTS
+  insightsContainer: 
+  {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
 
-    },
+  primaryInsightCard: 
+  {
+    backgroundColor: '#ffffff',
+    borderRadius: 20,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
+  },
 
-    tabWrapper: 
-    {
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexDirection: 'row',
-        width: '100%',
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        padding: 10,
-        gap: 10
-    },
+  chartTitleContainer: 
+  {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
 
-    tab: 
-    {
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'row',
-        height: 320,
-        width: 200,
-        backgroundColor: '#7BC5C1',
-        borderRadius: 7,
-        padding: 10,
-        zIndex: 1
-    },
+  chartTitle: 
+  {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2c3e50',
+  },
 
-// ENDS
-    
+  trendIcon: 
+  {
+    fontSize: 24,
+  },
+
+  chartContainer: 
+  {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'flex-end',
+    height: 100,
+    marginBottom: 15,
+  },
+
+  chartBar: 
+  {
+    width: 30,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
+  },
+
+  statsContainer: 
+  {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+
+  statItem: 
+  {
+    alignItems: 'center',
+  },
+
+  statValue: 
+  {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#2c3e50',
+  },
+
+  statLabel: 
+  {
+    fontSize: 12,
+    color: '#7f8c8d',
+  },
+
+  // RESTAURANT BOOKING SECTION
+  bookingSection: 
+  {
+    paddingHorizontal: 20,
+  },
+
+  sectionTitle: 
+  {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2c3e50',
+    marginBottom: 15,
+  },
+
+  bookingCarousel: 
+  {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+
+  bookingCard: 
+  {
+    width: width * 0.42,
+    height: 250,
+    borderRadius: 20,
+    overflow: 'hidden',
+    justifyContent: 'flex-end',
+  },
+
+  bookingOverlay: 
+  {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 15,
+    alignItems: 'center',
+  },
+
+  restaurantName: 
+  {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    textAlign: 'center',
+  },
+
+  availabilityText: 
+  {
+    color: '#fff',
+    fontSize: 12,
+    marginBottom: 10,
+  },
+
+  bookButton: 
+  {
+    backgroundColor: '#ffffff',
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+
+  bookButtonText: 
+  {
+    color: '#2c3e50',
+    fontWeight: 'bold',
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  
 });
 
 export default HomeScreen;
