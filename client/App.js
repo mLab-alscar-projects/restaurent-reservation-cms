@@ -58,7 +58,7 @@ export default function App() {
           options={{ headerShown: false }}
         />
 
-<Stack.Screen
+        <Stack.Screen
           name="Restaurant"
           component={RestaurantScreen}
           options={{
@@ -71,8 +71,9 @@ export default function App() {
               color: '#fff', 
               fontSize: 18,
               fontWeight: 'bold',
+              letterSpacing: 1
             },
-            headerTintColor: '#000', 
+            headerTintColor: 'yellow', 
           }}
         />
       </Stack.Navigator>

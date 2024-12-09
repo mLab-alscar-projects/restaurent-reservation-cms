@@ -94,8 +94,8 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.bookingOverlay}>
                 <Text style={styles.restaurantName}>{restaurant.name}</Text>
                 <Text style={styles.availabilityText}>{restaurant.tables} Tables Available</Text>
-                <Pressable style={styles.bookButton} onPress={()=> navigation.replace('Restaurant')}>
-                  <Text style={styles.bookButtonText}>Reserve now</Text>
+                <Pressable style={styles.bookButton} onPress={()=> navigation.navigate('Restaurant')}>
+                  <Text style={styles.bookButtonText}>Add Menu</Text>
                 </Pressable>
               </View>
             </View>
@@ -111,8 +111,8 @@ const HomeScreen = ({ navigation }) => {
               <View style={styles.lastBookingOverlay}>
                 <Text style={styles.restaurantName}>{restaurant.name}</Text>
                 <Text style={styles.availabilityText}>{restaurant.tables} Tables Available</Text>
-                <Pressable style={styles.bookButton} onPress={()=> navigation.replace('Restaurant')}>
-                  <Text style={styles.bookButtonText}>Reserve now</Text>
+                <Pressable style={styles.bookButton} onPress={()=> navigation.navigate('Restaurant')}>
+                  <Text style={styles.bookButtonText}>Add Menu</Text>
                 </Pressable>
               </View>
 
