@@ -9,6 +9,7 @@ import {
   Image,
   StatusBar
 } from 'react-native';
+
 import { LinearGradient } from 'expo-linear-gradient';
 import { BlurView } from 'expo-blur';
 
@@ -42,7 +43,6 @@ const ReservationsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
       
       <LinearGradient
         colors={['#1e3c72', '#2ecc71']}
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 3,
   },
   statusContainer: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: 'rgba(255,255,255,0.1)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,

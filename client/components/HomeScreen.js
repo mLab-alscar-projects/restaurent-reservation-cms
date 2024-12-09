@@ -14,7 +14,7 @@ const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
   return (
-    <ScrollView style={styles.parent}>
+    <View style={styles.parent}>
       {/* TOP NAVIGATION SECTION */}
       <View style={styles.topNavigation}>
         <View style={styles.profileContainer}>
@@ -131,7 +131,7 @@ const HomeScreen = ({ navigation }) => {
           ))}
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
