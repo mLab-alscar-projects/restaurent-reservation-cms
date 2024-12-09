@@ -11,6 +11,8 @@ import RestaurantScreen from './components/Restaurant';
 import NotificationScreen from './components/NotificationScreen';
 import ReservationsScreen from './components/ReservationsScreen';
 import ProfileScreen from './components/Profile';
+import SettingsScreen from './components/SettingsScreen';
+import RestaurantPerformance from './components/RestaurantPerformance';
 
 
 
@@ -126,6 +128,44 @@ export default function App() {
           options={{
             headerShown: true,
             headerTitle: 'Profile', 
+            headerStyle: {
+              backgroundColor: '#3498db', 
+            },
+            headerTitleStyle: {
+              color: '#fff', 
+              fontSize: 18,
+              fontWeight: 'bold',
+              letterSpacing: 1
+            },
+            headerTintColor: 'yellow', 
+          }}
+        />
+
+        <Stack.Screen
+          name="Settings"
+          component={SettingsScreen}
+          options={{
+            headerShown: true,
+            headerTitle: 'Settings', 
+            headerStyle: {
+              backgroundColor: '#3498db', 
+            },
+            headerTitleStyle: {
+              color: '#fff', 
+              fontSize: 18,
+              fontWeight: 'bold',
+              letterSpacing: 1
+            },
+            headerTintColor: 'yellow', 
+          }}
+        />
+
+        <Stack.Screen
+          name="RestaurantPerformance"
+          component={RestaurantPerformance}
+          options={{
+            headerShown: true,
+            headerTitle: 'Performance', 
             headerStyle: {
               backgroundColor: '#3498db', 
             },

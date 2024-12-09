@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -7,7 +8,11 @@ import {
   Pressable, 
   Image, 
   Dimensions, 
-  Alert 
+  Alert,
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  Platform
 } from 'react-native';
 
 // ICONS
@@ -17,8 +22,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const { width } = Dimensions.get('window');
 
 const RestaurantScreen = () => {
-  // MOCK MENU DATA
-  const menuData = [
+  // STATE FOR MENU DATA AND MODAL
+  const [menuData, setMenuData] = useState([
     { id: '1', name: 'Grilled Chicken', price: 'R62.99', image: require('../assets/chicken.jpg') },
     { id: '2', name: 'Vegan Salad', price: 'R58.99', image: require('../assets/salad.jpg') },
     { id: '3', name: 'Pasta Carbonara', price: 'R84.49', image: require('../assets/pasta.jpg') },
@@ -26,7 +31,15 @@ const RestaurantScreen = () => {
     { id: '5', name: 'Cheeseburger Extra', price: 'R99.99', image: require('../assets/burger.jpg') },
     { id: '6', name: 'Cheeseburger Normal', price: 'R99.99', image: require('../assets/burger.jpg') },
     { id: '7', name: 'Cheeseburger Hot', price: 'R99.99', image: require('../assets/burger.jpg') },
-  ];
+  ]);
+
+  // STATE FOR MODAL AND FORM
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [newMenuItem, setNewMenuItem] = useState({
+    name: '',
+    price: '',
+    image: require('../assets/burger.jpg') // Add a placeholder image
+  });
 
   // Handle Edit Button Press
   const handleEdit = (item) => {
@@ -37,8 +50,36 @@ const RestaurantScreen = () => {
   const handleDelete = (item) => {
     Alert.alert('Delete Menu', `Are you sure you want to delete ${item.name}?`, [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: () => console.log(`${item.name} deleted`) },
+      { 
+        text: 'Delete', 
+        style: 'destructive', 
+        onPress: () => {
+          setMenuData(menuData.filter(menuItem => menuItem.id !== item.id));
+        } 
+      },
     ]);
+  };
+
+  // Handle Add Menu Item
+  const handleAddMenuItem = () => {
+    // Validate inputs
+    if (!newMenuItem.name.trim() || !newMenuItem.price.trim()) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    // Create new menu item with a unique ID
+    const newItem = {
+      id: (menuData.length + 1).toString(),
+      ...newMenuItem
+    };
+
+    // Add to menu data
+    setMenuData([...menuData, newItem]);
+
+    // Reset form and close modal
+    setNewMenuItem({ name: '', price: '', image: require('../assets/burger.jpg') });
+    setIsModalVisible(false);
   };
 
   return (
@@ -74,11 +115,62 @@ const RestaurantScreen = () => {
 
       {/* ADD MORE MENU BUTTON */}
       <View style={styles.addButtonWrapper}>
-        <Pressable style={styles.addButton}>
+        <Pressable 
+          style={styles.addButton} 
+          onPress={() => setIsModalVisible(true)}
+        >
           <MaterialIcons name="add" size={20} color={'#fff'} />
           <Text style={styles.addButtonText}>Add Menu</Text>
         </Pressable>
       </View>
+
+      {/* ADD MENU MODAL */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <KeyboardAvoidingView 
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.modalOverlay}
+        >
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>Add New Menu Item</Text>
+            
+            <TextInput
+              style={styles.input}
+              placeholder="Item Name"
+              value={newMenuItem.name}
+              onChangeText={(text) => setNewMenuItem({...newMenuItem, name: text})}
+            />
+            
+            <TextInput
+              style={styles.input}
+              placeholder="Price (e.g. R99.99)"
+              value={newMenuItem.price}
+              onChangeText={(text) => setNewMenuItem({...newMenuItem, price: text})}
+              keyboardType="numeric"
+            />
+            
+            <View style={styles.modalButtonContainer}>
+              <Pressable 
+                style={[styles.modalButton, styles.cancelButton]} 
+                onPress={() => setIsModalVisible(false)}
+              >
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </Pressable>
+              
+              <Pressable 
+                style={[styles.modalButton, styles.addButton]} 
+                onPress={handleAddMenuItem}
+              >
+                <Text style={styles.modalButtonText}>Add Item</Text>
+              </Pressable>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 };
@@ -198,6 +290,62 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textTransform: 'uppercase',
+  },
+
+   // MODAL STYLES
+   modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+
+  modalContainer: {
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#2c3e50',
+  },
+
+  input: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 15,
+  },
+
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+
+  modalButton: {
+    flex: 1,
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 5,
+  },
+
+  cancelButton: {
+    backgroundColor: '#e74c3c',
+  },
+
+
+  modalButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
 });
 

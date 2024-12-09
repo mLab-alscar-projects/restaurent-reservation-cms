@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -12,6 +12,9 @@ import {
 const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+
+
   return (
     <View style={styles.parent}>
       {/* TOP NAVIGATION SECTION */}
@@ -31,14 +34,14 @@ const HomeScreen = ({ navigation }) => {
           <Pressable style={styles.iconButton} onPress={()=> navigation.navigate('Notification')}>
             <Text style={styles.iconText}>🔔</Text>
           </Pressable>
-          <Pressable style={styles.iconButton}>
+          <Pressable style={styles.iconButton} onPress={()=> navigation.navigate('Settings')}>
             <Text style={styles.iconText}>⚙️</Text>
           </Pressable>
         </View>
       </View>
 
       {/* PRODUCTIVITY INSIGHTS */}
-      <View style={styles.insightsContainer}>
+      <Pressable style={styles.insightsContainer} onPress={() => setModalVisible(true)}>
         <View style={styles.primaryInsightCard}>
           <View style={styles.chartTitleContainer}>
             <Text style={styles.chartTitle}>Weekly Productivity</Text>
@@ -69,18 +72,18 @@ const HomeScreen = ({ navigation }) => {
             </View>
           </View>
         </View>
-      </View>
+      </Pressable>
 
       {/* RESTAURANT BOOKING SECTION */}
       <View style={styles.bookingSection}>
-        <Text style={styles.sectionTitle}>Restaurant Bookings</Text>
+        <Text style={styles.sectionTitle}>Restaurants</Text>
         <View style={styles.bookingCarousel}>
           {[
             { name: "Eat'in", tables: 7, color: '#3498db' },
             { name: "Foodies' Delight", tables: 3, color: '#2ecc71' },
           ].map((restaurant, index) => (
             <View key={index} style={[styles.bookingCard, { backgroundColor: restaurant.color }]}>
-              {/* Enhanced Image Container */}
+             
               <View style={styles.bookingImageContainer}>
                 <Image 
                   source={require('../assets/tables.jpg')} 
@@ -132,6 +135,7 @@ const HomeScreen = ({ navigation }) => {
           ))}
         </View>
       </View>
+ 
     </View>
   );
 };
@@ -450,7 +454,7 @@ lastBookingOverlay:
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.5)', 
-  }
+  },
 
 
 });

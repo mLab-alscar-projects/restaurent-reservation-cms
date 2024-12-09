@@ -47,19 +47,16 @@ const NotificationsScreen = ({ navigation }) => {
       {/* TOP NAVIGATION */}
       <View style={styles.topNavigation}>
         <View style={styles.profileContainer}>
-          <View style={styles.profileImagePlaceholder}>
+          <Pressable style={styles.profileImagePlaceholder} onPress={()=> navigation.navigate('Profile')}>
             <Text style={styles.profileInitials}>OP</Text>
-          </View>
+          </Pressable>
           <View>
             <Text style={styles.greetingText}>Notifications</Text>
             <Text style={styles.subGreetingText}>Recent Updates</Text>
           </View>
         </View>
         <View style={styles.iconContainer}>
-          <Pressable style={styles.iconButton}>
-            <Text style={styles.iconText}>✅</Text>
-          </Pressable>
-          <Pressable style={styles.iconButton}>
+          <Pressable style={styles.iconButton} onPress={()=> navigation.navigate('Settings')}>
             <Text style={styles.iconText}>⚙️</Text>
           </Pressable>
         </View>
@@ -250,6 +247,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
+    width: '90%'
   },
 
   actionButtonText: 
@@ -257,6 +255,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     fontSize: 14,
+    textAlign: 'center',
   },
 
   // RESTAURANT NOTIFICATIONS STYLES
