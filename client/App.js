@@ -7,6 +7,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreenChild from './components/SplashScreen';
 import LoginScreen from './components/LoginScreen';
 import HomeScreen from './components/HomeScreen';
+import RestaurantScreen from './components/Restaurant';
 
 
 // SPLASH SCREEN
@@ -55,6 +56,24 @@ export default function App() {
           name="Home"
           component={HomeScreen}
           options={{ headerShown: false }}
+        />
+
+<Stack.Screen
+          name="Restaurant"
+          component={RestaurantScreen}
+          options={{
+            headerShown: true,
+            headerTitle: 'Restaurant Menu', 
+            headerStyle: {
+              backgroundColor: '#3498db', 
+            },
+            headerTitleStyle: {
+              color: '#fff', 
+              fontSize: 18,
+              fontWeight: 'bold',
+            },
+            headerTintColor: '#000', 
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

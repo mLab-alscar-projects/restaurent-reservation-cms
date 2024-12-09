@@ -76,15 +76,56 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.bookingCarousel}>
           {[
             { name: "Eat'in", tables: 7, color: '#3498db' },
-            { name: "Foodies' Delight", tables: 3, color: '#2ecc71' }
+            { name: "Foodies' Delight", tables: 3, color: '#2ecc71' },
           ].map((restaurant, index) => (
             <View key={index} style={[styles.bookingCard, { backgroundColor: restaurant.color }]}>
+              {/* Enhanced Image Container */}
+              <View style={styles.bookingImageContainer}>
+                <Image 
+                  source={require('../assets/tables.jpg')} 
+                  style={styles.bookingCardImage}
+                  resizeMode="cover"
+                  borderRadius={20}
+                  blurRadius={1} 
+                />
+                <View style={styles.bookingImageOverlay} />
+              </View>
+
               <View style={styles.bookingOverlay}>
                 <Text style={styles.restaurantName}>{restaurant.name}</Text>
                 <Text style={styles.availabilityText}>{restaurant.tables} Tables Available</Text>
-                <Pressable style={styles.bookButton}>
-                  <Text style={styles.bookButtonText}>Book Now</Text>
+                <Pressable style={styles.bookButton} onPress={()=> navigation.replace('Restaurant')}>
+                  <Text style={styles.bookButtonText}>Reserve now</Text>
                 </Pressable>
+              </View>
+            </View>
+          ))}
+        </View>
+        
+        {/* THIRD RESTAURANT */}
+        <View style={styles.bookingCarousel}>
+          {[
+            { name: "Munchies", tables: 3, color: '#ffaf58' },
+          ].map((restaurant, index) => (
+            <View key={index} style={[styles.lastBookingCard, { backgroundColor: restaurant.color }]}>
+              <View style={styles.lastBookingOverlay}>
+                <Text style={styles.restaurantName}>{restaurant.name}</Text>
+                <Text style={styles.availabilityText}>{restaurant.tables} Tables Available</Text>
+                <Pressable style={styles.bookButton} onPress={()=> navigation.replace('Restaurant')}>
+                  <Text style={styles.bookButtonText}>Reserve now</Text>
+                </Pressable>
+              </View>
+
+              {/* Enhanced Image Container */}
+              <View style={styles.bookingImageWrapper}>
+                <Image 
+                  source={require('../assets/tables.jpg')} 
+                  style={styles.bookingOverlayImage}
+                  resizeMode="cover"
+                  borderRadius={20}
+                  blurRadius={1} 
+                />
+                <View style={styles.horizontalImageOverlay} />
               </View>
             </View>
           ))}
@@ -265,18 +306,64 @@ const styles = StyleSheet.create({
   bookingCard: 
   {
     width: width * 0.42,
-    height: 250,
+    height: 230,
     borderRadius: 20,
     overflow: 'hidden',
     justifyContent: 'flex-end',
   },
 
-  bookingOverlay: 
+  lastBookingCard: 
   {
+    width: '100%',
+    height: 110,
+    backgroundColor: '#ffaf58',
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
+    marginTop: 15,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row'
+},
+
+bookingOverlay: 
+{
     backgroundColor: 'rgba(0,0,0,0.5)',
     padding: 15,
     alignItems: 'center',
+},
+
+lastBookingOverlay: 
+{
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '50%',
+    height: '100%',
+    borderBottomLeftRadius: 20, 
+    borderTopLeftRadius: 20,
   },
+
+  bookingOverlayImageTop:
+  {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  bookingOverlayImage:
+  {
+    width: '100%',
+    height: '100%',
+    borderBottomRightRadius: 20, 
+    borderTopRightRadius: 20,
+  },
+  
 
   restaurantName: 
   {
@@ -298,7 +385,7 @@ const styles = StyleSheet.create({
   {
     backgroundColor: '#ffffff',
     paddingHorizontal: 20,
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderRadius: 20,
   },
 
@@ -306,10 +393,65 @@ const styles = StyleSheet.create({
   {
     color: '#2c3e50',
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 13,
     textAlign: 'center',
+    letterSpacing: 1
+  },
+
+  bookingImageContainer: 
+  {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 20,
+    overflow: 'hidden',
   },
   
+  bookingCardImage: 
+  {
+    width: '100%',
+    height: '100%',
+  },
+  
+  bookingImageOverlay: 
+  {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.4)', 
+  },
+
+  bookingImageWrapper: 
+  {
+    width: '50%',
+    height: '100%',
+    position: 'relative',
+    overflow: 'hidden',
+    borderBottomRightRadius: 20,
+    borderTopRightRadius: 20,
+  },
+  
+  bookingOverlayImage: 
+  {
+    width: '100%',
+    height: '100%',
+  },
+  
+  horizontalImageOverlay: 
+  {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)', 
+  }
+
+
 });
 
 export default HomeScreen;

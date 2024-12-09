@@ -106,8 +106,6 @@ const styles = StyleSheet.create({
         height: 50,
         backgroundColor: '#97CBDC',
         transform: [{ rotate: '-8deg' }], 
-        borderBottomLeftRadius: 10, 
-        borderBottomRightRadius: 10,
         zIndex: 10
       },
 
