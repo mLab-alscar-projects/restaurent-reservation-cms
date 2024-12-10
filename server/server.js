@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 // MIDDLEWARES
 import express from "express";
 import cors from "cors";
-// import router from "./Routes/api.js";
+import router from "./routes/api.js";
 
 // DB
 import connectDB from "./config/database.js";
@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 7000;
 dotenv.config();
 app.use(cors());
 app.use(express.json());
-// app.use("/api/v1", router);
+app.use("/api/v2", router);
 
 // GLOBAL ERROR HANDLER
 app.use((err, req, res, next) => {
