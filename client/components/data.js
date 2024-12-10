@@ -264,4 +264,3 @@ export const restaurantsData = [
     // ENDS
 ]
 // ENDS
-
