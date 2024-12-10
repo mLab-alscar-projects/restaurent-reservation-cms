@@ -81,6 +81,9 @@ const RestaurantScreen = ({route}) => {
       <View style={[styles.header, {backgroundColor: restaurant.color}]}>
         <Text style={styles.headerTitle}>{restaurant.name}</Text>
       </View>
+      <View style={[{backgroundColor: '#000', height: 5, width: '150', alignSelf: 'center', marginTop: 10}]}>
+    
+      </View>
 
       {/* MENU LIST */}
       <FlatList
@@ -104,6 +107,7 @@ const RestaurantScreen = ({route}) => {
           </View>
         )}
         contentContainerStyle={styles.menuList}
+        
       />
 
       {/* ADD MORE MENU BUTTON */}

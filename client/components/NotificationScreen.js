@@ -1,80 +1,124 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   StyleSheet, 
   Text, 
   View, 
   Pressable, 
-  Image, 
   Dimensions, 
   ScrollView 
 } from 'react-native';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
-const NotificationsScreen = ({ navigation }) => {
-  const notifications = [
-    {
-      id: 1,
-      restaurant: "Eat'in",
-      message: "Reservation confirmed for 2 people",
-      time: "10 mins ago",
-      type: "success"
-    },
-    {
-      id: 2,
-      restaurant: "Foodies' Delight",
-      message: "Table waitlist update",
-      time: "2 hours ago",
-      type: "info"
-    },
-    {
-      id: 3,
-      restaurant: "Munchies",
-      message: "Reservation request pending",
-      time: "Yesterday",
-      type: "pending"
-    }
-  ];
+const NotificationsScreen = ({ route, navigation }) => {
+  // Safely retrieve route parameters with fallback values
+  const { reservations = {} } = route.params || {};
+  const notifications = reservations.notifications || [];
 
+  const [activeFilter, setActiveFilter] = useState('All');
+
+  // Sample data for restaurant notification counts
   const notificationCounts = {
     "Eat'in": 1,
     "Foodies' Delight": 2,
-    "Munchies": 3
+    "Munchies": 3,
   };
 
+  const filterOptions = ['All', 'Confirmed', 'Pending', 'Updates'];
+
+  const getNotificationColor = (type) => {
+    switch (type) {
+      case 'success': return '#2ecc71';
+      case 'info': return '#3498db';
+      case 'pending': return '#f39c12';
+      default: return '#7f8c8d';
+    }
+  };
+
+  // Fallback values for latest notifications
+  const latestNotification = notifications[0] || {};
+  const secondNotification = notifications[1] || {};
+
   return (
-    <ScrollView style={styles.parent}>
+    <View style={styles.parent}>
       {/* TOP NAVIGATION */}
       <View style={styles.topNavigation}>
         <View style={styles.profileContainer}>
-          <Pressable style={styles.profileImagePlaceholder} onPress={()=> navigation.navigate('Profile')}>
+          <Pressable 
+            style={styles.profileImagePlaceholder} 
+            onPress={() => navigation.navigate('Profile')}
+          >
             <Text style={styles.profileInitials}>OP</Text>
           </Pressable>
           <View>
             <Text style={styles.greetingText}>Notifications</Text>
-            <Text style={styles.subGreetingText}>Recent Updates</Text>
+            <Text style={styles.subGreetingText}>Stay Updated</Text>
           </View>
         </View>
         <View style={styles.iconContainer}>
-          <Pressable style={styles.iconButton} onPress={()=> navigation.navigate('Settings')}>
-            <Text style={styles.iconText}>⚙️</Text>
+          <Pressable 
+            style={styles.iconButton} 
+            onPress={() => navigation.navigate('Settings')}
+          >
+            <Ionicons name="settings-outline" size={24} color="#2c3e50" />
           </Pressable>
         </View>
       </View>
+
+      {/* NOTIFICATION FILTERS */}
+      <ScrollView 
+        horizontal 
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.filterContainer}
+      >
+        {filterOptions.map((filter) => (
+          <Pressable 
+            key={filter} 
+            style={[
+              styles.filterButton, 
+              activeFilter === filter && styles.activeFilterButton
+            ]}
+            onPress={() => setActiveFilter(filter)}
+          >
+            <Text style={[
+              styles.filterButtonText, 
+              activeFilter === filter && styles.activeFilterButtonText
+            ]}>
+              {filter}
+            </Text>
+            <MaterialIcons name="ads-click" size={20} color="#2c3e50" />
+          </Pressable>
+        ))}
+      </ScrollView>
 
       {/* LATEST NOTIFICATION */}
       <View style={styles.insightsContainer}>
         <View style={styles.primaryNotificationCard}>
           <View style={styles.notificationHeader}>
             <Text style={styles.notificationTitle}>Latest Notification</Text>
-            <Text style={styles.notificationTime}>{notifications[0].time}</Text>
+            <Text style={styles.notificationTime}>
+              {secondNotification.time || 'N/A'}
+            </Text>
           </View>
-          
           <View style={styles.notificationContent}>
-            <Text style={styles.restaurantName}>{notifications[0].restaurant}</Text>
-            <Text style={styles.notificationMessage}>{notifications[0].message}</Text>
-            
-            <Pressable style={styles.actionButton}>
+            <Text 
+              style={[
+                styles.restaurantName, 
+                { color: getNotificationColor(latestNotification.type) }
+              ]}
+            >
+              {latestNotification.restaurant || 'No restaurant available'}
+            </Text>
+            <Text style={styles.notificationMessage}>
+              {latestNotification.message || 'No message available'}
+            </Text>
+            <Pressable 
+              style={[
+                styles.actionButton, 
+                { backgroundColor: getNotificationColor(latestNotification.type) }
+              ]}
+            >
               <Text style={styles.actionButtonText}>View Details</Text>
             </Pressable>
           </View>
@@ -83,7 +127,7 @@ const NotificationsScreen = ({ navigation }) => {
 
       {/* RESTAURANT NOTIFICATIONS */}
       <View style={styles.notificationsSection}>
-        <Text style={styles.sectionTitle}>Restaurant Notifications</Text>
+        <Text style={styles.sectionTitle}>Restaurant Reservations</Text>
         <ScrollView 
           horizontal 
           showsHorizontalScrollIndicator={false} 
@@ -96,44 +140,43 @@ const NotificationsScreen = ({ navigation }) => {
                 <View style={styles.notificationCountBadge}>
                   <Text style={styles.notificationCountText}>{count}</Text>
                 </View>
-                <Pressable style={styles.viewNotificationsButton} onPress={()=> navigation.navigate('ReservationsScreen')}>
-                  <Text style={styles.viewNotificationsText}>View Notifications</Text>
+                <Pressable 
+                  style={styles.viewNotificationsButton} 
+                  onPress={() => navigation.navigate('ReservationsScreen')}
+                >
+                  <Text style={styles.viewNotificationsText}>View Reservations</Text>
                 </Pressable>
               </View>
             </View>
           ))}
         </ScrollView>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  parent: 
-  {
+  parent: {
     flex: 1,
     backgroundColor: '#f4f7fa',
   },
   
   // TOP NAVIGATION STYLES
-  topNavigation: 
-  {
+  topNavigation: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 50,
+    paddingTop: 10,
     paddingBottom: 20,
   },
 
-  profileContainer: 
-  {
+  profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
 
-  profileImagePlaceholder: 
-  {
+  profileImagePlaceholder: {
     width: 50,
     height: 50,
     borderRadius: 25,
@@ -141,53 +184,77 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 15,
+    shadowColor: '#3498db',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
   },
 
-  profileInitials: 
-  {
+  profileInitials: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
   },
 
-  greetingText: 
-  {
-    fontSize: 18,
+  greetingText: {
+    fontSize: 20,
     fontWeight: '700',
     color: '#2c3e50',
   },
 
-  subGreetingText: 
-  {
+  subGreetingText: {
     fontSize: 14,
     color: '#7f8c8d',
   },
 
-  iconContainer: 
-  {
+  iconContainer: {
     flexDirection: 'row',
-    gap: 15,
   },
 
-  iconButton: 
-  {
+  iconButton: {
     padding: 10,
+    borderRadius: 25,
+    backgroundColor: 'rgba(52, 152, 219, 0.1)',
   },
 
-  iconText: 
-  {
-    fontSize: 20,
-  },
-
-  // LATEST NOTIFICATION STYLES
-  insightsContainer: 
-  {
+  // FILTER STYLES
+  filterContainer: {
     paddingHorizontal: 20,
     marginBottom: 20,
   },
 
-  primaryNotificationCard: 
-  {
+  filterButton: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 7
+  },
+
+  activeFilterButton: {
+    backgroundColor: '#3498db',
+  },
+
+  filterButtonText: {
+    color: '#7f8c8d',
+    fontWeight: '600',
+  },
+
+  activeFilterButtonText: {
+    color: 'white',
+  },
+
+  // LATEST NOTIFICATION STYLES
+  insightsContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+
+  primaryNotificationCard: {
     backgroundColor: '#ffffff',
     borderRadius: 20,
     padding: 20,
@@ -198,60 +265,50 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  notificationHeader: 
-  {
+  notificationHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 15,
   },
 
-  notificationTitle: 
-  {
+  notificationTitle: {
     fontSize: 18,
     fontWeight: '700',
     color: '#2c3e50',
   },
 
-  notificationTime: 
-  {
+  notificationTime: {
     fontSize: 14,
     color: '#7f8c8d',
   },
 
-  notificationContent: 
-  {
+  notificationContent: {
     alignItems: 'center',
   },
 
-  restaurantName: 
-  {
+  restaurantName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#3498db',
     marginBottom: 10,
-    letterSpacing: 1
+    letterSpacing: 1,
   },
 
-  notificationMessage: 
-  {
+  notificationMessage: {
     fontSize: 16,
     color: '#2c3e50',
     marginBottom: 15,
     textAlign: 'center',
   },
 
-  actionButton: 
-  {
-    backgroundColor: '#3498db',
+  actionButton: {
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 20,
-    width: '90%'
+    width: '90%',
   },
 
-  actionButtonText: 
-  {
+  actionButtonText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 14,
@@ -259,28 +316,24 @@ const styles = StyleSheet.create({
   },
 
   // RESTAURANT NOTIFICATIONS STYLES
-  notificationsSection: 
-  {
+  notificationsSection: {
     paddingHorizontal: 20,
-    marginTop: 20,
+    marginTop: 10,
   },
 
-  sectionTitle: 
-  {
+  sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
     color: '#2c3e50',
     marginBottom: 15,
   },
 
-  notificationCarousel: 
-  {
+  notificationCarousel: {
     paddingVertical: 20,
     paddingHorizontal: 5,
   },
 
-  notificationCard: 
-  {
+  notificationCard: {
     width: width * 0.5,
     backgroundColor: '#ffffff',
     borderRadius: 20,
@@ -293,13 +346,11 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
 
-  notificationCardContent: 
-  {
+  notificationCardContent: {
     alignItems: 'center',
   },
 
-  notificationCountBadge: 
-  {
+  notificationCountBadge: {
     backgroundColor: '#3498db',
     width: 60,
     height: 60,
@@ -307,27 +358,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 15,
+    shadowColor: '#3498db',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
   },
 
-  notificationCountText: 
-  {
+  notificationCountText: {
     color: 'white',
     fontSize: 24,
     fontWeight: 'bold',
   },
 
-  viewNotificationsButton: 
-  {
+  viewNotificationsButton: {
     backgroundColor: '#2ecc71',
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderRadius: 20,
     width: '100%',
     alignItems: 'center',
+    shadowColor: '#2ecc71',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
   },
 
-  viewNotificationsText: 
-  {
+  viewNotificationsText: {
     color: 'white',
     fontWeight: 'bold',
     fontSize: 12,
