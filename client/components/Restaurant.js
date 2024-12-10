@@ -21,24 +21,17 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 // SCREEN DIMENSIONS
 const { width } = Dimensions.get('window');
 
-const RestaurantScreen = () => {
-  // STATE FOR MENU DATA AND MODAL
-  const [menuData, setMenuData] = useState([
-    { id: '1', name: 'Grilled Chicken', price: 'R62.99', image: require('../assets/chicken.jpg') },
-    { id: '2', name: 'Vegan Salad', price: 'R58.99', image: require('../assets/salad.jpg') },
-    { id: '3', name: 'Pasta Carbonara', price: 'R84.49', image: require('../assets/pasta.jpg') },
-    { id: '4', name: 'Cheeseburger Small', price: 'R99.99', image: require('../assets/burger.jpg') },
-    { id: '5', name: 'Cheeseburger Extra', price: 'R99.99', image: require('../assets/burger.jpg') },
-    { id: '6', name: 'Cheeseburger Normal', price: 'R99.99', image: require('../assets/burger.jpg') },
-    { id: '7', name: 'Cheeseburger Hot', price: 'R99.99', image: require('../assets/burger.jpg') },
-  ]);
+const RestaurantScreen = ({route}) => {
+
+  const { restaurant } = route.params;
+  const [menuData, setMenuData] = useState(restaurant.menu);
 
   // STATE FOR MODAL AND FORM
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [newMenuItem, setNewMenuItem] = useState({
     name: '',
     price: '',
-    image: require('../assets/burger.jpg') // Add a placeholder image
+    image: require('../assets/burger.jpg') 
   });
 
   // Handle Edit Button Press
@@ -85,8 +78,8 @@ const RestaurantScreen = () => {
   return (
     <View style={styles.container}>
       {/* HEADER */}
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Foodies' Delight</Text>
+      <View style={[styles.header, {backgroundColor: restaurant.color}]}>
+        <Text style={styles.headerTitle}>{restaurant.name}</Text>
       </View>
 
       {/* MENU LIST */}
@@ -116,7 +109,7 @@ const RestaurantScreen = () => {
       {/* ADD MORE MENU BUTTON */}
       <View style={styles.addButtonWrapper}>
         <Pressable 
-          style={styles.addButton} 
+          style={[styles.addButton, {backgroundColor: restaurant.color}]} 
           onPress={() => setIsModalVisible(true)}
         >
           <MaterialIcons name="add" size={20} color={'#fff'} />

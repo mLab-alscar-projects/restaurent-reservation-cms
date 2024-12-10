@@ -5,14 +5,20 @@ import {
   View, 
   Pressable, 
   Image, 
-  Dimensions, 
+  Dimensions,
+  ScrollView, 
 } from 'react-native';
 
 // SCREEN DIMENSIONS
 const { width, height } = Dimensions.get('window');
 
-const HomeScreen = ({ navigation }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+const HomeScreen = ({ route, navigation }) => {
+    const { restaurants } = route.params;
+
+    // HANDLE PRESS
+    const handleRestaurantPress = (restaurant) => {
+        navigation.navigate('Restaurant', { restaurant }); 
+      };
 
 
   return (
@@ -41,7 +47,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       {/* PRODUCTIVITY INSIGHTS */}
-      <Pressable style={styles.insightsContainer} onPress={() => setModalVisible(true)}>
+      <Pressable style={styles.insightsContainer}>
         <View style={styles.primaryInsightCard}>
           <View style={styles.chartTitleContainer}>
             <Text style={styles.chartTitle}>Weekly Productivity</Text>
@@ -74,66 +80,54 @@ const HomeScreen = ({ navigation }) => {
         </View>
       </Pressable>
 
-      {/* RESTAURANT BOOKING SECTION */}
+      {/* SCROLLABLE RESTAURANT BOOKING SECTION */}
       <View style={styles.bookingSection}>
         <Text style={styles.sectionTitle}>Restaurants</Text>
-        <View style={styles.bookingCarousel}>
-          {[
-            { name: "Eat'in", tables: 7, color: '#3498db' },
-            { name: "Foodies' Delight", tables: 3, color: '#2ecc71' },
-          ].map((restaurant, index) => (
-            <View key={index} style={[styles.bookingCard, { backgroundColor: restaurant.color }]}>
-             
-              <View style={styles.bookingImageContainer}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.restaurantScrollContainer}
+        >
+          {restaurants.map((restaurant, index) => (
+            <View 
+              key={index} 
+              style={[
+                styles.restaurantCard, 
+                { backgroundColor: restaurant.color }
+              ]}
+            >
+              <View style={styles.restaurantImageContainer}>
                 <Image 
-                  source={require('../assets/tables.jpg')} 
-                  style={styles.bookingCardImage}
+                  source={restaurant.image} 
+                  style={styles.restaurantImage}
                   resizeMode="cover"
-                  borderRadius={20}
-                  blurRadius={1} 
                 />
-                <View style={styles.bookingImageOverlay} />
+                <View style={styles.restaurantImageOverlay} />
               </View>
 
-              <View style={styles.bookingOverlay}>
+              <View style={styles.restaurantDetailsOverlay}>
                 <Text style={styles.restaurantName}>{restaurant.name}</Text>
-                <Text style={styles.availabilityText}>{restaurant.tables} Tables Available</Text>
-                <Pressable style={styles.bookButton} onPress={()=> navigation.navigate('Restaurant')}>
-                  <Text style={styles.bookButtonText}>Add Menu</Text>
-                </Pressable>
+                <Text style={styles.restaurantDescription}>
+                  {restaurant.description}
+                </Text>
+                <Text style={styles.restaurantCuisine}>
+                  {restaurant.cuisine} Cuisine
+                </Text>
+                <View style={styles.restaurantStats}>
+                  <Text style={styles.availabilityText}>
+                    {restaurant.tables} Tables Available
+                  </Text>
+                  <Pressable 
+                    style={styles.bookButton} 
+                    onPress={() => navigation.navigate('Restaurant', { restaurant })}
+                  >
+                    <Text style={styles.bookButtonText}>View Menu</Text>
+                  </Pressable>
+                </View>
               </View>
             </View>
           ))}
-        </View>
-        
-        {/* THIRD RESTAURANT */}
-        <View style={styles.bookingCarousel}>
-          {[
-            { name: "Munchies", tables: 3, color: '#ffaf58' },
-          ].map((restaurant, index) => (
-            <View key={index} style={[styles.lastBookingCard, { backgroundColor: restaurant.color }]}>
-              <View style={styles.lastBookingOverlay}>
-                <Text style={styles.restaurantName}>{restaurant.name}</Text>
-                <Text style={styles.availabilityText}>{restaurant.tables} Tables Available</Text>
-                <Pressable style={styles.bookButton} onPress={()=> navigation.navigate('Restaurant')}>
-                  <Text style={styles.bookButtonText}>Add Menu</Text>
-                </Pressable>
-              </View>
-
-              {/* Enhanced Image Container */}
-              <View style={styles.bookingImageWrapper}>
-                <Image 
-                  source={require('../assets/tables.jpg')} 
-                  style={styles.bookingOverlayImage}
-                  resizeMode="cover"
-                  borderRadius={20}
-                  blurRadius={1} 
-                />
-                <View style={styles.horizontalImageOverlay} />
-              </View>
-            </View>
-          ))}
-        </View>
+        </ScrollView>
       </View>
  
     </View>
@@ -288,109 +282,108 @@ const styles = StyleSheet.create({
     color: '#7f8c8d',
   },
 
-  // RESTAURANT BOOKING SECTION
-  bookingSection: 
-  {
-    paddingHorizontal: 20,
+ // RESTAURANT CARD STYLES
+ bookingSection: {
+    paddingTop: 20,
   },
 
-  sectionTitle: 
-  {
-    fontSize: 18,
+  sectionTitle: {
+    fontSize: 20,
     fontWeight: '700',
     color: '#2c3e50',
+    paddingHorizontal: 20,
     marginBottom: 15,
   },
 
-  bookingCarousel: 
+  restaurantScrollContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    gap: 15,
+  },
+
+  restaurantCard: {
+    width: width * 0.7,
+    height: 300,
+    borderRadius: 25,
+    overflow: 'hidden',
+    marginRight: 15,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+
+  restaurantImageContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+
+  restaurantImage: {
+    width: '100%',
+    height: '100%',
+  },
+
+  restaurantImageOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+
+  restaurantDetailsOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 20,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+  },
+
+  restaurantName: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+
+  restaurantDescription: {
+    color: '#e0e0e0',
+    fontSize: 14,
+    marginBottom: 5,
+  },
+
+  restaurantCuisine: 
+  {
+    color: '#ffffff',
+    fontSize: 12,
+    marginBottom: 10,
+    fontStyle: 'italic',
+  },
+
+  restaurantStats: 
   {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-
-  bookingCard: 
-  {
-    width: width * 0.42,
-    height: 230,
-    borderRadius: 20,
-    overflow: 'hidden',
-    justifyContent: 'flex-end',
-  },
-
-  lastBookingCard: 
-  {
-    width: '100%',
-    height: 110,
-    backgroundColor: '#ffaf58',
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 5,
-    marginTop: 15,
-    justifyContent: 'flex-start',
     alignItems: 'center',
-    flexDirection: 'row'
-},
-
-bookingOverlay: 
-{
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 15,
-    alignItems: 'center',
-},
-
-lastBookingOverlay: 
-{
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    padding: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '50%',
-    height: '100%',
-    borderBottomLeftRadius: 20, 
-    borderTopLeftRadius: 20,
-  },
-
-  bookingOverlayImageTop:
-  {
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  bookingOverlayImage:
-  {
-    width: '100%',
-    height: '100%',
-    borderBottomRightRadius: 20, 
-    borderTopRightRadius: 20,
-  },
-  
-
-  restaurantName: 
-  {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    textAlign: 'center',
   },
 
   availabilityText: 
   {
-    color: '#fff',
-    fontSize: 12,
-    marginBottom: 10,
+    color: '#ffffff',
+    fontSize: 14,
   },
 
   bookButton: 
   {
     backgroundColor: '#ffffff',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
     borderRadius: 20,
   },
 
@@ -398,64 +391,8 @@ lastBookingOverlay:
   {
     color: '#2c3e50',
     fontWeight: 'bold',
-    fontSize: 13,
-    textAlign: 'center',
-    letterSpacing: 1
+    fontSize: 12,
   },
-
-  bookingImageContainer: 
-  {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    borderRadius: 20,
-    overflow: 'hidden',
-  },
-  
-  bookingCardImage: 
-  {
-    width: '100%',
-    height: '100%',
-  },
-  
-  bookingImageOverlay: 
-  {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.4)', 
-  },
-
-  bookingImageWrapper: 
-  {
-    width: '50%',
-    height: '100%',
-    position: 'relative',
-    overflow: 'hidden',
-    borderBottomRightRadius: 20,
-    borderTopRightRadius: 20,
-  },
-  
-  bookingOverlayImage: 
-  {
-    width: '100%',
-    height: '100%',
-  },
-  
-  horizontalImageOverlay: 
-  {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)', 
-  },
-
 
 });
 
