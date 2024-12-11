@@ -67,11 +67,18 @@ const [restaurantsDatas, setRestaurantsData] = useState([]);
 useEffect(() => {
   const fetchRestauirants = async()=>{
 
-    const token = await AsyncStorage.getItem('token');
-    console.log('The token is: ', token);
+    
+    
+    try {
+      
+        const token = await AsyncStorage.getItem('token');
+        console.log('The token is: ', token);
 
-    if (token) {
-      try {
+        if (!token) {
+          console.error("No token found, cannot fetch restaurants.");
+          return;
+        }
+
         const response = await axios.
         get('https://acrid-street-production.up.railway.app/api/v2/fetchRestaurants',
           {
@@ -82,16 +89,20 @@ useEffect(() => {
 
         );
         setRestaurantsData(response.data);
-        console.log(`Data fetched as follows: ${JSON.stringify(restaurantsData)}`);
+        console.log("Data fetched successfully:", JSON.stringify(response.data, null, 2));
       } catch (error) {
-        console.error("Error fetching data : ", error?.response?.data);
-      }
+        console.error("Error fetching data:", {
+          message: error.message,
+          response: error.response ? error.response.data : "No response data",
+          status: error.response ? error.response.status : "No status",
+          request: error.request,
+        });
     }
   }
 
   fetchRestauirants();
 
-}, [restaurantsDatas]);
+}, []);
 
 // HANDLE LOGIN
 const handleLogin = async (email, password, setMessage) => {
@@ -113,8 +124,8 @@ const handleLogin = async (email, password, setMessage) => {
             position: 'bottom',
           });
 
-          const token = JSON.stringify(response.data.token);
           await AsyncStorage.setItem('token', token);
+          console.log("Login successful. Token stored:", token);
 
           console.log("Login successful. User:", response.data);
           return true;
@@ -123,7 +134,13 @@ const handleLogin = async (email, password, setMessage) => {
           return false;
       }
   } catch (error) {
-      console.error("Login error:", error?.response?.data || error.message);
+      console.error("Login error:", {
+        message: error.message,
+        response: error.response ? error.response.data : "No response data",
+        status: error.response ? error.response.status : "No status",
+        request: error.request,
+      });
+
       setMessage(
           error?.response?.data?.error || "An error occurred. Please try again."
       );
