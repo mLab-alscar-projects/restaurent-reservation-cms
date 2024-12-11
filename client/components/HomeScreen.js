@@ -87,7 +87,7 @@ const HomeScreen = ({ route, navigation }) => {
       {/* SCROLLABLE RESTAURANT BOOKING SECTION */}
       <View style={styles.bookingSection}>
 
-        <Pressable style={styles.addRestaurantContainer}>
+        <Pressable style={styles.addRestaurantContainer} onPress={() => navigation.navigate('RestaurantFormScreen')}>
           <MaterialIcons name='add' color={'#333'} style={styles.addRestaurantText}/>
           <Text style={styles.addRestaurantText}>Add a Restaurant</Text>
         </Pressable>

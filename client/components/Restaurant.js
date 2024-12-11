@@ -21,7 +21,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 // SCREEN DIMENSIONS
 const { width } = Dimensions.get('window');
 
-const RestaurantScreen = ({route}) => {
+const RestaurantScreen = ({route, navigation}) => {
 
   const { restaurant } = route.params;
   const [menuData, setMenuData] = useState(restaurant.menu);

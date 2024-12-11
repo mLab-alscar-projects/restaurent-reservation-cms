@@ -14,6 +14,7 @@ import ReservationsScreen from './components/ReservationsScreen';
 import ProfileScreen from './components/Profile';
 import SettingsScreen from './components/SettingsScreen';
 import RestaurantPerformance from './components/RestaurantPerformance';
+import RestaurantFormScreen from './components/RestaurantFormScreen';
 
 // DATA
 import { reservationsData } from './components/data';
@@ -154,7 +155,7 @@ const handleLogin = async (email, password, setMessage) => {
                 fontWeight: 'bold',
                 letterSpacing: 1
               },
-              headerTintColor: 'yellow', 
+              headerTintColor: '#000', 
             }}
           />
 
@@ -174,7 +175,7 @@ const handleLogin = async (email, password, setMessage) => {
                 fontWeight: 'bold',
                 letterSpacing: 1
               },
-              headerTintColor: 'yellow', 
+              headerTintColor: '#000', 
             }}
             
           />
@@ -194,7 +195,7 @@ const handleLogin = async (email, password, setMessage) => {
                 fontWeight: 'bold',
                 letterSpacing: 1
               },
-              headerTintColor: 'yellow', 
+              headerTintColor: '#000', 
             }}
           />
 
@@ -213,7 +214,7 @@ const handleLogin = async (email, password, setMessage) => {
                 fontWeight: 'bold',
                 letterSpacing: 1
               },
-              headerTintColor: 'yellow', 
+              headerTintColor: '#000', 
             }}
           />
 
@@ -232,7 +233,26 @@ const handleLogin = async (email, password, setMessage) => {
                 fontWeight: 'bold',
                 letterSpacing: 1
               },
-              headerTintColor: 'yellow', 
+              headerTintColor: '#000', 
+            }}
+          />
+
+          <Stack.Screen
+            name="RestaurantFormScreen"
+            component={RestaurantFormScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Add restaurant', 
+              headerStyle: {
+                backgroundColor: '#3498db', 
+              },
+              headerTitleStyle: {
+                color: '#fff', 
+                fontSize: 18,
+                fontWeight: 'bold',
+                letterSpacing: 1
+              },
+              headerTintColor: '#000', 
             }}
           />
         </Stack.Navigator>
