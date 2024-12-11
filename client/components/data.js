@@ -8,7 +8,7 @@ export const restaurantsData = [
       location: "soweto",
       timeslot: "08:00 - 17:00",
       cuisine: "Contemporary",
-      image: require('../assets/burger.jpg'),
+      image: require('../assets/eatin.jpg'),
       menu: [
         { id: '1', name: 'Grilled Chicken', price: 'R62.99', image: require('../assets/chicken.jpg') },
         { id: '2', name: 'Vegan Salad', price: 'R58.99', image: require('../assets/salad.jpg') },
@@ -27,7 +27,7 @@ export const restaurantsData = [
       color: '#2ecc71', 
       description: "Gourmet Experience",
       cuisine: "International",
-      image: require('../assets/burger.jpg'),
+      image: require('../assets/foodies.jpg'),
       menu: [
         { id: '1', name: 'Grilled Chicken', price: 'R62.99', image: require('../assets/chicken.jpg') },
         { id: '2', name: 'Vegan Salad', price: 'R58.99', image: require('../assets/salad.jpg') },
@@ -46,7 +46,7 @@ export const restaurantsData = [
       color: '#ffaf58', 
       description: "Casual Dining",
       cuisine: "Fast Casual",
-      image: require('../assets/burger.jpg')
+      image: require('../assets/munchies.jpg')
     },
     { 
       name: "Spice Route", 
@@ -54,7 +54,7 @@ export const restaurantsData = [
       color: '#9b59b6', 
       description: "Exotic Flavors",
       cuisine: "Fusion",
-      image: require('../assets/burger.jpg')
+      image: require('../assets/spice.jpg')
     }
   ];
   // ENDS

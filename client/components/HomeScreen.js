@@ -1,24 +1,24 @@
-import React, {useState} from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  Pressable, 
-  Image, 
+import React, { useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  Image,
   Dimensions,
-  ScrollView, 
+  ScrollView,
 } from 'react-native';
 
 // SCREEN DIMENSIONS
 const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ route, navigation }) => {
-    const { restaurants } = route.params;
+  const { restaurants } = route.params;
 
-    // HANDLE PRESS
-    const handleRestaurantPress = (restaurant) => {
-        navigation.navigate('Restaurant', { restaurant }); 
-      };
+  // HANDLE PRESS
+  const handleRestaurantPress = (restaurant) => {
+    navigation.navigate('Restaurant', { restaurant });
+  };
 
 
   return (
@@ -27,7 +27,7 @@ const HomeScreen = ({ route, navigation }) => {
       <View style={styles.topNavigation}>
         <View style={styles.profileContainer}>
           <View style={styles.profileImagePlaceholder}>
-            <Pressable onPress={()=> navigation.navigate('Profile')}>
+            <Pressable onPress={() => navigation.navigate('Profile')}>
               <Text style={styles.profileInitials}>OP</Text>
             </Pressable>
           </View>
@@ -37,10 +37,10 @@ const HomeScreen = ({ route, navigation }) => {
           </View>
         </View>
         <View style={styles.iconContainer}>
-          <Pressable style={styles.iconButton} onPress={()=> navigation.navigate('Notification')}>
+          <Pressable style={styles.iconButton} onPress={() => navigation.navigate('Notification')}>
             <Text style={styles.iconText}>🔔</Text>
           </Pressable>
-          <Pressable style={styles.iconButton} onPress={()=> navigation.navigate('Settings')}>
+          <Pressable style={styles.iconButton} onPress={() => navigation.navigate('Settings')}>
             <Text style={styles.iconText}>⚙️</Text>
           </Pressable>
         </View>
@@ -53,20 +53,20 @@ const HomeScreen = ({ route, navigation }) => {
             <Text style={styles.chartTitle}>Weekly Productivity</Text>
             <Text style={styles.trendIcon}>📈</Text>
           </View>
-          
+
           {/* MOCK CHART VISUALIZATION */}
           <View style={styles.chartContainer}>
             {[65, 59, 80, 81, 56].map((value, index) => (
-              <View 
-                key={index} 
+              <View
+                key={index}
                 style={[
-                  styles.chartBar, 
-                  { height: value, backgroundColor: `rgba(52, 152, 219, ${value/100})` }
-                ]} 
+                  styles.chartBar,
+                  { height: value, backgroundColor: `rgba(52, 152, 219, ${value / 100})` }
+                ]}
               />
             ))}
           </View>
-          
+
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
               <Text style={styles.statValue}>45</Text>
@@ -82,67 +82,72 @@ const HomeScreen = ({ route, navigation }) => {
 
       {/* SCROLLABLE RESTAURANT BOOKING SECTION */}
       <View style={styles.bookingSection}>
-        <Text style={styles.sectionTitle}>Restaurants</Text>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
+
+        {/* Fixed container for adding restaurants */}
+        <View style={styles.addRestaurantContainer}>
+          <Text style={styles.addRestaurantText}>Add a Restaurant</Text>
+          {/* Add your logic for the "Add Restaurant" button here */}
+        </View>
+
+        {/* Scrollable restaurant list with 2 columns */}
+        <ScrollView
+          vertical
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.restaurantScrollContainer}
         >
-          {restaurants.map((restaurant, index) => (
-            <View 
-              key={index} 
-              style={[
-                styles.restaurantCard, 
-                { backgroundColor: restaurant.color }
-              ]}
-            >
-              <View style={styles.restaurantImageContainer}>
-                <Image 
-                  source={restaurant.image} 
-                  style={styles.restaurantImage}
-                  resizeMode="cover"
-                />
-                <View style={styles.restaurantImageOverlay} />
-              </View>
+          <View style={styles.restaurantGrid}>
+            {restaurants.map((restaurant, index) => (
+              <Pressable
+                key={index}
+                style={[
+                  styles.restaurantCard,
+                  { backgroundColor: restaurant.color }, 
+                ]}
 
-              <View style={styles.restaurantDetailsOverlay}>
-                <Text style={styles.restaurantName}>{restaurant.name}</Text>
-                <Text style={styles.restaurantDescription}>
-                  {restaurant.description}
-                </Text>
-                <Text style={styles.restaurantCuisine}>
-                  {restaurant.cuisine} Cuisine
-                </Text>
-                <View style={styles.restaurantStats}>
-                  <Text style={styles.availabilityText}>
-                    {restaurant.tables} Tables Available
-                  </Text>
-                  <Pressable 
-                    style={styles.bookButton} 
-                    onPress={() => navigation.navigate('Restaurant', { restaurant })}
-                  >
-                    <Text style={styles.bookButtonText}>View Menu</Text>
-                  </Pressable>
+                onPress={() => navigation.navigate('Restaurant', { restaurant })}
+              >
+                <View style={styles.restaurantImageContainer}>
+                  <Image
+                    source={restaurant.image}
+                    style={styles.restaurantImage}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.restaurantImageOverlay} />
                 </View>
-              </View>
-            </View>
-          ))}
+
+                <View style={styles.restaurantDetailsOverlay}>
+                  <Text style={styles.restaurantName}>{restaurant.name}</Text>
+                  <Text style={styles.restaurantDescription}>
+                    {restaurant.description}
+                  </Text>
+                  <Text style={styles.restaurantCuisine}>
+                    {restaurant.cuisine} Cuisine
+                  </Text>
+                  <View style={styles.restaurantStats}>
+                    <Text style={styles.availabilityText}>
+                      {restaurant.tables} Tables Available
+                    </Text>
+                    
+                  </View>
+                </View>
+              </Pressable>
+            ))}
+          </View>
         </ScrollView>
       </View>
- 
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  parent: 
+  parent:
   {
     flex: 1,
     backgroundColor: '#f4f7fa',
   },
-  
+
   // TOP NAVIGATION STYLES
-  topNavigation: 
+  topNavigation:
   {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -152,13 +157,13 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 
-  profileContainer: 
+  profileContainer:
   {
     flexDirection: 'row',
     alignItems: 'center',
   },
 
-  profileImagePlaceholder: 
+  profileImagePlaceholder:
   {
     width: 50,
     height: 50,
@@ -169,21 +174,21 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
 
-  profileInitials: 
+  profileInitials:
   {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
   },
 
-  greetingText: 
+  greetingText:
   {
     fontSize: 18,
     fontWeight: '700',
     color: '#2c3e50',
   },
 
-  subGreetingText: 
+  subGreetingText:
   {
     fontSize: 14,
     color: '#7f8c8d',
@@ -193,24 +198,24 @@ const styles = StyleSheet.create({
     gap: 15,
   },
 
-  iconButton: 
+  iconButton:
   {
     padding: 10,
   },
 
-  iconText: 
+  iconText:
   {
     fontSize: 20,
   },
 
   // PRODUCTIVITY INSIGHTS
-  insightsContainer: 
+  insightsContainer:
   {
     paddingHorizontal: 20,
     marginBottom: 20,
   },
 
-  primaryInsightCard: 
+  primaryInsightCard:
   {
     backgroundColor: '#ffffff',
     borderRadius: 20,
@@ -222,7 +227,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
 
-  chartTitleContainer: 
+  chartTitleContainer:
   {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -230,19 +235,19 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 
-  chartTitle: 
+  chartTitle:
   {
     fontSize: 18,
     fontWeight: '700',
     color: '#2c3e50',
   },
 
-  trendIcon: 
+  trendIcon:
   {
     fontSize: 24,
   },
 
-  chartContainer: 
+  chartContainer:
   {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -251,149 +256,138 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
 
-  chartBar: 
+  chartBar:
   {
     width: 30,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
   },
 
-  statsContainer: 
+  statsContainer:
   {
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
 
-  statItem: 
+  statItem:
   {
     alignItems: 'center',
   },
 
-  statValue: 
+  statValue:
   {
     fontSize: 22,
     fontWeight: 'bold',
     color: '#2c3e50',
   },
 
-  statLabel: 
+  statLabel:
   {
     fontSize: 12,
     color: '#7f8c8d',
   },
 
- // RESTAURANT CARD STYLES
- bookingSection: {
-    paddingTop: 20,
+  // RESTAURANT CARD STYLES
+  bookingSection: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: '#f9f9f9',
   },
-
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#2c3e50',
-    paddingHorizontal: 20,
+  addRestaurantContainer: {
     marginBottom: 15,
-  },
-
-  restaurantScrollContainer: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    gap: 15,
-  },
-
-  restaurantCard: {
-    width: width * 0.7,
-    height: 300,
-    borderRadius: 25,
-    overflow: 'hidden',
-    marginRight: 15,
-    elevation: 8,
+    backgroundColor: '#f0f0f0',
+    padding: 15,
+    borderRadius: 12,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-
+  addRestaurantText: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#333',
+    textAlign: 'center',
+  },
+  restaurantScrollContainer: {
+    paddingBottom: 20,
+  },
+  restaurantGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  restaurantCard: {
+    width: '48%',
+    marginBottom: 15,
+    borderRadius: 12,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  firstRestaurantCard: {
+    marginTop: 10,
+  },
   restaurantImageContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    width: '100%',
+    height: 160,
   },
-
   restaurantImage: {
     width: '100%',
     height: '100%',
   },
-
   restaurantImageOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
-
   restaurantDetailsOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 20,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    padding: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
   },
-
   restaurantName: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#222',
     marginBottom: 5,
   },
-
   restaurantDescription: {
-    color: '#e0e0e0',
     fontSize: 14,
+    color: '#666',
     marginBottom: 5,
   },
-
-  restaurantCuisine: 
-  {
-    color: '#ffffff',
-    fontSize: 12,
+  restaurantCuisine: {
+    fontSize: 14,
+    color: '#888',
     marginBottom: 10,
-    fontStyle: 'italic',
   },
-
-  restaurantStats: 
-  {
+  restaurantStats: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-
-  availabilityText: 
-  {
-    color: '#ffffff',
+  availabilityText: {
+    fontSize: 14,
+    color: '#555',
+  },
+  bookButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    backgroundColor: '#007BFF',
+    borderRadius: 6,
+  },
+  bookButtonText: {
+    color: '#fff',
+    fontWeight: '600',
     fontSize: 14,
   },
-
-  bookButton: 
-  {
-    backgroundColor: '#ffffff',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-
-  bookButtonText: 
-  {
-    color: '#2c3e50',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-
 });
 
 export default HomeScreen;
