@@ -81,7 +81,7 @@ const RestaurantScreen = ({route}) => {
       <View style={[styles.header, {backgroundColor: restaurant.color}]}>
         <Text style={styles.headerTitle}>{restaurant.name}</Text>
       </View>
-      <View style={[{backgroundColor: '#000', height: 5, width: '150', alignSelf: 'center', marginTop: 10}]}>
+      <View style={[{backgroundColor: '#000', height: 5, width: '150', alignSelf: 'center', marginTop: 20, borderRadius: 6}]}>
     
       </View>
 

@@ -9,6 +9,10 @@ import {
   ScrollView,
 } from 'react-native';
 
+// ICONS
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+
 // SCREEN DIMENSIONS
 const { width, height } = Dimensions.get('window');
 
@@ -83,13 +87,11 @@ const HomeScreen = ({ route, navigation }) => {
       {/* SCROLLABLE RESTAURANT BOOKING SECTION */}
       <View style={styles.bookingSection}>
 
-        {/* Fixed container for adding restaurants */}
-        <View style={styles.addRestaurantContainer}>
+        <Pressable style={styles.addRestaurantContainer}>
+          <MaterialIcons name='add' color={'#333'} style={styles.addRestaurantText}/>
           <Text style={styles.addRestaurantText}>Add a Restaurant</Text>
-          {/* Add your logic for the "Add Restaurant" button here */}
-        </View>
+        </Pressable>
 
-        {/* Scrollable restaurant list with 2 columns */}
         <ScrollView
           vertical
           showsVerticalScrollIndicator={false}
@@ -152,7 +154,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingTop: 50,
     paddingBottom: 20,
   },
@@ -211,7 +213,7 @@ const styles = StyleSheet.create({
   // PRODUCTIVITY INSIGHTS
   insightsContainer:
   {
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     marginBottom: 20,
   },
 
@@ -294,7 +296,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   addRestaurantContainer: {
-    marginBottom: 15,
+    marginBottom: 20,
     backgroundColor: '#f0f0f0',
     padding: 15,
     borderRadius: 12,
@@ -303,12 +305,18 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: 50,
+    gap: 4
   },
   addRestaurantText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     color: '#333',
-    textAlign: 'center',
+    textTransform: 'uppercase',
   },
   restaurantScrollContainer: {
     paddingBottom: 20,
