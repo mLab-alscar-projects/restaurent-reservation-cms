@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ActivityIndicator, SafeAreaView } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, ActivityIndicator, SafeAreaView, ToastAndroid } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import Toast from 'react-native-toast-message';
 
 // SCREENS
 import SplashScreenChild from './components/SplashScreen';
@@ -20,6 +21,7 @@ import { restaurantsData } from './components/data';
 
 // AXIOS
 import axios from 'axios';
+import AuthContext from './AuthContext';
 
 
 
@@ -65,10 +67,18 @@ const handleLogin = async (email, password, setMessage) => {
           { email, password },
           { headers: { 'Content-Type': 'application/json' } } 
       );
+      
       const { token, email: userEmail } = response.data;
 
       if (token) {
           setMessage(`Welcome back, ${userEmail}!`);
+          Toast.show({
+            type: 'success', 
+            text1: `Welcome back, ${userEmail}!`,
+            text2: 'You have successfully logged in.',
+            position: 'bottom',
+          });
+
           console.log("Login successful. User:", response.data);
           return true;
       } else {
@@ -89,144 +99,148 @@ const handleLogin = async (email, password, setMessage) => {
 
 
   return (
-    <NavigationContainer>
-      {/* <SafeAreaView backgroundColor= '#97CBDC'/> */}
-      <Stack.Navigator initialRouteName="Splash">
-        <Stack.Screen
-          name="Splash"
-          component={SplashScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-          initialParams={{handleLogin}}
-        />
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ headerShown: false }}
-          initialParams={{ restaurants }}
-        />
+    <AuthContext.Provider value={{ handleLogin }}>
+      <NavigationContainer>
+        <SafeAreaView backgroundColor= '#97CBDC'/>
+        <Stack.Navigator initialRouteName="Splash">
+          <Stack.Screen
+            name="Splash"
+            component={SplashScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerShown: false }}
+            initialParams={{ restaurants }}
+          />
 
-        <Stack.Screen
-          name="Restaurant"
-          component={RestaurantScreen}
-          options={{
-            headerShown: true,
-            headerTitle: 'Restaurant Menu', 
-            headerStyle: {
-              backgroundColor: '#d3ddda', 
-            },
-            headerTitleStyle: {
-              color: '#000', 
-              fontSize: 18,
-              fontWeight: 'bold',
-              letterSpacing: 1
-            },
-            headerTintColor: '#000', 
-          }}
-        />
+          <Stack.Screen
+            name="Restaurant"
+            component={RestaurantScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Restaurant Menu', 
+              headerStyle: {
+                backgroundColor: '#d3ddda', 
+              },
+              headerTitleStyle: {
+                color: '#000', 
+                fontSize: 18,
+                fontWeight: 'bold',
+                letterSpacing: 1
+              },
+              headerTintColor: '#000', 
+            }}
+          />
 
-        <Stack.Screen
-          name="ReservationsScreen"
-          component={ReservationsScreen}
-          options={{
-            headerShown: true,
-            headerTitle: 'Reservations', 
-            headerStyle: {
-              backgroundColor: '#3498db', 
-            },
-            headerTitleStyle: {
-              color: '#fff', 
-              fontSize: 18,
-              fontWeight: 'bold',
-              letterSpacing: 1
-            },
-            headerTintColor: 'yellow', 
-          }}
-        />
+          <Stack.Screen
+            name="ReservationsScreen"
+            component={ReservationsScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Reservations', 
+              headerStyle: {
+                backgroundColor: '#3498db', 
+              },
+              headerTitleStyle: {
+                color: '#fff', 
+                fontSize: 18,
+                fontWeight: 'bold',
+                letterSpacing: 1
+              },
+              headerTintColor: 'yellow', 
+            }}
+          />
 
-        <Stack.Screen
-          name="Notification"
-          component={NotificationScreen}
-          initialParams={{reservations}}
-          options={{
-            headerShown: true,
-            headerTitle: 'Notifications', 
-            headerStyle: {
-              backgroundColor: '#3498db', 
-            },
-            headerTitleStyle: {
-              color: '#fff', 
-              fontSize: 18,
-              fontWeight: 'bold',
-              letterSpacing: 1
-            },
-            headerTintColor: 'yellow', 
-          }}
-          
-        />
+          <Stack.Screen
+            name="Notification"
+            component={NotificationScreen}
+            initialParams={{reservations}}
+            options={{
+              headerShown: true,
+              headerTitle: 'Notifications', 
+              headerStyle: {
+                backgroundColor: '#3498db', 
+              },
+              headerTitleStyle: {
+                color: '#fff', 
+                fontSize: 18,
+                fontWeight: 'bold',
+                letterSpacing: 1
+              },
+              headerTintColor: 'yellow', 
+            }}
+            
+          />
 
-        <Stack.Screen
-          name="Profile"
-          component={ProfileScreen}
-          options={{
-            headerShown: true,
-            headerTitle: 'Profile', 
-            headerStyle: {
-              backgroundColor: '#3498db', 
-            },
-            headerTitleStyle: {
-              color: '#fff', 
-              fontSize: 18,
-              fontWeight: 'bold',
-              letterSpacing: 1
-            },
-            headerTintColor: 'yellow', 
-          }}
-        />
+          <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Profile', 
+              headerStyle: {
+                backgroundColor: '#3498db', 
+              },
+              headerTitleStyle: {
+                color: '#fff', 
+                fontSize: 18,
+                fontWeight: 'bold',
+                letterSpacing: 1
+              },
+              headerTintColor: 'yellow', 
+            }}
+          />
 
-        <Stack.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{
-            headerShown: true,
-            headerTitle: 'Settings', 
-            headerStyle: {
-              backgroundColor: '#3498db', 
-            },
-            headerTitleStyle: {
-              color: '#fff', 
-              fontSize: 18,
-              fontWeight: 'bold',
-              letterSpacing: 1
-            },
-            headerTintColor: 'yellow', 
-          }}
-        />
+          <Stack.Screen
+            name="Settings"
+            component={SettingsScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Settings', 
+              headerStyle: {
+                backgroundColor: '#3498db', 
+              },
+              headerTitleStyle: {
+                color: '#fff', 
+                fontSize: 18,
+                fontWeight: 'bold',
+                letterSpacing: 1
+              },
+              headerTintColor: 'yellow', 
+            }}
+          />
 
-        <Stack.Screen
-          name="RestaurantPerformance"
-          component={RestaurantPerformance}
-          options={{
-            headerShown: true,
-            headerTitle: 'Performance', 
-            headerStyle: {
-              backgroundColor: '#3498db', 
-            },
-            headerTitleStyle: {
-              color: '#fff', 
-              fontSize: 18,
-              fontWeight: 'bold',
-              letterSpacing: 1
-            },
-            headerTintColor: 'yellow', 
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Screen
+            name="RestaurantPerformance"
+            component={RestaurantPerformance}
+            options={{
+              headerShown: true,
+              headerTitle: 'Performance', 
+              headerStyle: {
+                backgroundColor: '#3498db', 
+              },
+              headerTitleStyle: {
+                color: '#fff', 
+                fontSize: 18,
+                fontWeight: 'bold',
+                letterSpacing: 1
+              },
+              headerTintColor: 'yellow', 
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+      <View style={styles.toastParent}>
+        <Toast /> 
+      </View>
+    </AuthContext.Provider>
   );
 }
 
@@ -251,5 +265,16 @@ const styles = StyleSheet.create({
   },
 
   // ENDS
+
+  // TOAST
+  toastParent:
+  {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 50,
+    zIndex: 1
+  }
 
 });

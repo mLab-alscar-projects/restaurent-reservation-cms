@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, TextInput, Alert } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { StyleSheet, Text, View, Pressable, TextInput, Alert, ActivityIndicator } from 'react-native';
 
 // SCREENS
 import SplashScreenChild from './SplashScreen';
+import AuthContext from '../AuthContext';
+
 
 // ICONS
 import Zocial from 'react-native-vector-icons/Zocial';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-const LoginScreen = ({ route, navigation }) => {
-    const { handleLogin } = route.params;
+const LoginScreen = ({ navigation }) => {
+
+    const { handleLogin } = useContext(AuthContext);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
+
+    // HANDLE LOGIN AND NAVIGATE TO HOME SCREEN
     const handleLoginAndNavigate = async () => {
-        setLoading(true); // Show loader
+        setLoading(true);
         try {
             const isLoggedIn = await handleLogin(email, password, setMessage);
             setLoading(false);
@@ -25,11 +30,12 @@ const LoginScreen = ({ route, navigation }) => {
                 navigation.replace('Home');
             }
         } catch (error) {
-            setLoading(false); // Hide loader
+            setLoading(false); 
             console.error('Login failed:', error);
-            Alert.alert('Login Error', 'An error occurred during login. Please try again.');
+            // Alert.alert('Login Error', 'An error occurred during login. Please try again.');
         }
     };
+    // ENDS
 
     return (
         <View style={styles.Parent}>
@@ -51,7 +57,6 @@ const LoginScreen = ({ route, navigation }) => {
                     </View>
                     <TextInput
                         style={styles.input}
-                        placeholder="Email"
                         value={email}
                         onChangeText={setEmail}
                         keyboardType="email-address"
@@ -67,7 +72,6 @@ const LoginScreen = ({ route, navigation }) => {
                     </View>
                     <TextInput
                         style={styles.input}
-                        placeholder="Password"
                         secureTextEntry
                         value={password}
                         onChangeText={setPassword}
@@ -78,7 +82,14 @@ const LoginScreen = ({ route, navigation }) => {
                 {/* BUTTON */}
                 <View style={styles.buttonWrapper}>
                     <Pressable style={styles.button} onPress={handleLoginAndNavigate}>
-                        <Text style={styles.buttonText}>Login</Text>
+                        
+                        {
+                        !loading ? 
+                        <Text style={styles.buttonText}>Login</Text> 
+                        : 
+                        <ActivityIndicator size="small" color="#0000ff" /> 
+                        }
+
                     </Pressable>
 
                     {/* MESSAGE */}
@@ -181,7 +192,8 @@ const styles = StyleSheet.create({
     },
     message: {
         marginTop: 10,
-        fontSize: 14,
+        fontSize: 16,
+        letterSpacing: 1,
         color: 'red',
     },
 });

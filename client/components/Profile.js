@@ -62,7 +62,8 @@ const AdminProfileScreen = (
       icon: <LogOut color="#e74c3c" size={24} />, 
       title: "Logout", 
       subtitle: "Exit admin panel",
-      destructive: true 
+      destructive: true,
+      onPress: () => navigation.replace('Login') 
     }
   ];
 
@@ -122,6 +123,7 @@ const AdminProfileScreen = (
               styles.actionItem,
               action.destructive && styles.destructiveAction
             ]}
+            onPress={action.onPress} 
           >
             <View style={styles.actionIconContainer}>
               {action.icon}
