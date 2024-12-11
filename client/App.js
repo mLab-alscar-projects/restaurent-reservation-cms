@@ -66,20 +66,26 @@ const [restaurantsDatas, setRestaurantsData] = useState([]);
 // FETCH DATA
 useEffect(() => {
   const fetchRestauirants = async()=>{
-    try {
-      const response = await axios.
-      get('https://acrid-street-production.up.railway.app/api/v2/fetchRestaurants',
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
 
-      );
-      setRestaurantsData(response.data);
-      console.log(`Data fetched as follows: ${JSON.stringify(restaurantsData)}`);
-    } catch (error) {
-      console.error("Error fetching data : ", error?.response?.data);
+    const token = await AsyncStorage.getItem('token');
+    console.log('The token is: ', token);
+
+    if (token) {
+      try {
+        const response = await axios.
+        get('https://acrid-street-production.up.railway.app/api/v2/fetchRestaurants',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+
+        );
+        setRestaurantsData(response.data);
+        console.log(`Data fetched as follows: ${JSON.stringify(restaurantsData)}`);
+      } catch (error) {
+        console.error("Error fetching data : ", error?.response?.data);
+      }
     }
   }
 
