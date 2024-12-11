@@ -49,6 +49,7 @@ const SplashScreen = ({ navigation }) => {
     </View>
   );
 };
+
 // ENDS
 
 
@@ -58,17 +59,16 @@ const Stack = createStackNavigator();
 export default function App() {
 
   // DATA
-const reservations = reservationsData;
-const restaurants = restaurantsData;
+
 
 const [restaurantsDatas, setRestaurantsData] = useState([]);
+
+const reservations = reservationsData;
 
 // FETCH DATA
 useEffect(() => {
   const fetchRestauirants = async()=>{
 
-    
-    
     try {
       
         const token = await AsyncStorage.getItem('token');
@@ -88,14 +88,19 @@ useEffect(() => {
           }
 
         );
-        setRestaurantsData(response.data);
+
+        setRestaurantsData(response.data.restaurants);
+
         console.log("Data fetched successfully:", JSON.stringify(response.data, null, 2));
       } catch (error) {
+
         console.error("Error fetching data:", {
+
           message: error.message,
           response: error.response ? error.response.data : "No response data",
           status: error.response ? error.response.status : "No status",
           request: error.request,
+
         });
     }
   }
@@ -171,7 +176,7 @@ const handleLogin = async (email, password, setMessage) => {
             name="Home"
             component={HomeScreen}
             options={{ headerShown: false }}
-            initialParams={{ restaurants }}
+            initialParams={{ restaurants: restaurantsDatas }}
           />
 
           <Stack.Screen

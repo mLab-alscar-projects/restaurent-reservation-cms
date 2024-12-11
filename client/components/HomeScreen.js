@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -23,6 +23,10 @@ const HomeScreen = ({ route, navigation }) => {
   const handleRestaurantPress = (restaurant) => {
     navigation.navigate('Restaurant', { restaurant });
   };
+
+  useEffect(() => {
+    console.log('Restaurants data received:', restaurants);
+  }, [restaurants]);
 
 
   return (
@@ -97,44 +101,48 @@ const HomeScreen = ({ route, navigation }) => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.restaurantScrollContainer}
         >
-          <View style={styles.restaurantGrid}>
-            {restaurants.map((restaurant, index) => (
-              <Pressable
-                key={index}
-                style={[
-                  styles.restaurantCard,
-                  { backgroundColor: restaurant.color }, 
-                ]}
+   <View style={styles.restaurantGrid}>
+  {Array.isArray(restaurants) && restaurants.length > 0 ? (
+    restaurants.map((restaurant, index) => (
+      <Pressable
+        key={index}
+        style={[
+          styles.restaurantCard,
+          { backgroundColor: restaurant.color },
+        ]}
+        onPress={() => navigation.navigate('Restaurant', { restaurant })}
+      >
+        <View style={styles.restaurantImageContainer}>
+          <Image
+            source={{ uri: restaurant.image }} // Using the local path directly
+            style={styles.restaurantImage}
+            resizeMode="cover"
+          />
+          <View style={styles.restaurantImageOverlay} />
+        </View>
 
-                onPress={() => navigation.navigate('Restaurant', { restaurant })}
-              >
-                <View style={styles.restaurantImageContainer}>
-                  <Image
-                    source={restaurant.image}
-                    style={styles.restaurantImage}
-                    resizeMode="cover"
-                  />
-                  <View style={styles.restaurantImageOverlay} />
-                </View>
-
-                <View style={styles.restaurantDetailsOverlay}>
-                  <Text style={styles.restaurantName}>{restaurant.name}</Text>
-                  <Text style={styles.restaurantDescription}>
-                    {restaurant.description}
-                  </Text>
-                  <Text style={styles.restaurantCuisine}>
-                    {restaurant.cuisine} Cuisine
-                  </Text>
-                  <View style={styles.restaurantStats}>
-                    <Text style={styles.availabilityText}>
-                      {restaurant.tables} Tables Available
-                    </Text>
-                    
-                  </View>
-                </View>
-              </Pressable>
-            ))}
+        <View style={styles.restaurantDetailsOverlay}>
+          <Text style={styles.restaurantName}>{restaurant.name}</Text>
+          <Text style={styles.restaurantDescription}>
+            {restaurant.description}
+          </Text>
+          <Text style={styles.restaurantCuisine}>
+            {restaurant.cuisine} Cuisine
+          </Text>
+          <View style={styles.restaurantStats}>
+            <Text style={styles.availabilityText}>
+              {restaurant.tables} Tables Available
+            </Text>
           </View>
+        </View>
+      </Pressable>
+    ))
+  ) : (
+    <Text>No restaurants available.</Text>
+  )}
+</View>
+
+
         </ScrollView>
       </View>
     </View>
