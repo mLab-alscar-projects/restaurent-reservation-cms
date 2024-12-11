@@ -7,7 +7,6 @@ import {
   Dimensions, 
   ScrollView,
   Image,
-  StatusBar
 } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';

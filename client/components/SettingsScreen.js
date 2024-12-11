@@ -12,9 +12,6 @@ import {
   Users, 
   FileText, 
   Server, 
-  BarChart, 
-  Shield, 
-  Settings, 
   ChevronRight,
   Sun,
   Moon

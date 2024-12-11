@@ -18,6 +18,9 @@ import RestaurantPerformance from './components/RestaurantPerformance';
 import { reservationsData } from './components/data';
 import { restaurantsData } from './components/data';
 
+// AXIOS
+import axios from 'axios';
+
 
 
 // SPLASH SCREEN
@@ -53,6 +56,34 @@ export default function App() {
   // DATA
 const reservations = reservationsData;
 const restaurants = restaurantsData;
+
+// HANDLE LOGIN
+const handleLogin = async (email, password, setMessage) => {
+  try {
+      const response = await axios.post(
+          'https://acrid-street-production.up.railway.app/api/v2/login',
+          { email, password },
+          { headers: { 'Content-Type': 'application/json' } } 
+      );
+      const { token, email: userEmail } = response.data;
+
+      if (token) {
+          setMessage(`Welcome back, ${userEmail}!`);
+          console.log("Login successful. User:", response.data);
+          return true;
+      } else {
+          setMessage("Login failed. Please try again.");
+          return false;
+      }
+  } catch (error) {
+      console.error("Login error:", error?.response?.data || error.message);
+      setMessage(
+          error?.response?.data?.error || "An error occurred. Please try again."
+      );
+      return false;
+  }
+};
+
   
   
 
@@ -70,6 +101,7 @@ const restaurants = restaurantsData;
           name="Login"
           component={LoginScreen}
           options={{ headerShown: false }}
+          initialParams={{handleLogin}}
         />
         <Stack.Screen
           name="Home"
