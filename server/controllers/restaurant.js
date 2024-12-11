@@ -2,45 +2,6 @@ import Recipe from "../models/recipe.js";
 
 
 
-// GET ALL RECIPES WITH PAGINATION
-const getAllRecipes = async (req, res) => {
-
-    // DEFAUL TO PAGE 1 AN LIMIT OF 15
-    const { page = 1, limit = 15 } = req.query;
-    // ENDS
-
-
-    try {
-        const recipes = await Recipe.find()
-
-            // LIMIT THE NUMBER OF RECIPES RETURNED
-            .limit(Number(limit))      
-            // ENDS
-
-            // SKIP THE NUMBER OF RECIPES RETURNED
-            .skip((page - 1) * limit) // Skip the number of recipes based on the current page
-            // ENDS
-
-            // EXECUTE THE  QUERY
-            .exec();
-            // ENDS
-
-        // GET THE TOTAL COUNT OF RECIPES
-        const total = await Recipe.countDocuments(); 
-
-        res.status(200).json({
-            total,                          // Total number of recipes
-            page: Number(page),             // Current page number
-            limit: Number(limit),           // Items per page
-            recipes                         // Recipes for the current page
-        });
-        
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-// ENDS
-
 
 // GET RECIPE  BY ID
 
@@ -95,10 +56,3 @@ const deleteRecipeById = async (req, res) => {
 };
 // ENDS
 
-
-// EXPORT ALL THE FUNCTIONS
-export const createNewRecipe = createRecipe;
-export const deleteRecipe =  deleteRecipeById;
-export const updateRecipe = updateRecipeById;
-export const getRecipe = getRecipeById;
-export const getAllRecipe = getAllRecipes;

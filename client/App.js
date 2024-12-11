@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ActivityIndicator, SafeAreaView, ToastAndroid } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // SCREENS
 import SplashScreenChild from './components/SplashScreen';
@@ -60,6 +61,32 @@ export default function App() {
 const reservations = reservationsData;
 const restaurants = restaurantsData;
 
+const [restaurantsDatas, setRestaurantsData] = useState([]);
+
+// FETCH DATA
+useEffect(() => {
+  const fetchRestauirants = async()=>{
+    try {
+      const response = await axios.
+      get('https://acrid-street-production.up.railway.app/api/v2/fetchRestaurants',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+
+      );
+      setRestaurantsData(response.data);
+      console.log(`Data fetched as follows: ${JSON.stringify(restaurantsData)}`);
+    } catch (error) {
+      console.error("Error fetching data : ", error?.response?.data);
+    }
+  }
+
+  fetchRestauirants();
+
+}, [restaurantsDatas]);
+
 // HANDLE LOGIN
 const handleLogin = async (email, password, setMessage) => {
   try {
@@ -79,6 +106,9 @@ const handleLogin = async (email, password, setMessage) => {
             text2: 'You have successfully logged in.',
             position: 'bottom',
           });
+
+          const token = JSON.stringify(response.data.token);
+          await AsyncStorage.setItem('token', token);
 
           console.log("Login successful. User:", response.data);
           return true;
