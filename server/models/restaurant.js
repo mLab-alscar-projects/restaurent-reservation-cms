@@ -6,21 +6,14 @@ const RestaurantSchema = new mongoose.Schema({
     // NAME
     name: 
     {
-        type: String,
-        required: true,
-        trim: true,
-        minlength: 2,
-        maxlength: 15
+        type: String, required: true, trim: true, minlength: 2, maxlength: 15
       },
     //   ENDS
 
     // TABLES
       tables: 
       {
-        type: Number,
-        required: true,
-        min: 1,
-        max: 100
+        type: Number, required: true, min: 1, max: 100
       },
     //   ENDS
 
@@ -43,19 +36,14 @@ const RestaurantSchema = new mongoose.Schema({
     // DESCRIPTIONS
       description: 
       {
-        type: String,
-        required: true,
-        trim: true,
-        maxlength: 500
+        type: String, required: true, trim: true, maxlength: 500
       },
     //   ENDS
 
     // LOCATION
       location: 
       {
-        type: String,
-        required: true,
-        trim: true
+        type: String, required: true, trim: true
       },
     //   ENDS
 
@@ -71,9 +59,7 @@ const RestaurantSchema = new mongoose.Schema({
     // CUISINE
       cuisine: 
       {
-        type: String,
-        required: true,
-        trim: true
+        type: String, required: true, trim: true
       },
     //   ENDS
 
@@ -100,18 +86,12 @@ const RestaurantSchema = new mongoose.Schema({
       {
         latitude: 
         {
-          type: Number,
-          required: true,
-          min: -90,
-          max: 90
+          type: Number, required: true, min: -90, max: 90
         },
 
         longitude: 
         {
-          type: Number,
-          required: true,
-          min: -180,
-          max: 180
+          type: Number, required: true, min: -180, max: 180
         }
       },
     //   ENDS
@@ -119,16 +99,14 @@ const RestaurantSchema = new mongoose.Schema({
     // CREATED AT 
       createdAt: 
       {
-        type: Date,
-        default: Date.now
+        type: Date, default: Date.now
       },
     //   ENDS
 
     // STATUS
       isActive: 
       {
-        type: Boolean,
-        default: true
+        type: Boolean, default: true
       }
     //   ENDS
 

@@ -1,22 +1,6 @@
 import Recipe from "../models/recipe.js";
 
 
-// CREATE newProduct
-const createRecipe = async (req, res) => {
-    try {
-        const newRecipe = await Recipe.create({
-            ...req.body,      
-            userID: req.user.id   
-        });
-
-        res.status(201).json(newRecipe);
-    } catch (error) {
-        res.status(500).json({ message: "Error creating product: " + error.message });
-    }
-};
-// ENDS
-
-
 
 // GET ALL RECIPES WITH PAGINATION
 const getAllRecipes = async (req, res) => {
