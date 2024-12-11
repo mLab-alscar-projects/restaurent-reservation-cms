@@ -30,7 +30,7 @@ const RestaurantFormScreen = () => {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ImagePicker.MediaType,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -50,7 +50,7 @@ const RestaurantFormScreen = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: restaurantData.color }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#d3ddda' }]}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.title}>Add New Restaurant</Text>
         
@@ -72,6 +72,16 @@ const RestaurantFormScreen = () => {
             onChangeText={(text) => setRestaurantData(prev => ({...prev, description: text}))}
             placeholder="Restaurant description"
             multiline
+          />
+        </View>
+
+        <View style={styles.inputGroup}>
+          <Text style={styles.label}>Restaurant color</Text>
+          <TextInput
+            style={styles.input}
+            value={restaurantData.color}
+            onChangeText={(text) => setRestaurantData(prev => ({...prev, description: text}))}
+            placeholder="Restaurant color"
           />
         </View>
 
@@ -196,15 +206,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-    color: 'white',
+    color: 'black',
+    letterSpacing: 1,
   },
   inputGroup: {
     marginBottom: 15,
   },
   label: {
     marginBottom: 5,
-    color: 'white',
+    color: '#444',
     fontWeight: 'bold',
+    letterSpacing: 2,
+    fontSize: 15,
+
   },
   input: {
     backgroundColor: 'white',
@@ -231,7 +245,7 @@ const styles = StyleSheet.create({
   },
   imagePreview: {
     width: '100%',
-    height: 200,
+    height: 250,
     marginTop: 15,
     borderRadius: 8,
   },
@@ -244,7 +258,9 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 18,
+    textTransform: 'uppercase',
+    fontSize: 16,
+    letterSpacing: 2,
   },
 });
 
