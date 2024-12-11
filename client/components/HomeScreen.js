@@ -101,47 +101,46 @@ const HomeScreen = ({ route, navigation }) => {
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.restaurantScrollContainer}
         >
-   <View style={styles.restaurantGrid}>
-  {Array.isArray(restaurants) && restaurants.length > 0 ? (
-    restaurants.map((restaurant, index) => (
-      <Pressable
-        key={index}
-        style={[
-          styles.restaurantCard,
-          { backgroundColor: restaurant.color },
-        ]}
-        onPress={() => navigation.navigate('Restaurant', { restaurant })}
-      >
-        <View style={styles.restaurantImageContainer}>
-          <Image
-            source={{ uri: restaurant.image }} // Using the local path directly
-            style={styles.restaurantImage}
-            resizeMode="cover"
-          />
-          <View style={styles.restaurantImageOverlay} />
-        </View>
+          <View style={styles.restaurantGrid}>
+            {Array.isArray(restaurants) && restaurants.length > 0 ? (
+              restaurants.map((restaurant, index) => (
+                <Pressable
+                  key={index}
+                  style={[
+                    styles.restaurantCard,
+                    { backgroundColor: restaurant.color },
+                  ]}
+                  onPress={() => navigation.navigate('Restaurant', { restaurant })}
+                >
+                  <View style={styles.restaurantImageContainer}>
+                    <Image
+                      source={{ uri: restaurant.image }}
+                      style={styles.restaurantImage}
+                      resizeMode="cover"
+                    />
+                    <View style={styles.restaurantImageOverlay} />
+                  </View>
 
-        <View style={styles.restaurantDetailsOverlay}>
-          <Text style={styles.restaurantName}>{restaurant.name}</Text>
-          <Text style={styles.restaurantDescription}>
-            {restaurant.description}
-          </Text>
-          <Text style={styles.restaurantCuisine}>
-            {restaurant.cuisine} Cuisine
-          </Text>
-          <View style={styles.restaurantStats}>
-            <Text style={styles.availabilityText}>
-              {restaurant.tables} Tables Available
-            </Text>
+                  <View style={styles.restaurantDetailsOverlay}>
+                    <Text style={styles.restaurantName}>{restaurant.name}</Text>
+                    <Text style={styles.restaurantDescription}>
+                      {restaurant.description}
+                    </Text>
+                    <Text style={styles.restaurantCuisine}>
+                      {restaurant.cuisine} Cuisine
+                    </Text>
+                    <View style={styles.restaurantStats}>
+                      <Text style={styles.availabilityText}>
+                        {restaurant.tables} Tables Available
+                      </Text>
+                    </View>
+                  </View>
+                </Pressable>
+              ))
+            ) : (
+              <Text>No restaurants available.</Text>
+            )}
           </View>
-        </View>
-      </Pressable>
-    ))
-  ) : (
-    <Text>No restaurants available.</Text>
-  )}
-</View>
-
 
         </ScrollView>
       </View>

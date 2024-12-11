@@ -130,7 +130,6 @@ const handleLogin = async (email, password, setMessage) => {
           });
 
           await AsyncStorage.setItem('token', token);
-          console.log("Login successful. Token stored:", token);
 
           console.log("Login successful. User:", response.data);
           return true;
@@ -153,12 +152,68 @@ const handleLogin = async (email, password, setMessage) => {
   }
 };
 
+// ADD RESTAURANT
+const addRestaurant = async (name, tables, color, location, timeslot, cuisine, description, latitude, longitude, image) => {
+  try {
+    
+    const token = await AsyncStorage.getItem('token');
+
+    if(!token){
+      console.log("No token is available");
+      return
+    }
+
+    const restaurantData = {
+      name,
+      tables,
+      color,
+      location,
+      timeslot,
+      cuisine,
+      description,
+      coordinates: {
+        latitude,
+        longitude,
+      },
+      image, 
+    };
+
+    const response = await axios.post("https://acrid-street-production.up.railway.app/api/v2/restaurant", restaurantData, { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json',} });
+    if (response.status === 201) {
+      console.log('Restaurant added successfully:', response.data);
+    
+      Toast.show({
+        type: 'success', 
+        text1: `Success`,
+        text2: 'Restaurant added successfully!',
+        position: 'bottom',
+      });
+    } else {
+      console.error('Failed to add restaurant:', response.data);
+      Toast.show({
+        type: 'error', 
+        text1: `Error`,
+        text2: 'Failed to add restaurant.',
+        position: 'bottom',
+      });
+
+    }
+
+  } catch (error) {
+      console.error("Error adding restaurant:", {
+        message: error.message,
+        response: error.response ? error.response.data : "No response data",
+        status: error.response ? error.response.status : "No status",
+      });
+  }
+}
+
   
   
 
 
   return (
-    <AuthContext.Provider value={{ handleLogin }}>
+    <AuthContext.Provider value={{ handleLogin, addRestaurant }}>
       <NavigationContainer>
         <SafeAreaView backgroundColor= '#97CBDC'/>
         <Stack.Navigator initialRouteName="Splash">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { 
   View, 
   Text, 
@@ -9,10 +9,15 @@ import {
   StyleSheet, 
   SafeAreaView 
 } from 'react-native';
+
 import MapView, { Marker } from 'react-native-maps';
 import * as ImagePicker from 'expo-image-picker';
+import AuthContext from '../AuthContext';
 
-const RestaurantFormScreen = () => {
+const RestaurantFormScreen = ({navigation}) => {
+
+  const {addRestaurant} = useContext(AuthContext);
+
   const [restaurantData, setRestaurantData] = useState({
     name: "Eat'in",
     tables: 7,
@@ -46,8 +51,30 @@ const RestaurantFormScreen = () => {
   };
 
   const handleSubmit = () => {
-    console.log('Restaurant Data:', restaurantData);
+    const {
+      name,
+      tables,
+      color,
+      location,
+      timeslot,
+      cuisine,
+      description,
+      latitude,
+      longitude,
+      image,
+    } = restaurantData;
+  
+    // Call the addRestaurant function from AuthContext
+    addRestaurant(name, tables, color, location, timeslot, cuisine, description, latitude, longitude, image)
+      .then(() => {
+        console.log("Restaurant added successfully!");
+        navigation.navigate('Home');
+      })
+      .catch((error) => {
+        console.error("Error adding restaurant:", error);
+      });
   };
+  
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: '#d3ddda' }]}>
