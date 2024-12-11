@@ -1,9 +1,12 @@
 import express from "express";
+import { protect } from "../middlewares/authMiddleware.js";
 
 // CONTROLLERS
 import { LoginUser } from "../controllers/userLogin.js";
 import { createUser } from "../controllers/userRegister.js";
 import { getUsers } from "../controllers/getUsersController.js";
+
+import createRestaurant from "../controllers/createRestaurantController.js";
 
 // VALIDATOR
 import { body, validationResult } from 'express-validator';
@@ -43,6 +46,9 @@ router.post("/login",  LoginUser);
 router.get("/users", getUsers);
 
 // USER REGISTER AND LOGIN ENDS
+
+// POST RESTAURANT
+router.post("/restaurant", protect, createRestaurant);
 
 
 export default router;
