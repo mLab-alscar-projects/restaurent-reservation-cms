@@ -19,7 +19,6 @@ import RestaurantFormScreen from './components/RestaurantFormScreen';
 
 // DATA
 import { reservationsData } from './components/data';
-import { restaurantsData } from './components/data';
 
 // AXIOS
 import axios from 'axios';
@@ -169,6 +168,7 @@ const handleLogin = async (email, password, setMessage) => {
           });
 
           await AsyncStorage.setItem('token', token);
+          await AsyncStorage.setItem('userEmail', userEmail);
 
           console.log("Login successful. User:", response.data);
           return true;

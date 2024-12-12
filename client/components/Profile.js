@@ -54,7 +54,9 @@ const AdminProfileScreen = (
   ];
 
   const handleLogout = async () => { 
-    try { await AsyncStorage.removeItem('token'); 
+    try { 
+      await AsyncStorage.removeItem('token'); 
+      await AsyncStorage.removeItem('userEmail'); 
       navigation.navigate("Login"); 
       Toast.show({
         type: 'success', 

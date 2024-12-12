@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import AuthContext from '../AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ICONS
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -19,7 +20,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
-  const { restaurants } = useContext(AuthContext); 
+  const { restaurants } = useContext(AuthContext);
+  const count = restaurants.length; 
+  const [userEmail, setUserEmail] = useState('');
 
   // HANDLE PRESS
   const handleRestaurantPress = (restaurant) => {
@@ -27,8 +30,17 @@ const HomeScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    console.log('Restaurants data received:', restaurants);
-  }, [restaurants]);
+    const fetchUserDeails = async()=>
+      {
+        const user = await AsyncStorage.getItem('userEmail');
+        if (user) 
+          {
+          setUserEmail(user);
+          }
+      }
+
+    fetchUserDeails();
+  }, []);
 
 
   return (
@@ -42,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
             </Pressable>
           </View>
           <View>
-            <Text style={styles.greetingText}>Hello, Oscar</Text>
+            <Text style={styles.greetingText}>Hello, {userEmail}</Text>
             <Text style={styles.subGreetingText}>Productivity Dashboard</Text>
           </View>
         </View>
@@ -83,8 +95,8 @@ const HomeScreen = ({ navigation }) => {
               <Text style={styles.statLabel}>Tables reserved</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>26h</Text>
-              <Text style={styles.statLabel}>Worked</Text>
+              <Text style={styles.statValue}>{count || 0}</Text>
+              <Text style={styles.statLabel}>Restaurants</Text>
             </View>
           </View>
         </View>

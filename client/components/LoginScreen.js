@@ -13,6 +13,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const LoginScreen = ({ navigation }) => {
 
     const { handleLogin } = useContext(AuthContext);
+    const { fetchRestauirants } = useContext(AuthContext);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -27,12 +28,12 @@ const LoginScreen = ({ navigation }) => {
             const isLoggedIn = await handleLogin(email, password, setMessage);
             setLoading(false);
             if (isLoggedIn) {
+                fetchRestauirants();
                 navigation.replace('Home');
             }
         } catch (error) {
             setLoading(false); 
             console.error('Login failed:', error);
-            // Alert.alert('Login Error', 'An error occurred during login. Please try again.');
         }
     };
     // ENDS

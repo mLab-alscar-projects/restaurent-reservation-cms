@@ -69,7 +69,7 @@ const RestaurantFormScreen = ({navigation}) => {
     addRestaurant(name, tables, color, location, timeslot, cuisine, description, latitude, longitude, image)
       .then(() => {
         console.log("Restaurant added successfully!");
-        fetchRestauirants()
+        fetchRestauirants();
         navigation.navigate('Home');
       })
       .catch((error) => {
