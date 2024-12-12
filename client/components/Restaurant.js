@@ -1,127 +1,257 @@
-
-import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  FlatList, 
-  Pressable, 
-  Image, 
-  Dimensions, 
-  Alert,
+import React, { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Pressable,
+  Image,
+  Dimensions,
   Modal,
   TextInput,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  ActivityIndicator
 } from 'react-native';
+
+// STORAGE IMPORTS
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ICONS
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-// SCREEN DIMENSIONS
+// IMAGE PICKER
+import * as ImagePicker from 'expo-image-picker';
+
 const { width } = Dimensions.get('window');
 
-const RestaurantScreen = ({route, navigation}) => {
-
+const RestaurantScreen = ({route}) => {
+  // STATE VARIABLES FOR MANAGING SCREEN DATA
   const { restaurant } = route.params;
-  const [menuData, setMenuData] = useState(restaurant.menu);
-  const [modalVisible, setModalVisible] = useState(false);
-
-  // STATE FOR MODAL AND FORM
+  const [menuData, setMenuData] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [newMenuItem, setNewMenuItem] = useState({
     name: '',
     price: '',
-    image: require('../assets/burger.jpg') 
+    image: null,
   });
 
-  // Handle Edit Button Press
-  const handleEdit = (item) => {
-    Alert.alert('Edit Menu', `Edit ${item.name}`);
-  };
+  // FETCH MENU DATA ON COMPONENT MOUNT
+  useEffect(() => {
+    const fetchMenu = async () => {
+      // RESET LOADING AND ERROR STATES
+      setIsLoading(true);
+      setError(null);
 
-  // Handle Delete Button Press
-  const handleDelete = (item) => {
-    Alert.alert('Delete Menu', `Are you sure you want to delete ${item.name}?`, [
-      { text: 'Cancel', style: 'cancel' },
-      { 
-        text: 'Delete', 
-        style: 'destructive', 
-        onPress: () => {
-          setMenuData(menuData.filter(menuItem => menuItem.id !== item.id));
-        } 
-      },
-    ]);
-  };
+      try {
+        // RETRIEVE AUTH TOKEN
+        const token = await AsyncStorage.getItem('token');
+        
+        // FETCH MENU ITEMS
+        const response = await axios.get(
+          `https://acrid-street-production.up.railway.app/api/v2/restaurants/${restaurant._id}/menu`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        
+        // UPDATE MENU DATA
+        setMenuData(response.data.menuItems);
+      } catch (error) {
+        // SET ERROR STATE IF FETCHING FAILS
+        console.error("ERROR FETCHING MENU:", error);
+        setError('Failed to load menu items');
+      } finally {
+        // STOP LOADING INDICATOR
+        setIsLoading(false);
+      }
+    };
 
-  // Handle Add Menu Item
-  const handleAddMenuItem = () => {
-    // Validate inputs
-    if (!newMenuItem.name.trim() || !newMenuItem.price.trim()) {
-      Alert.alert('Error', 'Please fill in all fields');
+    fetchMenu();
+  }, [restaurant._id]);
+
+  // IMAGE PICKER FUNCTION
+  const pickImage = async () => {
+    // REQUEST MEDIA LIBRARY PERMISSIONS
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      console.log('CAMERA ROLL PERMISSIONS DENIED');
       return;
     }
 
-    // Create new menu item with a unique ID
-    const newItem = {
-      id: (menuData.length + 1).toString(),
-      ...newMenuItem
-    };
+    // LAUNCH IMAGE PICKER
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaType,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-    // Add to menu data
-    setMenuData([...menuData, newItem]);
-
-    // Reset form and close modal
-    setNewMenuItem({ name: '', price: '', image: require('../assets/burger.jpg') });
-    setIsModalVisible(false);
+    // UPDATE STATE WITH SELECTED IMAGE
+    if (!result.canceled) {
+      setNewMenuItem({ 
+        ...newMenuItem, 
+        image: result.assets[0].uri 
+      });
+    }
   };
+
+  // ADD MENU ITEM HANDLER
+  const handleAddMenuItem = async () => {
+    if (!newMenuItem.name.trim() || !newMenuItem.price.trim()) {
+      console.log('MISSING MENU ITEM DETAILS');
+      return;
+    }
+  
+    try {
+      // Retrieve the token
+      const token = await AsyncStorage.getItem('token');
+  
+      // Prepare the new menu item
+      const newItem = {
+        id: Date.now().toString(), // Generate a unique ID for the new item
+        name: newMenuItem.name,
+        price: newMenuItem.price,
+        image: newMenuItem.image, // Make sure `image` is a valid URI
+      };
+  
+      // Prepare payload
+      const payload = {
+        menuItems: [...menuData, newItem], // Add the new item to the existing menuItems array
+      };
+  
+      // Send POST request to update the menu
+      const response = await axios.post(
+        `https://acrid-street-production.up.railway.app/api/v2/restaurants/${restaurant._id}/menu`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+  
+      // Update the menu in local state
+      setMenuData(response.data.menuItems);
+      
+      // Reset the new menu item and close the modal
+      setNewMenuItem({ name: '', price: '', image: null });
+      setIsModalVisible(false);
+  
+      console.log('MENU ITEM ADDED SUCCESSFULLY');
+    } catch (error) {
+      console.error('ERROR ADDING MENU ITEM:', error);
+    }
+  };
+  
+  
+
+  // DELETE MENU ITEM HANDLER
+  const handleDelete = async (item) => {
+    try {
+      // RETRIEVE AUTH TOKEN
+      const token = await AsyncStorage.getItem('token');
+      
+      // SEND DELETE REQUEST
+      await axios.delete(
+        `https://acrid-street-production.up.railway.app/api/v2/restaurants/${restaurant._id}/menu/${item.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      // REMOVE ITEM FROM LOCAL STATE
+      setMenuData(menuData.filter(menuItem => menuItem.id !== item.id));
+    } catch (error) {
+      console.error("ERROR DELETING MENU ITEM:", error);
+    }
+  };
+
+  // RENDER LOADING INDICATOR
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator 
+          size="large" 
+          color={restaurant.color || '#000'}
+        />
+      </View>
+    );
+  }
+
+  // RENDER ERROR STATE
+  // if (error) {
+  //   return (
+  //     <View style={styles.errorContainer}>
+  //       <Text style={styles.errorText}>{error}</Text>
+  //       <Pressable 
+  //         style={[styles.retryButton, { backgroundColor: restaurant.color }]}
+  //         onPress={() => {}} // ADD RETRY LOGIC IF NEEDED
+  //       >
+  //         <Text style={styles.retryButtonText}>Retry</Text>
+  //       </Pressable>
+  //     </View>
+  //   );
+  // }
 
   return (
     <View style={styles.container}>
-      {/* HEADER */}
-      <View style={[styles.header, {backgroundColor: restaurant.color}]}>
+      {/* RESTAURANT HEADER */}
+      <View style={[styles.header, { backgroundColor: restaurant.color }]}>
         <Text style={styles.headerTitle}>{restaurant.name}</Text>
       </View>
 
-      <View style={[{ justifyContent: 'center', alignItems: 'center', height: 30,}]}>
-        <View style={[{backgroundColor: '#000', height: 5, width: '150', alignSelf: 'center',  borderRadius: 6}]}>
-      </View>
-    
-      </View>
-
-      {/* MENU LIST */}
-      <FlatList
-        data={menuData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.menuCard}>
-            <Image source={item.image} style={styles.menuImage} />
-            <View style={styles.menuDetails}>
-              <Text style={styles.menuName}>{item.name}</Text>
-              <Text style={styles.menuPrice}>{item.price}</Text>
+      {/* MENU ITEMS LIST OR EMPTY STATE */}
+      {menuData.length === 0 ? (
+        <View style={styles.emptyMenuContainer}>
+          <Text style={styles.emptyMenuText}>NO MENU ITEMS AVAILABLE</Text>
+          <Text style={styles.emptyMenuSubtext}>ADD YOUR FIRST MENU ITEM!</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={menuData}
+          keyExtractor={(item) => `${restaurant._id}-${item.id}`}
+          renderItem={({ item }) => (
+            <View style={styles.menuCard}>
+              <Image 
+                source={{ uri: item.image }} 
+                style={styles.menuImage} 
+                // defaultSource={require('../assets/burger.jpg')}
+              />
+              <View style={styles.menuDetails}>
+                <Text style={styles.menuName}>{item.name}</Text>
+                <Text style={styles.menuPrice}>{item.price}</Text>
+              </View>
+              <View style={styles.actionButtons}>
+                <Pressable 
+                  onPress={() => handleDelete(item)} 
+                  style={styles.deleteButton}
+                >
+                  <MaterialIcons name="delete" size={20} color="#fff" />
+                </Pressable>
+              </View>
             </View>
-            <View style={styles.actionButtons}>
-              <Pressable onPress={() => handleEdit(item)} style={styles.editButton}>
-                <MaterialIcons name="edit" size={20} color="#fff" />
-              </Pressable>
-              <Pressable onPress={() => handleDelete(item)} style={styles.deleteButton}>
-                <MaterialIcons name="delete" size={20} color="#fff" />
-              </Pressable>
-            </View>
-          </View>
-        )}
-        contentContainerStyle={styles.menuList}
-        
-      />
+          )}
+          contentContainerStyle={styles.menuList}
+        />
+      )}
 
-      {/* ADD MORE MENU BUTTON */}
+      {/* ADD MENU BUTTON */}
       <View style={styles.addButtonWrapper}>
-        <Pressable 
-          style={[styles.addButton, {backgroundColor: restaurant.color}]} 
+        <Pressable
+          style={[styles.addButton, { backgroundColor: restaurant.color }]}
           onPress={() => setIsModalVisible(true)}
         >
-          <MaterialIcons name="add" size={20} color={'#fff'} />
-          <Text style={styles.addButtonText}>Add Menu</Text>
+          <MaterialIcons name="add" size={20} color="#fff" />
+          <Text style={styles.addButtonText}>ADD MENU</Text>
         </Pressable>
       </View>
 
@@ -132,41 +262,56 @@ const RestaurantScreen = ({route, navigation}) => {
         visible={isModalVisible}
         onRequestClose={() => setIsModalVisible(false)}
       >
-        <KeyboardAvoidingView 
+        <KeyboardAvoidingView
           behavior={Platform.OS === "ios" ? "padding" : "height"}
           style={styles.modalOverlay}
         >
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>Add New Menu Item</Text>
-            
+            <Text style={styles.modalTitle}>ADD NEW MENU ITEM</Text>
             <TextInput
               style={styles.input}
-              placeholder="Item Name"
+              placeholder="ITEM NAME"
               value={newMenuItem.name}
-              onChangeText={(text) => setNewMenuItem({...newMenuItem, name: text})}
+              onChangeText={(text) => setNewMenuItem({ ...newMenuItem, name: text })}
             />
-            
             <TextInput
               style={styles.input}
-              placeholder="Price (e.g. R99.99)"
+              placeholder="PRICE (E.G. R99.99)"
               value={newMenuItem.price}
-              onChangeText={(text) => setNewMenuItem({...newMenuItem, price: text})}
+              onChangeText={(text) => setNewMenuItem({ ...newMenuItem, price: text })}
               keyboardType="numeric"
             />
             
+            {/* IMAGE PICKER */}
+            <Pressable 
+              style={styles.imagePickerButton} 
+              onPress={pickImage}
+            >
+              {newMenuItem.image ? (
+                <Image 
+                  source={{ uri: newMenuItem.image }} 
+                  style={styles.pickedImage} 
+                />
+              ) : (
+                <Text style={styles.imagePickerText}>PICK AN IMAGE</Text>
+              )}
+            </Pressable>
+
             <View style={styles.modalButtonContainer}>
-              <Pressable 
-                style={[styles.modalButton, styles.cancelButton]} 
-                onPress={() => setIsModalVisible(false)}
+              <Pressable
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => {
+                  setIsModalVisible(false);
+                  setNewMenuItem({ name: '', price: '', image: null });
+                }}
               >
-                <Text style={styles.modalButtonText}>Cancel</Text>
+                <Text style={styles.modalButtonText}>CANCEL</Text>
               </Pressable>
-              
-              <Pressable 
-                style={[styles.modalButton, styles.addButton]} 
+              <Pressable
+                style={[styles.modalButton, styles.addButton]}
                 onPress={handleAddMenuItem}
               >
-                <Text style={styles.modalButtonText}>Add Item</Text>
+                <Text style={styles.modalButtonText}>ADD ITEM</Text>
               </Pressable>
             </View>
           </View>
@@ -177,177 +322,169 @@ const RestaurantScreen = ({route, navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  // LOADING CONTAINER STYLES
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  
+  // ERROR CONTAINER STYLES
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 18,
+    color: 'red',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  retryButton: {
+    padding: 10,
+    borderRadius: 5,
+  },
+  retryButtonText: {
+    color: 'white',
+    textAlign: 'center',
+  },
+
+  // EXISTING STYLES REMAIN THE SAME AS IN PREVIOUS VERSION
   container: {
     flex: 1,
-    backgroundColor: '#f4f7fa',
+    backgroundColor: '#f5f5f5',
   },
-
-  // HEADER STYLES
   header: {
-    backgroundColor: '#2ecc71',
-    padding: 20,
+    paddingVertical: 15,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-
   headerTitle: {
+    color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#fff',
   },
-
-  // MENU LIST STYLES
-  menuList: {
+  emptyMenuContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
-
+  emptyMenuText: {
+    fontSize: 18,
+    color: '#666',
+    marginBottom: 10,
+  },
+  emptyMenuSubtext: {
+    fontSize: 14,
+    color: '#999',
+  },
+  menuList: {
+    padding: 10,
+  },
   menuCard: {
     flexDirection: 'row',
-    backgroundColor: '#ffffff',
+    backgroundColor: 'white',
+    marginBottom: 10,
     borderRadius: 10,
     overflow: 'hidden',
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 5,
-    alignItems: 'center',
+    elevation: 2,
   },
-
   menuImage: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
+    resizeMode: 'cover',
   },
-
   menuDetails: {
     flex: 1,
     padding: 10,
     justifyContent: 'center',
   },
-
   menuName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2c3e50',
   },
-
   menuPrice: {
     fontSize: 14,
-    color: '#7f8c8d',
-    marginTop: 5,
+    color: '#666',
   },
-
   actionButtons: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
-    gap: 5,
-  },
-
-  editButton: 
-  {
-    backgroundColor: '#3498db',
-    padding: 5,
-    borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
   },
-
-  deleteButton: 
-  {
-    backgroundColor: '#e74c3c',
-    padding: 5,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
+  deleteButton: {
+    backgroundColor: 'red',
+    padding: 10,
   },
-
-  // ADD BUTTON STYLES
-  addButtonWrapper: 
-  {
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
+  addButtonWrapper: {
+    padding: 10,
+  },
+  addButton: {
     flexDirection: 'row',
-    // backgroundColor: '#d3ddda',
-  },
-
-  addButton: 
-  {
-    paddingVertical: 15,
-    alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
     borderRadius: 10,
-    gap: 5,
-    width: '100%',
-    backgroundColor: '#2ecc71',
   },
-
-  addButtonText: 
-  {
-    color: '#fff',
-    fontSize: 16,
+  addButtonText: {
+    color: 'white',
+    marginLeft: 5,
     fontWeight: 'bold',
-    textTransform: 'uppercase',
   },
-
-   // MODAL STYLES
-   modalOverlay: {
+  modalOverlay: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
-
   modalContainer: {
-    width: '90%',
     backgroundColor: 'white',
+    margin: 20,
     borderRadius: 10,
     padding: 20,
-    alignItems: 'center',
   },
-
   modalTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#2c3e50',
+    marginBottom: 15,
+    textAlign: 'center',
   },
-
   input: {
-    width: '100%',
     borderWidth: 1,
     borderColor: '#ddd',
-    borderRadius: 5,
     padding: 10,
-    marginBottom: 15,
+    marginBottom: 10,
+    borderRadius: 5,
   },
-
   modalButtonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
+    marginTop: 10,
   },
-
   modalButton: {
     flex: 1,
-    padding: 15,
+    padding: 10,
     borderRadius: 5,
     alignItems: 'center',
     marginHorizontal: 5,
   },
-
   cancelButton: {
-    backgroundColor: '#e74c3c',
+    backgroundColor: '#ddd',
   },
-
-
-  modalButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+  imagePickerButton: {
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  pickedImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 5,
+  },
+  imagePickerText: {
+    color: '#666',
   },
 });
 

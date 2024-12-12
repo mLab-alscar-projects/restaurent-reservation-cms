@@ -77,14 +77,18 @@ const HomeScreen = ({ navigation }) => {
 
           {/* MOCK CHART VISUALIZATION */}
           <View style={styles.chartContainer}>
-            {[65, 59, 80, 81, 56].map((value, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.chartBar,
-                  { height: value, backgroundColor: `rgba(52, 152, 219, ${value / 100})` }
-                ]}
-              />
+            {[65, 59, 80, 81, 56, 20, 90].map((value, index) => (
+              <View key={index} style={styles.barContainer}>
+                <View
+                  style={[
+                    styles.chartBar,
+                    { height: value, backgroundColor: `rgba(52, 152, 219, ${value / 100})` }
+                  ]}
+                />
+                <Text style={styles.barLabel}>
+                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]}
+                </Text>
+              </View>
             ))}
           </View>
 
@@ -293,6 +297,15 @@ const styles = StyleSheet.create({
     width: 30,
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
+  },
+
+  barContainer: {
+    alignItems: 'center',
+  },
+  barLabel: {
+    marginTop: 5,
+    fontSize: 12,
+    color: '#333',
   },
 
   statsContainer:

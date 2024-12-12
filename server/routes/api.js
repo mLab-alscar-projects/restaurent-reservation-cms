@@ -61,7 +61,7 @@ router.get("/fetchRestaurants", protect, getAllRestaurants);
 router.post('/restaurants/:id/menu', protect, addOrUpdateMenu);
 
 // GET MENU
-router.get("/restaurants/:restaurantId/menu", protect, getRestaurantMenu)
+router.get("/restaurants/:restaurantId/menu", protect, getRestaurantMenu);
 
 
 export default router;

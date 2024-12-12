@@ -71,7 +71,6 @@ useEffect(() => {
     try {
       
         const token = await AsyncStorage.getItem('token');
-        console.log('The token is: ', token);
 
         if (!token) {
           console.error("No token found, cannot fetch restaurants.");
@@ -91,7 +90,6 @@ useEffect(() => {
 
         setRestaurantsData(response.data.restaurants);
 
-        console.log("Data fetched successfully:", JSON.stringify(response.data, null, 2));
       } catch (error) {
 
         console.error("Error fetching data:", {
@@ -109,12 +107,12 @@ useEffect(() => {
 
 }, []);
 
+// FETCH FUNCTION
 const fetchRestauirants = async()=>{
 
   try {
     
       const token = await AsyncStorage.getItem('token');
-      console.log('The token is: ', token);
 
       if (!token) {
         console.error("No token found, cannot fetch restaurants.");
@@ -134,7 +132,6 @@ const fetchRestauirants = async()=>{
 
       setRestaurantsData(response.data.restaurants);
 
-      console.log("Data fetched successfully:", JSON.stringify(response.data, null, 2));
     } catch (error) {
 
       console.error("Error fetching data:", {
