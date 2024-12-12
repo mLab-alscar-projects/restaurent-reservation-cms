@@ -13,6 +13,7 @@ import {
   Platform,
   ActivityIndicator
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 // STORAGE IMPORTS
 import axios from 'axios';
@@ -102,6 +103,7 @@ const RestaurantScreen = ({route}) => {
   };
 
   // ADD MENU ITEM HANDLER
+  
   const handleAddMenuItem = async () => {
     if (!newMenuItem.name.trim() || !newMenuItem.price.trim()) {
       console.log('MISSING MENU ITEM DETAILS');
@@ -109,23 +111,32 @@ const RestaurantScreen = ({route}) => {
     }
   
     try {
-      // Retrieve the token
       const token = await AsyncStorage.getItem('token');
   
-      // Prepare the new menu item
+      // Ensure price follows the required format, e.g., "R99.99"
+      const price = newMenuItem.price.trim();
+      const priceRegex = /^R\d+(\.\d{2})?$/;
+      if (!priceRegex.test(price)) {
+        console.log('Price format is invalid. It should start with "R" followed by numbers, e.g., "R99.99".');
+        return;
+      }
+  
+      // Generate a unique ID using expo-random
+      const id = Date.now().toString();
+  
+      // Create the new item object
       const newItem = {
-        id: Date.now().toString(), // Generate a unique ID for the new item
-        name: newMenuItem.name,
-        price: newMenuItem.price,
-        image: newMenuItem.image, // Make sure `image` is a valid URI
+        id: id, 
+        name: newMenuItem.name.trim(),
+        price: price,
+        image: newMenuItem.image || null,
       };
   
-      // Prepare payload
+  
       const payload = {
-        menuItems: [...menuData, newItem], // Add the new item to the existing menuItems array
+        menuItems: [newItem],  
       };
   
-      // Send POST request to update the menu
       const response = await axios.post(
         `https://acrid-street-production.up.railway.app/api/v2/restaurants/${restaurant._id}/menu`,
         payload,
@@ -137,19 +148,22 @@ const RestaurantScreen = ({route}) => {
         }
       );
   
-      // Update the menu in local state
       setMenuData(response.data.menuItems);
-      
-      // Reset the new menu item and close the modal
+  
       setNewMenuItem({ name: '', price: '', image: null });
       setIsModalVisible(false);
   
       console.log('MENU ITEM ADDED SUCCESSFULLY');
+      Toast.show({
+        type: 'success', 
+        text1: `Success`,
+        text2: 'You have successfully added the Menu',
+        position: 'bottom',
+      });
     } catch (error) {
-      console.error('ERROR ADDING MENU ITEM:', error);
+      console.error('ERROR ADDING MENU ITEM:', error.response?.data || error.message);
     }
   };
-  
   
 
   // DELETE MENU ITEM HANDLER
@@ -218,13 +232,12 @@ const RestaurantScreen = ({route}) => {
       ) : (
         <FlatList
           data={menuData}
-          keyExtractor={(item) => `${restaurant._id}-${item.id}`}
+          keyExtractor={(item) => item.id + 1}
           renderItem={({ item }) => (
             <View style={styles.menuCard}>
               <Image 
                 source={{ uri: item.image }} 
                 style={styles.menuImage} 
-                // defaultSource={require('../assets/burger.jpg')}
               />
               <View style={styles.menuDetails}>
                 <Text style={styles.menuName}>{item.name}</Text>
