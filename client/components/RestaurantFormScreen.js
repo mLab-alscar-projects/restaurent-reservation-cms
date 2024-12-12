@@ -17,15 +17,16 @@ import AuthContext from '../AuthContext';
 const RestaurantFormScreen = ({navigation}) => {
 
   const {addRestaurant} = useContext(AuthContext);
+  const {fetchRestauirants} = useContext(AuthContext);
 
   const [restaurantData, setRestaurantData] = useState({
-    name: "Eat'in",
+    name: "",
     tables: 7,
-    color: '#3498db',
-    description: "Modern Cuisine",
-    location: "Soweto",
-    timeslot: "08:00 - 17:00",
-    cuisine: "Contemporary",
+    color: '',
+    description: "",
+    location: "",
+    timeslot: "",
+    cuisine: "",
     image: null,
     latitude: -26.2041,  
     longitude: 27.9924
@@ -68,6 +69,7 @@ const RestaurantFormScreen = ({navigation}) => {
     addRestaurant(name, tables, color, location, timeslot, cuisine, description, latitude, longitude, image)
       .then(() => {
         console.log("Restaurant added successfully!");
+        fetchRestauirants()
         navigation.navigate('Home');
       })
       .catch((error) => {
@@ -107,7 +109,7 @@ const RestaurantFormScreen = ({navigation}) => {
           <TextInput
             style={styles.input}
             value={restaurantData.color}
-            onChangeText={(text) => setRestaurantData(prev => ({...prev, description: text}))}
+            onChangeText={(text) => setRestaurantData(prev => ({...prev, color: text}))}
             placeholder="Restaurant color"
           />
         </View>
@@ -116,7 +118,7 @@ const RestaurantFormScreen = ({navigation}) => {
           <Text style={styles.label}>Number of Tables</Text>
           <TextInput
             style={styles.input}
-            value={restaurantData.tables.toString()}
+            value={restaurantData.tables}
             onChangeText={(text) => setRestaurantData(prev => ({...prev, tables: parseInt(text)}))}
             keyboardType="numeric"
             placeholder="Number of tables"

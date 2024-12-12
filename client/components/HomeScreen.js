@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,6 +9,8 @@ import {
   ScrollView,
 } from 'react-native';
 
+import AuthContext from '../AuthContext';
+
 // ICONS
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -16,8 +18,8 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 // SCREEN DIMENSIONS
 const { width, height } = Dimensions.get('window');
 
-const HomeScreen = ({ route, navigation }) => {
-  const { restaurants } = route.params;
+const HomeScreen = ({ navigation }) => {
+  const { restaurants } = useContext(AuthContext); 
 
   // HANDLE PRESS
   const handleRestaurantPress = (restaurant) => {
@@ -138,7 +140,9 @@ const HomeScreen = ({ route, navigation }) => {
                 </Pressable>
               ))
             ) : (
-              <Text>No restaurants available.</Text>
+              <View style={styles.emptyTextCont}>
+                <Text style={styles.emptyText}>No restaurants available.</Text>
+              </View>
             )}
           </View>
 
@@ -403,6 +407,20 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 14,
   },
+
+  emptyTextCont:
+  {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 250
+  },
+
+  emptyText:
+  {
+    fontSize: 24,
+    letterSpacing: 2
+  }
 });
 
 export default HomeScreen;

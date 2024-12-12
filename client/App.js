@@ -87,6 +87,7 @@ useEffect(() => {
             },
           }
 
+
         );
 
         setRestaurantsData(response.data.restaurants);
@@ -109,6 +110,45 @@ useEffect(() => {
 
 }, []);
 
+const fetchRestauirants = async()=>{
+
+  try {
+    
+      const token = await AsyncStorage.getItem('token');
+      console.log('The token is: ', token);
+
+      if (!token) {
+        console.error("No token found, cannot fetch restaurants.");
+        return;
+      }
+
+      const response = await axios.
+      get('https://acrid-street-production.up.railway.app/api/v2/fetchRestaurants',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+        
+
+      );
+
+      setRestaurantsData(response.data.restaurants);
+
+      console.log("Data fetched successfully:", JSON.stringify(response.data, null, 2));
+    } catch (error) {
+
+      console.error("Error fetching data:", {
+
+        message: error.message,
+        response: error.response ? error.response.data : "No response data",
+        status: error.response ? error.response.status : "No status",
+        request: error.request,
+
+      });
+  }
+}
+
 // HANDLE LOGIN
 const handleLogin = async (email, password, setMessage) => {
   try {
@@ -121,7 +161,6 @@ const handleLogin = async (email, password, setMessage) => {
       const { token, email: userEmail } = response.data;
 
       if (token) {
-          setMessage(`Welcome back, ${userEmail}!`);
           Toast.show({
             type: 'success', 
             text1: `Welcome back, ${userEmail}!`,
@@ -208,12 +247,10 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
   }
 }
 
-  
-  
 
 
   return (
-    <AuthContext.Provider value={{ handleLogin, addRestaurant }}>
+    <AuthContext.Provider value={{ handleLogin, addRestaurant, fetchRestauirants, restaurants: restaurantsDatas }}>
       <NavigationContainer>
         <SafeAreaView backgroundColor= '#97CBDC'/>
         <Stack.Navigator initialRouteName="Splash">

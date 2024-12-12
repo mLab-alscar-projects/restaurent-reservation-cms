@@ -18,6 +18,9 @@ import {
   BarChart2
 } from 'lucide-react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
+
 const { width } = Dimensions.get('window');
 
 const AdminProfileScreen = (
@@ -50,6 +53,20 @@ const AdminProfileScreen = (
     }
   ];
 
+  const handleLogout = async () => { 
+    try { await AsyncStorage.removeItem('token'); 
+      navigation.navigate("Login"); 
+      Toast.show({
+        type: 'success', 
+        text1: `Success`,
+        text2: 'Successfully logged out',
+        position: 'bottom',
+      });
+    } catch (error) 
+    { console.error("Error removing token", error); 
+
+    } };
+
   const quickActions = [
    
     { 
@@ -63,9 +80,10 @@ const AdminProfileScreen = (
       title: "Logout", 
       subtitle: "Exit admin panel",
       destructive: true,
-      onPress: () => navigation.replace('Login') 
+      onPress: handleLogout
     }
   ];
+
 
   return (
     <View style={styles.container}>
