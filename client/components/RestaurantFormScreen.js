@@ -7,7 +7,8 @@ import {
   ScrollView, 
   Image, 
   StyleSheet, 
-  SafeAreaView 
+  SafeAreaView, 
+  ActivityIndicator
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
@@ -19,6 +20,7 @@ const RestaurantFormScreen = ({navigation}) => {
   const {addRestaurant} = useContext(AuthContext);
   const {fetchRestauirants} = useContext(AuthContext);
 
+  const [loading, setLoading] = useState(false);
   const [restaurantData, setRestaurantData] = useState({
     name: "",
     tables: 7,
@@ -65,7 +67,7 @@ const RestaurantFormScreen = ({navigation}) => {
       image,
     } = restaurantData;
   
-    // Call the addRestaurant function from AuthContext
+    setLoading(true);
     addRestaurant(name, tables, color, location, timeslot, cuisine, description, latitude, longitude, image)
       .then(() => {
         console.log("Restaurant added successfully!");
@@ -73,6 +75,7 @@ const RestaurantFormScreen = ({navigation}) => {
         navigation.navigate('Home');
       })
       .catch((error) => {
+        setLoading(false);
         console.error("Error adding restaurant:", error);
       });
   };
@@ -213,10 +216,15 @@ const RestaurantFormScreen = ({navigation}) => {
         </View>
 
         <TouchableOpacity 
-          style={[styles.submitButton, { backgroundColor: restaurantData.color }]}
+          style={[styles.submitButton]}
           onPress={handleSubmit}
         >
+          {!loading ? 
           <Text style={styles.submitButtonText}>Add Restaurant</Text>
+          :
+
+          <ActivityIndicator size="small" color="#0000ff"/>
+        }
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -263,14 +271,17 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   imagePicker: {
-    backgroundColor: 'white',
+    backgroundColor: '#2ecc71',
     padding: 15,
-    borderRadius: 8,
     alignItems: 'center',
   },
   imagePickerText: {
-    color: '#3498db',
+    color: '#f9f9f9',
+    textTransform: 'uppercase',
     fontWeight: 'bold',
+    width: '100%',
+    textAlign: 'center',
+    letterSpacing: 2,
   },
   imagePreview: {
     width: '100%',
@@ -283,6 +294,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 20,
+    backgroundColor: '#3498db',
   },
   submitButtonText: {
     color: 'white',

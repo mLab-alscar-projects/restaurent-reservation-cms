@@ -24,11 +24,6 @@ const HomeScreen = ({ navigation }) => {
   const count = restaurants.length; 
   const [userEmail, setUserEmail] = useState('');
 
-  // HANDLE PRESS
-  const handleRestaurantPress = (restaurant) => {
-    navigation.navigate('Restaurant', { restaurant });
-  };
-
   // GET THE USERNAME
   useEffect(() => {
     const fetchUserDeails = async()=>
@@ -109,7 +104,7 @@ const HomeScreen = ({ navigation }) => {
       {/* SCROLLABLE RESTAURANT BOOKING SECTION */}
       <View style={styles.bookingSection}>
 
-        <Pressable style={styles.addRestaurantContainer} onPress={handleRestaurantPress}>
+        <Pressable style={styles.addRestaurantContainer} onPress={() => navigation.navigate('RestaurantFormScreen')}>
           <MaterialIcons name='add' color={'#333'} style={styles.addRestaurantText}/>
           <Text style={styles.addRestaurantText}>Add a Restaurant</Text>
         </Pressable>
@@ -199,16 +194,22 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 10,
-    backgroundColor: '#3498db',
+    backgroundColor: '#fff',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 5,
   },
 
   profileInitials:
   {
-    color: 'white',
-    fontSize: 18,
+    color: '#444',
+    textTransform: 'uppercase',
+    fontSize: 28,
     fontWeight: 'bold',
   },
 
