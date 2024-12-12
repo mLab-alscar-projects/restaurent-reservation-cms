@@ -8,6 +8,7 @@ import { getUsers } from "../controllers/getUsersController.js";
 
 import createRestaurant from "../controllers/createRestaurantController.js";
 import getAllRestaurants from "../controllers/getAllRestaurantController.js";
+import { addOrUpdateMenu } from "../controllers/menuController.js";
 
 // VALIDATOR
 import { body, validationResult } from 'express-validator';
@@ -53,6 +54,9 @@ router.post("/restaurant", protect, createRestaurant);
 
 // GET RESTAURANTS
 router.get("/fetchRestaurants", protect, getAllRestaurants);
+
+// ADD MENU
+router.post('/restaurants/:id/menu', protect, addOrUpdateMenu);
 
 
 export default router;

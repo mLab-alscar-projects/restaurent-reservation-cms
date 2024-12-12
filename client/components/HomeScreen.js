@@ -29,6 +29,7 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate('Restaurant', { restaurant });
   };
 
+  // GET THE USERNAME
   useEffect(() => {
     const fetchUserDeails = async()=>
       {
@@ -42,6 +43,9 @@ const HomeScreen = ({ navigation }) => {
     fetchUserDeails();
   }, []);
 
+  // GETTING THE INITIAL OF THE USER
+  const firstLetter = userEmail ? userEmail.charAt(0).toUpperCase() : '';
+
 
   return (
     <View style={styles.parent}>
@@ -50,7 +54,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.profileContainer}>
           <View style={styles.profileImagePlaceholder}>
             <Pressable onPress={() => navigation.navigate('Profile')}>
-              <Text style={styles.profileInitials}>OP</Text>
+              <Text style={styles.profileInitials}>{firstLetter}</Text>
             </Pressable>
           </View>
           <View>
@@ -105,7 +109,7 @@ const HomeScreen = ({ navigation }) => {
       {/* SCROLLABLE RESTAURANT BOOKING SECTION */}
       <View style={styles.bookingSection}>
 
-        <Pressable style={styles.addRestaurantContainer} onPress={() => navigation.navigate('RestaurantFormScreen')}>
+        <Pressable style={styles.addRestaurantContainer} onPress={handleRestaurantPress}>
           <MaterialIcons name='add' color={'#333'} style={styles.addRestaurantText}/>
           <Text style={styles.addRestaurantText}>Add a Restaurant</Text>
         </Pressable>
@@ -125,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
                     { backgroundColor: restaurant.color },
                   ]}
                   onPress={() => navigation.navigate('Restaurant', { restaurant })}
-                >
+                  >
                   <View style={styles.restaurantImageContainer}>
                     <Image
                       source={{ uri: restaurant.image }}
@@ -148,6 +152,8 @@ const HomeScreen = ({ navigation }) => {
                         {restaurant.tables} Tables Available
                       </Text>
                     </View>
+
+                    <View style={[styles.bottomColor, {backgroundColor: restaurant.color}]}/>
                   </View>
                 </Pressable>
               ))
@@ -190,13 +196,13 @@ const styles = StyleSheet.create({
 
   profileImagePlaceholder:
   {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 40,
+    height: 40,
+    borderRadius: 10,
     backgroundColor: '#3498db',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: 10,
   },
 
   profileInitials:
@@ -382,6 +388,7 @@ const styles = StyleSheet.create({
   restaurantDetailsOverlay: {
     padding: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    position :'relative'
   },
   restaurantName: {
     fontSize: 16,
@@ -432,6 +439,16 @@ const styles = StyleSheet.create({
   {
     fontSize: 24,
     letterSpacing: 2
+  },
+
+  bottomColor:
+  {
+     position :'absolute',
+     bottom: 0,
+     width: 300,
+     height: 6,
+     borderBottomRightRadius: 12,
+     borderBottomLeftRadius: 12,
   }
 });
 
