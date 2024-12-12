@@ -25,6 +25,7 @@ const RestaurantScreen = ({route, navigation}) => {
 
   const { restaurant } = route.params;
   const [menuData, setMenuData] = useState(restaurant.menu);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // STATE FOR MODAL AND FORM
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -81,7 +82,10 @@ const RestaurantScreen = ({route, navigation}) => {
       <View style={[styles.header, {backgroundColor: restaurant.color}]}>
         <Text style={styles.headerTitle}>{restaurant.name}</Text>
       </View>
-      <View style={[{backgroundColor: '#000', height: 5, width: '150', alignSelf: 'center', marginTop: 20, borderRadius: 6}]}>
+
+      <View style={[{ justifyContent: 'center', alignItems: 'center', height: 30,}]}>
+        <View style={[{backgroundColor: '#000', height: 5, width: '150', alignSelf: 'center',  borderRadius: 6}]}>
+      </View>
     
       </View>
 
@@ -267,11 +271,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    // backgroundColor: '#d3ddda',
   },
 
   addButton: 
   {
-    backgroundColor: '#2ecc71',
     paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
@@ -279,6 +283,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 5,
     width: '100%',
+    backgroundColor: '#2ecc71',
   },
 
   addButtonText: 
