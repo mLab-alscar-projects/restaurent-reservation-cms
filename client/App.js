@@ -61,6 +61,8 @@ export default function App() {
 
 
 const [restaurantsDatas, setRestaurantsData] = useState([]);
+const [loading, setLoading] = useState(false);
+
 
 const reservations = reservationsData;
 
@@ -69,7 +71,8 @@ useEffect(() => {
   const fetchRestauirants = async()=>{
 
     try {
-      
+
+        setLoading(true);
         const token = await AsyncStorage.getItem('token');
 
         if (!token) {
@@ -93,13 +96,14 @@ useEffect(() => {
       } catch (error) {
 
         console.error("Error fetching data:", {
-
           message: error.message,
           response: error.response ? error.response.data : "No response data",
           status: error.response ? error.response.status : "No status",
           request: error.request,
 
         });
+    } finally {
+      setLoading(false); 
     }
   }
 
@@ -111,7 +115,8 @@ useEffect(() => {
 const fetchRestauirants = async()=>{
 
   try {
-    
+
+      setLoading(true);
       const token = await AsyncStorage.getItem('token');
 
       if (!token) {
@@ -142,6 +147,8 @@ const fetchRestauirants = async()=>{
         request: error.request,
 
       });
+  } finally {
+    setLoading(false); 
   }
 }
 
@@ -185,7 +192,7 @@ const handleLogin = async (email, password, setMessage) => {
           error?.response?.data?.error || "An error occurred. Please try again."
       );
       return false;
-  }
+  } 
 };
 
 // ADD RESTAURANT
@@ -247,7 +254,7 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
 
 
   return (
-    <AuthContext.Provider value={{ handleLogin, addRestaurant, fetchRestauirants, restaurants: restaurantsDatas }}>
+    <AuthContext.Provider value={{ handleLogin, addRestaurant, fetchRestauirants, restaurants: restaurantsDatas, loader: loading }}>
       <NavigationContainer>
         <SafeAreaView backgroundColor= '#97CBDC'/>
         <Stack.Navigator initialRouteName="Splash">

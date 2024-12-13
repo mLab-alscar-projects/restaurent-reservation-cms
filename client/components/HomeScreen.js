@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 
 import AuthContext from '../AuthContext';
@@ -21,6 +22,7 @@ const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
   const { restaurants } = useContext(AuthContext);
+  const {loader} = useContext(AuthContext);
   const count = restaurants.length; 
   const [userEmail, setUserEmail] = useState('');
 
@@ -113,6 +115,14 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.addRestaurantText}>Add a Restaurant</Text>
         </Pressable>
 
+        {loader ? 
+        <View style={styles.restaurantLoaderContainer}>
+          <ActivityIndicator size={'large'} color={'#333'} />
+          <Text style={styles.LoaderText}>Loading restaurants</Text>
+        </View>
+        
+        :
+            
         <ScrollView
           vertical
           showsVerticalScrollIndicator={false}
@@ -164,6 +174,9 @@ const HomeScreen = ({ navigation }) => {
           </View>
 
         </ScrollView>
+
+        }
+
       </View>
     </View>
   );
@@ -197,8 +210,8 @@ const styles = StyleSheet.create({
   {
     width: 40,
     height: 40,
-    borderRadius: 10,
-    backgroundColor: '#fff',
+    borderRadius: 7,
+    backgroundColor: '#f5f5ff',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
@@ -231,7 +244,6 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     flexDirection: 'row',
-    gap: 15,
   },
 
   iconButton:
@@ -247,14 +259,12 @@ const styles = StyleSheet.create({
   // PRODUCTIVITY INSIGHTS
   insightsContainer:
   {
-    paddingHorizontal: 10,
     marginBottom: 20,
   },
 
   primaryInsightCard:
   {
     backgroundColor: '#ffffff',
-    borderRadius: 20,
     padding: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -340,14 +350,14 @@ const styles = StyleSheet.create({
   },
   addRestaurantContainer: {
     marginBottom: 20,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff',
     padding: 15,
-    borderRadius: 12,
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
+    elevation: 5,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -463,6 +473,22 @@ const styles = StyleSheet.create({
      height: 6,
      borderBottomRightRadius: 12,
      borderBottomLeftRadius: 12,
+  },
+
+  restaurantLoaderContainer:
+  {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    flex: 1,
+    gap: 20
+  },
+
+  LoaderText:
+  {
+    fontSize: 18,
+    textAlign: 'center',
+    letterSpacing: 2
   }
 });
 

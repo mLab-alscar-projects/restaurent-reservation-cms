@@ -1,5 +1,8 @@
+
 import React, { useState } from 'react';
-import { 
+
+import 
+{ 
   View, 
   Text, 
   ScrollView, 
@@ -7,51 +10,55 @@ import {
   Dimensions,
   Pressable 
 } from 'react-native';
+
 import { ProgressChart } from 'react-native-chart-kit';
 
 const RestaurantPerformance = () => {
-  // Mock restaurant data - replace with actual data
+ 
   const [restaurants] = useState([
     { 
       id: 1, 
-      name: 'Pasta Palace', 
-      weeklyData: [0.65, 0.59],
+      name: "Eat'in", 
+      weeklyData: [0.65, 0.59, .70, .36],
       totalReservations: 45,
       averageRating: 4.5,
       color: '#3498db',
+      darkColor: '#216a9b',
     },
     { 
       id: 2, 
-      name: 'Burger Bliss', 
-      weeklyData: [0.55, 0.62],
+      name: "Foodies's Delight", 
+      weeklyData: [0.55, 0.62, .70, .36],
       totalReservations: 38,
       averageRating: 4.2,
       color: '#2ecc71',
+      darkColor: '#1e8c50',
+
     },
     { 
       id: 3, 
-      name: 'Sushi Sensation', 
-      weeklyData: [0.70, 0.65],
+      name: "Munchies", 
+      weeklyData: [0.70, 0.65, .70, .36],
       averageRating: 4.7,
       color: '#9b59b6',
       totalReservations: 58,
+      darkColor: '#6d3f86',
 
     }
   ]);
 
-  // Calculate overall stats
+ 
   const totalReservations = restaurants.reduce((sum, rest) => sum + rest.totalReservations, 0);
   const averagePerformance = (restaurants.reduce((sum, rest) => 
     sum + (rest.weeklyData.reduce((a, b) => a + b, 0) / rest.weeklyData.length), 0) 
     / restaurants.length * 100).toFixed(0);
 
-  // Chart configuration
+  
   const chartConfig = (restaurant) => ({
     backgroundGradientFrom: '#fff',
     backgroundGradientTo: '#fff',
     color: (opacity = 1) => {
-      // Ensure the color is used with opacity
-      // If restaurant.color is a hex, convert it to rgba
+
       if (restaurant.color.startsWith('#')) {
         // Convert hex to rgba
         const hexToRgba = (hex, opacity) => {
@@ -62,7 +69,7 @@ const RestaurantPerformance = () => {
         };
         return hexToRgba(restaurant.color, opacity);
       }
-      // If it's already an rgba or rgb, just use it
+     
       return restaurant.color;
     },
     strokeWidth: 2,
@@ -107,22 +114,22 @@ const RestaurantPerformance = () => {
 
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>{totalReservations}</Text>
-              <Text style={styles.statLabel}>Tables reserved</Text>
+              <Text style={[styles.statValue, {color: '#3498db'}]}>{totalReservations}</Text>
+              <Text style={[styles.statLabel, {color: '#333', fontWeight: 900}]}>Tables reserved</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>{restaurants.length}</Text>
-              <Text style={styles.statLabel}>Restaurants</Text>
+              <Text style={[styles.statValue, {color: '#3498db'}]}>{restaurants.length}</Text>
+              <Text style={[styles.statLabel, {color: '#333', fontWeight: 900}]}>Restaurants</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>{averagePerformance}%</Text>
-              <Text style={styles.statLabel}>Avg Performance</Text>
+              <Text style={[styles.statValue, {color: '#3498db'}]}>{averagePerformance}%</Text>
+              <Text style={[styles.statLabel, {color: '#333', fontWeight: 900}]}>Avg Performance</Text>
             </View>
           </View>
         </View>
       </Pressable>
 
-      <Text style={styles.sectionTitle}>Individual Restaurant Performance</Text>
+      <Text style={styles.sectionTitle}>Restaurants Performance</Text>
       
       {restaurants.map((restaurant) => (
         <View 
@@ -134,7 +141,7 @@ const RestaurantPerformance = () => {
           {/* Progress Chart */}
           <ProgressChart
             data={{
-              labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+              labels: ['Daily','Weekly', 'Monthly', 'Yearly'],
               data: restaurant.weeklyData
             }}
             width={Dimensions.get('window').width - 40}
@@ -146,21 +153,21 @@ const RestaurantPerformance = () => {
           
           {/* Performance Stats */}
           <View style={styles.statsRow}>
-            <View style={styles.statCard}>
+            <View style={[styles.statCard, {backgroundColor: restaurant.darkColor}]}>
               <Text style={styles.statValue}>
                 {calculateWeeklyAverage(restaurant.weeklyData)}%
               </Text>
-              <Text style={styles.statLabel}>Weekly Performance</Text>
+              <Text style={styles.statLabel}>Weekly</Text>
             </View>
             
-            <View style={styles.statCard}>
+            <View style={[styles.statCard, {backgroundColor: restaurant.darkColor}]}>
               <Text style={styles.statValue}>
                 {restaurant.totalReservations}
               </Text>
               <Text style={styles.statLabel}>Reservations</Text>
             </View>
             
-            <View style={styles.statCard}>
+            <View style={[styles.statCard, {backgroundColor: restaurant.darkColor}]}>
               <Text style={styles.statValue}>
                 {restaurant.averageRating}
               </Text>
@@ -174,19 +181,25 @@ const RestaurantPerformance = () => {
 };
 
 const styles = StyleSheet.create({
-  // Existing styles from previous version
-  container: {
+
+  container: 
+  {
     flex: 1,
     backgroundColor: '#f4f4f4'
   },
-  contentContainer: {
+
+  contentContainer: 
+  {
     paddingVertical: 20,
   },
-  // New styles for the insights section
-  insightsContainer: {
+
+  insightsContainer: 
+  {
     marginBottom: 20
   },
-  primaryInsightCard: {
+
+  primaryInsightCard: 
+  {
     backgroundColor: 'white',
     padding: 15,
     shadowColor: '#000',
@@ -195,71 +208,99 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3
   },
-  chartTitleContainer: {
+
+  chartTitleContainer: 
+  {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10
   },
-  chartTitle: {
+
+  chartTitle: 
+  {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333'
   },
-  trendIcon: {
+
+  trendIcon: 
+  {
     fontSize: 20
   },
-  chartContainer: {
+
+  chartContainer: 
+  {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
     height: 150,
     marginBottom: 10
   },
-  barContainer: {
+
+  barContainer: 
+  {
     alignItems: 'center',
     width: '13%'
   },
-  chartBar: {
+
+  chartBar: 
+  {
     width: '100%',
     borderTopLeftRadius: 5,
     borderTopRightRadius: 5
   },
-  barLabel: {
+
+  barLabel: 
+  {
     marginTop: 5,
     fontSize: 10,
     color: '#7f8c8d'
   },
-  statsContainer: {
+
+  statsContainer: 
+  {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10
   },
-  statItem: {
+
+  statItem: 
+  {
     alignItems: 'center',
-    width: '30%'
+    width: '30%',
   },
-  statValue: {
+
+  statValue: 
+  {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#2980b9'
+    color: '#d3ddda'
   },
-  statLabel: {
+
+  statLabel: 
+  {
     fontSize: 12,
     color: '#f9f9f9',
     textAlign: 'center',
-    marginTop: 5
+    marginTop: 5,
+    letterSpacing: 1,
   },
-  sectionTitle: {
-    fontSize: 18,
+
+  sectionTitle: 
+  {
+    fontSize: 16,
+    letterSpacing: 2,
     fontWeight: 'bold',
     textTransform: 'uppercase',
-    color: '#333',
+    color: '#444',
     width: '100%',
     marginBottom: 15,
-    textAlign: 'center'
+    textAlign: 'center',
   },
-  restaurantContainer: {
+
+  restaurantContainer: 
+  {
     backgroundColor: 'white',
     marginBottom: 20,
     padding: 15,
@@ -267,29 +308,38 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3
+    elevation: 3,
   },
-  restaurantName: {
+
+  restaurantName: 
+  {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 15,
     color: '#333',
-    textAlign: 'center'
+    textAlign: 'center',
+    letterSpacing: 2,
   },
-  progressChart: {
+
+  progressChart: 
+  {
     marginVertical: 8,
     borderRadius: 16,
     
   },
-  statsRow: {
+
+  statsRow: 
+  {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10
   },
-  statCard: {
+
+  statCard: 
+  {
     alignItems: 'center',
     backgroundColor: '#333',
-    borderRadius: 10,
+    borderRadius: 5,
     padding: 10,
     width: '30%'
   }
