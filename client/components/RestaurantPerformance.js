@@ -33,7 +33,9 @@ const RestaurantPerformance = () => {
       name: 'Sushi Sensation', 
       weeklyData: [0.70, 0.65],
       averageRating: 4.7,
-       color: '#9b59b6'
+      color: '#9b59b6',
+      totalReservations: 58,
+
     }
   ]);
 
@@ -44,14 +46,28 @@ const RestaurantPerformance = () => {
     / restaurants.length * 100).toFixed(0);
 
   // Chart configuration
-  const chartConfig = {
-    backgroundColor: '#333',
-    backgroundGradientFrom: '#333',
-    backgroundGradientTo: '#333',
-    color: (opacity = 1) => `rgba(52, 152, 219, ${opacity})`,
+  const chartConfig = (restaurant) => ({
+    backgroundGradientFrom: '#fff',
+    backgroundGradientTo: '#fff',
+    color: (opacity = 1) => {
+      // Ensure the color is used with opacity
+      // If restaurant.color is a hex, convert it to rgba
+      if (restaurant.color.startsWith('#')) {
+        // Convert hex to rgba
+        const hexToRgba = (hex, opacity) => {
+          const r = parseInt(hex.slice(1, 3), 16);
+          const g = parseInt(hex.slice(3, 5), 16);
+          const b = parseInt(hex.slice(5, 7), 16);
+          return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+        };
+        return hexToRgba(restaurant.color, opacity);
+      }
+      // If it's already an rgba or rgb, just use it
+      return restaurant.color;
+    },
     strokeWidth: 2,
     barPercentage: 0.5,
-  };
+  });
 
   const calculateWeeklyAverage = (weeklyData) => {
     return (weeklyData.reduce((a, b) => a + b, 0) / weeklyData.length * 100).toFixed(0);
@@ -61,7 +77,9 @@ const RestaurantPerformance = () => {
     <ScrollView 
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
+
     >
+      <Text style={styles.sectionTitle}>Weekly Performance</Text>
       {/* Overall Insights Section */}
       <Pressable style={styles.insightsContainer}>
         <View style={styles.primaryInsightCard}>
@@ -121,7 +139,7 @@ const RestaurantPerformance = () => {
             }}
             width={Dimensions.get('window').width - 40}
             height={150}
-            chartConfig={chartConfig}
+            chartConfig={chartConfig(restaurant)}
             hideLegend={false}
             style={[styles.progressChart, {backgroundColor: '#000'}]}
           />
@@ -163,7 +181,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingVertical: 20,
-    paddingHorizontal: 10
   },
   // New styles for the insights section
   insightsContainer: {
@@ -171,7 +188,6 @@ const styles = StyleSheet.create({
   },
   primaryInsightCard: {
     backgroundColor: 'white',
-    borderRadius: 15,
     padding: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -235,15 +251,16 @@ const styles = StyleSheet.create({
     marginTop: 5
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
+    textTransform: 'uppercase',
     color: '#333',
+    width: '100%',
     marginBottom: 15,
     textAlign: 'center'
   },
   restaurantContainer: {
     backgroundColor: 'white',
-    borderRadius: 15,
     marginBottom: 20,
     padding: 15,
     shadowColor: '#000',
