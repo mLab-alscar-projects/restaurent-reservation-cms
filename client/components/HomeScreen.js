@@ -68,7 +68,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       {/* PRODUCTIVITY INSIGHTS */}
-      <Pressable style={styles.insightsContainer}>
+      <Pressable style={styles.insightsContainer} onPress={() => navigation.navigate('RestaurantPerformance')}>
         <View style={styles.primaryInsightCard}>
           <View style={styles.chartTitleContainer}>
             <Text style={styles.chartTitle}>Weekly Productivity</Text>
