@@ -33,7 +33,7 @@ const AdminSettingsScreen = ({navigation}) => {
           subtitle: 'View user profiles',
           icon: <Users color="#2c3e50" size={24} />,
           type: 'nav',
-          onPress: () => {/* Navigate to user management */},
+          onPress: () => navigation.navigate('users'),
         },
       ],
     },

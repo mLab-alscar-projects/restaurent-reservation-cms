@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginRight: 10,
-    borderRadius: 20,
+    borderRadius: 10,
     backgroundColor: 'rgba(52, 152, 219, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -250,13 +250,11 @@ const styles = StyleSheet.create({
 
   // LATEST NOTIFICATION STYLES
   insightsContainer: {
-    paddingHorizontal: 20,
     marginBottom: 20,
   },
 
   primaryNotificationCard: {
     backgroundColor: '#ffffff',
-    borderRadius: 20,
     padding: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -304,7 +302,7 @@ const styles = StyleSheet.create({
   actionButton: {
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 20,
+    borderRadius: 10,
     width: '90%',
   },
 
@@ -336,7 +334,7 @@ const styles = StyleSheet.create({
   notificationCard: {
     width: width * 0.5,
     backgroundColor: '#ffffff',
-    borderRadius: 20,
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
@@ -375,7 +373,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#2ecc71',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    borderRadius: 20,
+    borderRadius: 10,
     width: '100%',
     alignItems: 'center',
     shadowColor: '#2ecc71',

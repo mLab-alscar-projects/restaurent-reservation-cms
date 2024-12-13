@@ -16,6 +16,7 @@ import ProfileScreen from './components/Profile';
 import SettingsScreen from './components/SettingsScreen';
 import RestaurantPerformance from './components/RestaurantPerformance';
 import RestaurantFormScreen from './components/RestaurantFormScreen';
+import UsersScreen from './components/UsersScreen';
 
 // DATA
 import { reservationsData } from './components/data';
@@ -397,6 +398,25 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
             options={{
               headerShown: true,
               headerTitle: 'Add restaurant', 
+              headerStyle: {
+                backgroundColor: '#3498db', 
+              },
+              headerTitleStyle: {
+                color: '#fff', 
+                fontSize: 18,
+                fontWeight: 'bold',
+                letterSpacing: 1
+              },
+              headerTintColor: '#000', 
+            }}
+          />
+
+          <Stack.Screen
+            name="users"
+            component={UsersScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Users', 
               headerStyle: {
                 backgroundColor: '#3498db', 
               },
