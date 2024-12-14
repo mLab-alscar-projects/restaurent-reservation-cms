@@ -7,9 +7,11 @@ import {
   SafeAreaView, 
   TouchableOpacity,
   Modal,
-  Image
+  Image,
+  StatusBar,
+  ScrollView
 } from 'react-native';
-
+import { Ionicons } from '@expo/vector-icons';
 
 const reservations = [
   { 
@@ -18,25 +20,24 @@ const reservations = [
     date: "Dec 15, 2024",
     time: "7:30 PM",
     guests: 2,
-    status: "Active",
+    status: "Upcoming",
     picture: require('../assets/foodies.jpg'),
     address: "123 Gourmet Street, Culinary City",
     contactNumber: "+1 (555) 123-4567",
-    specialRequests: "Window seat preferred, vegetarian options",
+    specialRequests: "Window seat preferred",
     totalCost: "$120.50" 
   },
-
   {
     id: 2,
     restaurant: "Foodies' Delight",
     date: "Dec 22, 2024",
     time: "6:45 PM", 
     guests: 4,
-    status: "Complted",
-    picture: require('../assets/foodies.jpg'),
+    status: "Completed",
+    picture: require('../assets/munchies.jpg'),
     address: "123 Gourmet Street, Culinary City",
     contactNumber: "+1 (555) 123-4567",
-    specialRequests: "Birthday celebration, need a cake",
+    specialRequests: "Birthday celebration",
     totalCost: "$240.75"
   },
   {
@@ -45,32 +46,30 @@ const reservations = [
     date: "Dec 22, 2024",
     time: "6:45 PM", 
     guests: 4,
-    status: "Complted",
-    picture: require('../assets/foodies.jpg'),
+    status: "Completed",
+    picture: require('../assets/eatin.jpg'),
     address: "123 Gourmet Street, Culinary City",
     contactNumber: "+1 (555) 123-4567",
-    specialRequests: "High chair needed for baby",
+    specialRequests: "Birthday celebration",
     totalCost: "$240.75"
   },
-  {
-    id: 4,
-    restaurant: "Foodies' Delight",
-    date: "Dec 22, 2024",
-    time: "6:45 PM", 
-    guests: 4,
-    status: "Complted",
-    picture: require('../assets/foodies.jpg'),
-    address: "123 Gourmet Street, Culinary City",
-    contactNumber: "+1 (555) 123-4567",
-    specialRequests: "Allergic to nuts, please be careful",
-    totalCost: "$240.75"
-  },
+  // ... other reservations
 ];
 
 const PlaceholderImage = 'https://via.placeholder.com/150?text=Restaurant+Photo';
 
 const ReservationScreen = () => {
   const [selectedReservation, setSelectedReservation] = useState(null);
+  const [filter, setFilter] = useState('All');
+
+  // Filter reservations based on selected status
+  const filteredReservations = filter === 'All' 
+    ? reservations 
+    : reservations.filter(reservation => {
+        if (filter === 'Upcoming') return reservation.status === 'Upcoming';
+        if (filter === 'Completed') return reservation.status === 'Completed';
+        return true;
+      });
 
   // Render individual reservation item
   const renderReservationItem = ({ item }) => (
@@ -78,15 +77,14 @@ const ReservationScreen = () => {
       style={styles.reservationItem}
       onPress={() => setSelectedReservation(item)}
     >
-      <Image source={item.picture || { uri: PlaceholderImage }} style={styles.reservationImage} />
+      <Image 
+        source={item.picture || { uri: PlaceholderImage }} 
+        style={styles.reservationImage} 
+      />
       <View style={styles.reservationDetails}>
         <Text style={styles.restaurantText}>{item.restaurant}</Text>
         <Text style={styles.reservationInfo}>{item.date} at {item.time}</Text>
         <Text style={styles.reservationInfo}>Guests: {item.guests}</Text>
-        <Text style={[
-          styles.statusBadge, 
-          item.status === 'Active' ? styles.confirmedBadge : styles.pendingBadge
-        ]}>{item.status}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -102,83 +100,119 @@ const ReservationScreen = () => {
         visible={!!selectedReservation}
         onRequestClose={() => setSelectedReservation(null)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
-            {/* Close Button */}
+        <SafeAreaView style={styles.modalContainer}>
+          {/* Header */}
+          <View style={styles.modalHeader}>
             <TouchableOpacity 
-              style={styles.modalCloseButton}
               onPress={() => setSelectedReservation(null)}
+              style={styles.modalBackButton}
             >
-              <Text style={styles.modalCloseButtonText}>×</Text>
+              <Ionicons name="chevron-back" size={24} color="black" />
             </TouchableOpacity>
+            <Text style={styles.modalHeaderTitle}>Reservation Details</Text>
+          </View>
 
+          <View 
+            style={[styles.modalContent, ]}
+            contentContainerStyle={styles.modalContentContainer}
+       
+          >
             {/* Restaurant Image */}
-            <Image 
-              source={selectedReservation.picture || { uri: PlaceholderImage }}
-              style={styles.modalImage}
-            />
-
-            {/* Reservation Details */}
-            <Text style={styles.modalRestaurantName}>{selectedReservation.restaurant}</Text>
-
-            <View style={styles.modalDetailContainer}>
-              <Text style={styles.modalDetailLabel}>Date</Text>
-              <Text style={styles.modalDetailValue}>{selectedReservation.date}</Text>
+            <View style={styles.profileImageContainer}>
+              <Image 
+                source={selectedReservation.picture || { uri: PlaceholderImage }}
+                style={styles.profileImage}
+              />
             </View>
 
-            <View style={styles.modalDetailContainer}>
-              <Text style={styles.modalDetailLabel}>Time</Text>
-              <Text style={styles.modalDetailValue}>{selectedReservation.time}</Text>
+            {/* Restaurant Name */}
+            <Text style={styles.profileName}>{selectedReservation.restaurant}</Text>
+
+            {/* Detail Sections */}
+            <View style={styles.profileSection}>
+              <View style={styles.profileSectionContent}>
+                <View style={styles.profileDetailRow}>
+                  <Ionicons name="calendar" size={20} color="#007AFF" />
+                  <Text style={styles.profileDetailLabel}>Date</Text>
+                  <Text style={styles.profileDetailValue}>{selectedReservation.date}</Text>
+                </View>
+                <View style={styles.profileDetailRow}>
+                  <Ionicons name="time" size={20} color="#007AFF" />
+                  <Text style={styles.profileDetailLabel}>Time</Text>
+                  <Text style={styles.profileDetailValue}>{selectedReservation.time}</Text>
+                </View>
+                <View style={styles.profileDetailRow}>
+                  <Ionicons name="people" size={20} color="#007AFF" />
+                  <Text style={styles.profileDetailLabel}>Guests</Text>
+                  <Text style={styles.profileDetailValue}>{selectedReservation.guests}</Text>
+                </View>
+              </View>
             </View>
 
-            <View style={styles.modalDetailContainer}>
-              <Text style={styles.modalDetailLabel}>Guests</Text>
-              <Text style={styles.modalDetailValue}>{selectedReservation.guests}</Text>
-            </View>
-
-            <View style={styles.modalDetailContainer}>
-              <Text style={styles.modalDetailLabel}>Address</Text>
-              <Text style={styles.modalDetailValue}>{selectedReservation.address}</Text>
-            </View>
-
-            <View style={styles.modalDetailContainer}>
-              <Text style={styles.modalDetailLabel}>Contact</Text>
-              <Text style={styles.modalDetailValue}>{selectedReservation.contactNumber}</Text>
-            </View>
-
-            <View style={styles.modalDetailContainer}>
-              <Text style={styles.modalDetailLabel}>Special Requests</Text>
-              <Text style={styles.modalDetailValue}>{selectedReservation.specialRequests}</Text>
-            </View>
-
-            <View style={styles.modalDetailContainer}>
-              <Text style={styles.modalDetailLabel}>Total Cost</Text>
-              <Text style={styles.modalDetailValue}>{selectedReservation.totalCost}</Text>
-            </View>
-
-            <View style={styles.modalDetailContainer}>
-              <Text style={styles.modalDetailLabel}>Status</Text>
-              <Text style={[
-                styles.statusBadge,
-                selectedReservation.status === 'Confirmed' ? styles.confirmedBadge : styles.pendingBadge
-              ]}>{selectedReservation.status}</Text>
+            {/* Additional Details Section */}
+            <View style={styles.profileSection}>
+              <Text style={styles.profileSectionTitle}>Reservation Info</Text>
+              <View style={styles.profileSectionContent}>
+                <View style={styles.profileDetailRow}>
+                  <Ionicons name="location" size={20} color="#007AFF" />
+                  <Text style={styles.profileDetailLabel}>Address</Text>
+                  <Text style={styles.profileDetailValue}>{selectedReservation.address}</Text>
+                </View>
+                <View style={styles.profileDetailRow}>
+                  <Ionicons name="call" size={20} color="#007AFF" />
+                  <Text style={styles.profileDetailLabel}>Contact</Text>
+                  <Text style={styles.profileDetailValue}>{selectedReservation.contactNumber}</Text>
+                </View>
+                <View style={styles.profileDetailRow}>
+                  <Ionicons name="document-text" size={20} color="#007AFF" />
+                  <Text style={styles.profileDetailLabel}>Special Requests</Text>
+                  <Text style={styles.profileDetailValue}>{selectedReservation.specialRequests}</Text>
+                </View>
+                <View style={styles.profileDetailRow}>
+                  <Ionicons name="cash" size={20} color="#007AFF" />
+                  <Text style={styles.profileDetailLabel}>Total Cost</Text>
+                  <Text style={styles.profileDetailValue}>{selectedReservation.totalCost}</Text>
+                </View>
+              </View>
             </View>
           </View>
-        </View>
+        </SafeAreaView>
       </Modal>
     );
   };
 
   return (
     <SafeAreaView style={styles.container}>
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerText}>Reservations</Text>
       </View>
 
+      {/* Filter Buttons */}
+      <View style={styles.filterContainer}>
+        {['All', 'Upcoming', 'Completed'].map((status) => (
+          <TouchableOpacity
+            key={status}
+            style={[
+              styles.filterButton,
+              filter === status && styles.activeFilterButton
+            ]}
+            onPress={() => setFilter(status)}
+          >
+            <Text style={[
+              styles.filterButtonText,
+              filter === status && styles.activeFilterButtonText
+            ]}>
+              {status}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       {/* Reservation List */}
       <FlatList
-        data={reservations}
+        data={filteredReservations}
         renderItem={renderReservationItem}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContainer}
@@ -198,30 +232,56 @@ const ReservationScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#F2F2F7',
   },
   header: {
-    padding: 15,
     backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontSize: 22,
+    fontWeight: '700',
     color: '#333',
   },
-  listContainer: {
+  filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     paddingVertical: 10,
+    backgroundColor: 'white',
+  },
+  filterButton: {
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    marginHorizontal: 5,
+    borderRadius: 20,
+    backgroundColor: '#F0F0F0',
+  },
+  activeFilterButton: {
+    backgroundColor: '#007AFF',
+  },
+  filterButtonText: {
+    color: '#666',
+    fontWeight: '500',
+  },
+  activeFilterButtonText: {
+    color: 'white',
+  },
+  listContainer: {
+    paddingHorizontal: 15,
+    paddingTop: 10,
   },
   reservationItem: {
     flexDirection: 'row',
     backgroundColor: 'white',
+    borderRadius: 10,
+    marginBottom: 15,
     padding: 15,
-    marginVertical: 5,
-    marginHorizontal: 10,
-    borderRadius: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -229,38 +289,24 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   reservationImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 80,
+    height: 80,
+    borderRadius: 10,
     marginRight: 15,
   },
   reservationDetails: {
     flex: 1,
+    justifyContent: 'center',
   },
   restaurantText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
     color: '#333',
+    marginBottom: 5,
   },
   reservationInfo: {
-    fontSize: 14,
     color: '#666',
-  },
-  statusBadge: {
-    marginTop: 5,
-    paddingVertical: 4,
-    paddingHorizontal: 10,
-    borderRadius: 15,
-    alignSelf: 'flex-start',
-    textAlign: 'center',
-  },
-  confirmedBadge: {
-    backgroundColor: '#e6f2e6',
-    color: '#2d862d',
-  },
-  pendingBadge: {
-    backgroundColor: '#f2e6e6',
-    color: '#862d2d',
+    marginBottom: 3,
   },
   emptyContainer: {
     flex: 1,
@@ -269,68 +315,90 @@ const styles = StyleSheet.create({
     marginTop: 50,
   },
   emptyText: {
-    fontSize: 18,
-    color: '#888',
+    color: '#999',
+    fontSize: 16,
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  
+  // Modal Styles
   modalContainer: {
-    width: '100%',
-    backgroundColor: 'white',
     flex: 1,
-    padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    backgroundColor: '#d3ddda',
   },
-  modalCloseButton: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 15,
-    width: 30,
-    height: 30,
-    justifyContent: 'center',
+  modalHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+    backgroundColor: '#3498db',
   },
-  modalCloseButtonText: {
-    fontSize: 20,
+  modalBackButton: {
+    marginRight: 15,
+  },
+  modalHeaderTitle: {
+    fontSize: 18,
+    fontWeight: '600',
     color: '#333',
   },
-  modalImage: {
-    width: 150,
-    height: 150,
-    borderRadius: 75,
-    marginBottom: 20,
+  modalContent: {
+    flex: 1,
   },
-  modalRestaurantName: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 15,
+  modalContentContainer: {
+    paddingBottom: 20,
   },
-  modalDetailContainer: {
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  profileImageContainer: {
     alignItems: 'center',
-    marginVertical: 10,
-    paddingHorizontal: 10,
+    marginBottom: 20,
+    width: '100%',
+    height: 300,
   },
-  modalDetailLabel: {
-    fontSize: 16,
-    color: '#666',
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover'
   },
-  modalDetailValue: {
+  profileName: {
+    fontSize: 24,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: 20,
+    color: '#333',
+  },
+  profileSection: {
+    backgroundColor: 'white',
+    marginHorizontal: 15,
+    marginBottom: 15,
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    flex: 1
+  },
+  profileSectionTitle: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#666',
+    padding: 15,
+    paddingBottom: 0,
+  },
+  profileSectionContent: {
+    padding: 15,
+  },
+  profileDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  profileDetailLabel: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: '#333',
+  },
+  profileDetailValue: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'right',
   },
 });
 

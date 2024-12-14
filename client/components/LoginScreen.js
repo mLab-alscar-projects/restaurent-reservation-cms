@@ -12,8 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const LoginScreen = ({ navigation }) => {
 
-    const { handleLogin } = useContext(AuthContext);
-    const { fetchRestauirants } = useContext(AuthContext);
+   const { handleLogin, fetchRestaurants, darkMode } = useContext(AuthContext);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -28,7 +27,7 @@ const LoginScreen = ({ navigation }) => {
             const isLoggedIn = await handleLogin(email, password, setMessage);
             setLoading(false);
             if (isLoggedIn) {
-                fetchRestauirants();
+                fetchRestaurants();
                 navigation.replace('Home');
             }
         } catch (error) {
@@ -39,7 +38,7 @@ const LoginScreen = ({ navigation }) => {
     // ENDS
 
     return (
-        <View style={styles.Parent}>
+        <View style={[styles.Parent, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
             {/* FIRST CHILD */}
             <View style={styles.firstChild}>
                 <View style={styles.sibling}>
@@ -53,11 +52,11 @@ const LoginScreen = ({ navigation }) => {
                 {/* EMAIL */}
                 <View style={styles.inputWrapper}>
                     <View style={styles.label}>
-                        <Zocial name='email' size={20} color={'rgba(0, 0, 0,.5)'} />
-                        <Text style={styles.labelText}>Email</Text>
+                        <Zocial name='email' size={20} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />
+                        <Text style={[styles.labelText, { color: darkMode ? '#ffffff' : '#000000' }]}>Email</Text>
                     </View>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { borderColor: darkMode ? '#ffffff' : '#000000', color: darkMode ? '#ffffff' : '#000000' }]}
                         value={email}
                         onChangeText={setEmail}
                         keyboardType="email-address"
@@ -68,11 +67,11 @@ const LoginScreen = ({ navigation }) => {
                 {/* PASSWORD */}
                 <View style={styles.inputWrapper}>
                     <View style={styles.label}>
-                        <MaterialIcons name='lock' size={20} color={'rgba(0, 0, 0,.5)'} />
-                        <Text style={styles.labelText}>Password</Text>
+                        <MaterialIcons name='lock' size={20} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />
+                        <Text style={[styles.labelText, { color: darkMode ? '#ffffff' : '#000000' }]}>Password</Text>
                     </View>
                     <TextInput
-                        style={styles.input}
+                        style={[styles.input, { borderColor: darkMode ? '#ffffff' : '#000000', color: darkMode ? '#ffffff' : '#000000' }]}
                         secureTextEntry
                         value={password}
                         onChangeText={setPassword}
@@ -107,7 +106,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        backgroundColor: '#f9f9f9',
         padding: 0,
         margin: 0,
         gap: 10,
@@ -164,8 +162,6 @@ const styles = StyleSheet.create({
     input: {
         fontSize: 16,
         borderBottomWidth: 3,
-        color: 'rgba(0, 0, 0,.5)',
-        borderColor: 'rgba(0, 0, 0,.5)',
         width: '100%',
         height: 40,
     },
@@ -180,13 +176,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: 50,
-        borderRadius: 10,
-        backgroundColor: '#7BC5C1',
+        borderRadius: 7,
+        backgroundColor: '#97CBDC',
     },
     buttonText: {
         fontSize: 18,
-        letterSpacing: 1,
-        color: 'rgba(0, 0, 0,.5)',
+        letterSpacing: 2,
+        color: '#333',
         textAlign: 'center',
         fontWeight: 'bold',
         textTransform: 'uppercase',

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ActivityIndicator, SafeAreaView, ToastAndroid } from 'react-native';
+import { StyleSheet, View, ActivityIndicator, SafeAreaView, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import Toast from 'react-native-toast-message';
@@ -63,6 +63,7 @@ export default function App() {
 
 const [restaurantsDatas, setRestaurantsData] = useState([]);
 const [loading, setLoading] = useState(false);
+const [darkMode, setDarkMode]= useState(true);
 
 
 const reservations = reservationsData;
@@ -113,7 +114,7 @@ useEffect(() => {
 }, []);
 
 // FETCH FUNCTION
-const fetchRestauirants = async()=>{
+const fetchRestaurants = async()=>{
 
   try {
 
@@ -255,9 +256,13 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
 
 
   return (
-    <AuthContext.Provider value={{ handleLogin, addRestaurant, fetchRestauirants, restaurants: restaurantsDatas, loader: loading }}>
+    <AuthContext.Provider value={{ handleLogin, addRestaurant, fetchRestaurants, restaurants: restaurantsDatas, loader: loading, darkMode, setDarkMode }}>
       <NavigationContainer>
         <SafeAreaView backgroundColor= '#97CBDC'/>
+        <StatusBar
+            backgroundColor={darkMode ? '#333' : '#f9f9f9'} 
+            barStyle={darkMode ? 'light-content' : 'dark-content'} 
+        />
         <Stack.Navigator initialRouteName="Splash">
           <Stack.Screen
             name="Splash"

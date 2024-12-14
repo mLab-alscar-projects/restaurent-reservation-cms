@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import 
 { 
@@ -11,9 +11,14 @@ import
   Pressable 
 } from 'react-native';
 
+import AuthContext from '../AuthContext';
+
 import { ProgressChart } from 'react-native-chart-kit';
 
 const RestaurantPerformance = () => {
+
+  const { loader, darkMode } = useContext(AuthContext);
+
  
   const [restaurants] = useState([
     { 
@@ -55,8 +60,8 @@ const RestaurantPerformance = () => {
 
   
   const chartConfig = (restaurant) => ({
-    backgroundGradientFrom: '#fff',
-    backgroundGradientTo: '#fff',
+    backgroundGradientFrom: darkMode ? '#444' : '#fff',
+    backgroundGradientTo: darkMode ? '#444' : '#fff',
     color: (opacity = 1) => {
 
       if (restaurant.color.startsWith('#')) {
@@ -82,16 +87,16 @@ const RestaurantPerformance = () => {
 
   return (
     <ScrollView 
-      style={styles.container}
+      style={[styles.container, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}
       contentContainerStyle={styles.contentContainer}
 
     >
-      <Text style={styles.sectionTitle}>Weekly Performance</Text>
+      <Text style={[styles.sectionTitle, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Weekly Performance</Text>
       {/* Overall Insights Section */}
       <Pressable style={styles.insightsContainer}>
-        <View style={styles.primaryInsightCard}>
+        <View style={[styles.primaryInsightCard, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}>
           <View style={styles.chartTitleContainer}>
-            <Text style={styles.chartTitle}>Weekly Productivity</Text>
+            <Text style={[styles.chartTitle, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Weekly Productivity</Text>
             <Text style={styles.trendIcon}>📈</Text>
           </View>
 
@@ -105,7 +110,7 @@ const RestaurantPerformance = () => {
                     { height: value, backgroundColor: `rgba(52, 152, 219, ${value / 100})` }
                   ]}
                 />
-                <Text style={styles.barLabel}>
+                <Text style={[styles.barLabel, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>
                   {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]}
                 </Text>
               </View>
@@ -114,16 +119,16 @@ const RestaurantPerformance = () => {
 
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, {color: '#3498db'}]}>{totalReservations}</Text>
-              <Text style={[styles.statLabel, {color: '#333', fontWeight: 900}]}>Tables reserved</Text>
+              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{totalReservations}</Text>
+              <Text style={[styles.statLabel, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)', fontWeight: 900}]}>Tables reserved</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, {color: '#3498db'}]}>{restaurants.length}</Text>
-              <Text style={[styles.statLabel, {color: '#333', fontWeight: 900}]}>Restaurants</Text>
+              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{restaurants.length}</Text>
+              <Text style={[styles.statLabel, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)', fontWeight: 900}]}>Restaurants</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, {color: '#3498db'}]}>{averagePerformance}%</Text>
-              <Text style={[styles.statLabel, {color: '#333', fontWeight: 900}]}>Avg Performance</Text>
+              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{averagePerformance}%</Text>
+              <Text style={[styles.statLabel, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)', fontWeight: 900}]}>Avg Performance</Text>
             </View>
           </View>
         </View>
@@ -134,9 +139,9 @@ const RestaurantPerformance = () => {
       {restaurants.map((restaurant) => (
         <View 
           key={restaurant.id} 
-          style={styles.restaurantContainer}
+          style={[styles.restaurantContainer, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}
         >
-          <Text style={styles.restaurantName}>{restaurant.name}</Text>
+          <Text style={[styles.restaurantName, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{restaurant.name}</Text>
           
           {/* Progress Chart */}
           <ProgressChart
@@ -185,7 +190,6 @@ const styles = StyleSheet.create({
   container: 
   {
     flex: 1,
-    backgroundColor: '#f4f4f4'
   },
 
   contentContainer: 

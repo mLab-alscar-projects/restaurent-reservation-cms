@@ -21,8 +21,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 const { width, height } = Dimensions.get('window');
 
 const HomeScreen = ({ navigation }) => {
-  const { restaurants } = useContext(AuthContext);
-  const {loader} = useContext(AuthContext);
+  const { restaurants, loader, darkMode } = useContext(AuthContext);
   const count = restaurants.length; 
   const [userEmail, setUserEmail] = useState('');
 
@@ -45,17 +44,17 @@ const HomeScreen = ({ navigation }) => {
 
 
   return (
-    <View style={styles.parent}>
+    <View style={[styles.parent, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
       {/* TOP NAVIGATION SECTION */}
       <View style={styles.topNavigation}>
         <View style={styles.profileContainer}>
-          <View style={styles.profileImagePlaceholder}>
+          <View style={[styles.profileImagePlaceholder, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}>
             <Pressable onPress={() => navigation.navigate('Profile')}>
-              <Text style={styles.profileInitials}>{firstLetter}</Text>
+              <Text style={[styles.profileInitials, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{firstLetter}</Text>
             </Pressable>
           </View>
           <View>
-            <Text style={styles.greetingText}>Hello, {userEmail}</Text>
+            <Text style={[styles.greetingText, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Hello, Oscar</Text>
             <Text style={styles.subGreetingText}>Productivity Dashboard</Text>
           </View>
         </View>
@@ -71,15 +70,15 @@ const HomeScreen = ({ navigation }) => {
 
       {/* PRODUCTIVITY INSIGHTS */}
       <Pressable style={styles.insightsContainer} onPress={() => navigation.navigate('RestaurantPerformance')}>
-        <View style={styles.primaryInsightCard}>
+        <View style={[styles.primaryInsightCard, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}>
           <View style={styles.chartTitleContainer}>
-            <Text style={styles.chartTitle}>Weekly Productivity</Text>
+            <Text style={[styles.chartTitle, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Weekly Productivity</Text>
             <Text style={styles.trendIcon}>📈</Text>
           </View>
 
           {/* MOCK CHART VISUALIZATION */}
           <View style={styles.chartContainer}>
-            {[65, 59, 80, 81, 56, 20, 90].map((value, index) => (
+            {[65, 59, 80, 81, 56, 70, 90].map((value, index) => (
               <View key={index} style={styles.barContainer}>
                 <View
                   style={[
@@ -87,7 +86,7 @@ const HomeScreen = ({ navigation }) => {
                     { height: value, backgroundColor: `rgba(52, 152, 219, ${value / 100})` }
                   ]}
                 />
-                <Text style={styles.barLabel}>
+                <Text style={[styles.barLabel, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>
                   {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]}
                 </Text>
               </View>
@@ -95,14 +94,22 @@ const HomeScreen = ({ navigation }) => {
           </View>
 
           <View style={styles.statsContainer}>
+
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>45</Text>
+              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>45</Text>
               <Text style={styles.statLabel}>Tables reserved</Text>
             </View>
+
             <View style={styles.statItem}>
-              <Text style={styles.statValue}>{count || 0}</Text>
+              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{count || 0}</Text>
               <Text style={styles.statLabel}>Restaurants</Text>
             </View>
+
+            <View style={styles.statItem}>
+              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{count || 0}%</Text>
+              <Text style={styles.statLabel}>Avg Performance</Text>
+            </View>
+
           </View>
         </View>
       </Pressable>
@@ -110,9 +117,8 @@ const HomeScreen = ({ navigation }) => {
       {/* SCROLLABLE RESTAURANT BOOKING SECTION */}
       <View style={styles.bookingSection}>
 
-        <Pressable style={styles.addRestaurantContainer} onPress={() => navigation.navigate('RestaurantFormScreen')}>
-          <MaterialIcons name='add' color={'#333'} style={styles.addRestaurantText}/>
-          <Text style={styles.addRestaurantText}>Add a Restaurant</Text>
+        <Pressable style={[styles.addRestaurantContainer, { backgroundColor: darkMode ? '#444' : '#ffffff' }]} onPress={() => navigation.navigate('RestaurantFormScreen')}>
+          <Text style={[styles.addRestaurantText, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Add a Restaurant</Text>
         </Pressable>
 
         {loader ? 
@@ -196,7 +202,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
-    paddingTop: 50,
+    paddingTop: 20,
     paddingBottom: 20,
   },
 
@@ -264,13 +270,13 @@ const styles = StyleSheet.create({
 
   primaryInsightCard:
   {
-    backgroundColor: '#ffffff',
     padding: 20,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+    width: '100%'
   },
 
   chartTitleContainer:
@@ -343,16 +349,17 @@ const styles = StyleSheet.create({
   },
 
   // RESTAURANT CARD STYLES
-  bookingSection: {
+  bookingSection: 
+  {
     flex: 1,
     padding: 10,
-    backgroundColor: '#f9f9f9',
   },
-  addRestaurantContainer: {
+
+  addRestaurantContainer: 
+  {
     marginBottom: 20,
-    backgroundColor: '#fff',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 7,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -365,7 +372,9 @@ const styles = StyleSheet.create({
     height: 50,
     gap: 4
   },
-  addRestaurantText: {
+
+  addRestaurantText: 
+  {
     fontSize: 16,
     fontWeight: '700',
     color: '#333',
@@ -390,28 +399,38 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  firstRestaurantCard: {
+
+  firstRestaurantCard: 
+  {
     marginTop: 10,
   },
-  restaurantImageContainer: {
+
+  restaurantImageContainer: 
+  {
     width: '100%',
     height: 160,
   },
-  restaurantImage: {
+
+  restaurantImage: 
+  {
     width: '100%',
     height: '100%',
   },
-  restaurantImageOverlay: {
+
+  restaurantImageOverlay: 
+  {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
-  restaurantDetailsOverlay: {
+
+  restaurantDetailsOverlay: 
+  {
     padding: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     position :'relative'
   },
   restaurantName: {

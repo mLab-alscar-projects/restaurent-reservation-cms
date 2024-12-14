@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -17,11 +17,12 @@ import {
   Moon
 } from 'lucide-react-native';
 
+import AuthContext from '../AuthContext';
+
 const { width } = Dimensions.get('window');
 
 const AdminSettingsScreen = ({navigation}) => {
-  const [isAnalyticsEnabled, setIsAnalyticsEnabled] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const {setDarkMode, darkMode} = useContext(AuthContext);
 
   const settingsSections = [
     {
@@ -58,10 +59,10 @@ const AdminSettingsScreen = ({navigation}) => {
         {
             title: 'Dark Mode',
             subtitle: 'Switch between light and dark ',
-            icon: isDarkMode ? <Moon color="#2c3e50" size={24} /> : <Sun color="#2c3e50" size={24} />,
+            icon: darkMode ? <Moon color="#2c3e50" size={24} /> : <Sun color="#2c3e50" size={24} />,
             type: 'toggle',
-            value: isDarkMode,
-            onToggle: () => setIsDarkMode(!isDarkMode)
+            value: darkMode,
+            onToggle: () => setDarkMode(!darkMode)
           },
       ],
     },
