@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView } from 'react-native';
-import { StarIcon, MapPinIcon, ClockIcon, Edit2Icon } from 'lucide-react-native';
+import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, Pressable } from 'react-native';
+import { StarIcon, MapPinIcon, ClockIcon, Edit } from 'lucide-react-native';
 
 const RestaurantDetailsScreen = ({restaurant, darkMode}) => {
   // Sample restaurant data
@@ -79,8 +79,13 @@ const RestaurantDetailsScreen = ({restaurant, darkMode}) => {
           </View>
 
           <View style={styles.actionButtons}>
-            <Edit2Icon color="#FFD700" size={25} />
-            <Text style={styles.actionText}>Hide</Text>
+            <Pressable style={[styles.actionEdit, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .3)' : 'rgba(0, 0, 0, .2)' }]}>
+                <Edit color="#000" size={25} />
+            </Pressable>
+
+            <Pressable style={[styles.actionHide, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .3)' : 'rgba(0, 0, 0, .2)' }]}>
+                <Text style={styles.actionText}>Hide</Text>
+            </Pressable>
           </View>
 
         </View>
@@ -109,15 +114,16 @@ const styles = StyleSheet.create({
   container: 
   {
     flex: 1,
-    backgroundColor: '#F7F9FC'
   },
 
   restaurantImage: 
   {
-    width: '100%',
+    width: '96%',
     height: 250,
-    resizeMode: 'contain',
-    marginTop: 20
+    resizeMode: 'cover',
+    marginTop: 20,
+    borderRadius: 10,
+    alignSelf: 'center'
   },
 
   detailsCard: 
@@ -129,7 +135,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
-    width: '100%'
+    width: '100%',
+    marginTop: 10,
   },
 
   restaurantName: 
@@ -229,9 +236,34 @@ const styles = StyleSheet.create({
     right: 10,
     top: 70,
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red',
+    alignItems: 'flex-end',
     gap: 10
+  },
+
+  actionEdit:
+  {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'blue',
+    padding: 8,
+    borderRadius: 35
+  },
+
+  actionHide:
+  {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'blue',
+    paddingHorizontal: 17,
+    paddingVertical: 8,
+    borderRadius: 35
+  },
+
+  actionText:
+  {
+    fontSize: 14,
+    letterSpacing: 2,
+    fontWeight: 900
   }
 });
 

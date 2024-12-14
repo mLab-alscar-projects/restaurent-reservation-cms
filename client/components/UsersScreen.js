@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo, useContext, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -11,53 +11,6 @@ import {
 } from 'react-native';
 
 import AuthContext from '../AuthContext';
-import { DarkTheme } from '@react-navigation/native';
-
-// Mock user data with more details
-const initialUsers = [
-  { 
-    id: 1, 
-    name: 'John Doe',
-    email: 'john.doe@example.com', 
-    status: 'active',
-    phone: '+1 (555) 123-4567',
-    picture: 'https://randomuser.me/api/portraits/men/1.jpg'
-  },
-  { 
-    id: 2, 
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com', 
-    status: 'burned',
-    phone: '+1 (555) 987-6543',
-    picture: 'https://randomuser.me/api/portraits/women/1.jpg'
-  },
-  { 
-    id: 3, 
-    name: 'Mike Johnson',
-    email: 'mike.johnson@example.com', 
-    status: 'active',
-    picture: null
-  },
-  { 
-    id: 4, 
-    email: 'sarah.williams@example.com', 
-    status: 'burned'
-  },
-  { 
-    id: 5, 
-    name: 'Alex Taylor',
-    email: 'alex.taylor@example.com', 
-    status: 'active',
-    phone: '+1 (555) 246-8135',
-    picture: 'https://randomuser.me/api/portraits/men/2.jpg'
-  },
-  { 
-    id: 6, 
-    name: 'Emma Wilson',
-    email: 'emma.wilson@example.com', 
-    status: 'burned'
-  }
-];
 
 const PlaceholderImage = 'https://via.placeholder.com/150?text=User+Photo';
 
@@ -65,9 +18,13 @@ const UsersScreen = () => {
 
   const { darkMode } = useContext(AuthContext);
 
-  const [users] = useState(initialUsers);
+  const {users, fetchUsers} = useContext(AuthContext);
   const [filter, setFilter] = useState('all');
   const [selectedUser, setSelectedUser] = useState(null);
+
+  // useEffect(() => {
+  //   fetchUsers(users).then()
+  // })
 
   // Filtered users based on selected filter
   const filteredUsers = useMemo(() => {
@@ -161,7 +118,7 @@ const UsersScreen = () => {
             {selectedUser.phone && (
               <View style={styles.modalDetailContainer}>
                 <Text style={styles.modalDetailLabel}>Phone</Text>
-                <Text style={styles.modalDetailValue}>{selectedUser.phone}</Text>
+                <Text style={styles.modalDetailValue}>{selectedUser.phone || null}</Text>
               </View>
             )}
 

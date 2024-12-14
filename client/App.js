@@ -39,6 +39,7 @@ const SplashScreen = ({ navigation }) => {
 
   return (
     <View style={styles.splashContainer}>
+       <StatusBar backgroundColor={'#97CBDC'}/>
 
       <View style={styles.splashLogo}>
         <SplashScreenChild />
@@ -62,6 +63,7 @@ export default function App() {
 
 
 const [restaurantsDatas, setRestaurantsData] = useState([]);
+const [users, setUsers] = useState([]);
 const [loading, setLoading] = useState(false);
 const [darkMode, setDarkMode]= useState(true);
 
@@ -113,7 +115,7 @@ useEffect(() => {
 
 }, []);
 
-// FETCH FUNCTION
+// FETCH RESTAURENTS FUNCTION
 const fetchRestaurants = async()=>{
 
   try {
@@ -153,6 +155,50 @@ const fetchRestaurants = async()=>{
     setLoading(false); 
   }
 }
+
+
+// FETCH USERS FUNCTION
+const fetchUsers = async()=>{
+
+  try {
+
+      setLoading(true);
+      const token = await AsyncStorage.getItem('token');
+
+      if (!token) {
+        console.error("No token found, cannot fetch users.");
+        return;
+      }
+
+      const response = await axios.
+      get('https://lumpy-clover-production.up.railway.app/api/users',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+        
+
+      );
+
+      setUsers(response.data);
+      console.log(users)
+
+    } catch (error) {
+
+      console.error("Error fetching data:", {
+
+        message: error.message,
+        response: error.response ? error.response.data : "No response data",
+        status: error.response ? error.response.status : "No status",
+        request: error.request,
+
+      });
+  } finally {
+    setLoading(false); 
+  }
+}
+// ENDS
 
 // HANDLE LOGIN
 const handleLogin = async (email, password, setMessage) => {
@@ -256,7 +302,8 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
 
 
   return (
-    <AuthContext.Provider value={{ handleLogin, addRestaurant, fetchRestaurants, restaurants: restaurantsDatas, loader: loading, darkMode, setDarkMode }}>
+    <AuthContext.Provider 
+    value={{ handleLogin, addRestaurant, fetchRestaurants, restaurants: restaurantsDatas, loader: loading, darkMode, setDarkMode, fetchUsers, users }}>
       <NavigationContainer>
         <SafeAreaView backgroundColor= '#97CBDC'/>
         <StatusBar
@@ -449,7 +496,7 @@ const styles = StyleSheet.create({
   splashContainer: 
   {
       flex: 1,
-      backgroundColor: '#fff',
+      backgroundColor: '#97CBDC',
       justifyContent: 'center',
       alignItems: 'center',
       gap: 40

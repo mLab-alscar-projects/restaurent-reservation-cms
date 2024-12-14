@@ -5,7 +5,8 @@ import {
   View, 
   Pressable, 
   Dimensions, 
-  ScrollView 
+  ScrollView,
+  StatusBar 
 } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
@@ -42,6 +43,7 @@ const NotificationsScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.parent}>
+       <StatusBar backgroundColor={'#3498db'}/>
       {/* TOP NAVIGATION */}
       <View style={styles.topNavigation}>
         <View style={styles.profileContainer}>

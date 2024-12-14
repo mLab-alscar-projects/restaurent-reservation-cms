@@ -12,7 +12,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const LoginScreen = ({ navigation }) => {
 
-   const { handleLogin, fetchRestaurants, darkMode } = useContext(AuthContext);
+   const { handleLogin, fetchRestaurants, darkMode, fetchUsers } = useContext(AuthContext);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -28,6 +28,7 @@ const LoginScreen = ({ navigation }) => {
             setLoading(false);
             if (isLoggedIn) {
                 fetchRestaurants();
+                fetchUsers();
                 navigation.replace('Home');
             }
         } catch (error) {
