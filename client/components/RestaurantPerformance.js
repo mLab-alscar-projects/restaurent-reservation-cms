@@ -8,7 +8,8 @@ import
   ScrollView, 
   StyleSheet, 
   Dimensions,
-  Pressable 
+  Pressable,
+  StatusBar 
 } from 'react-native';
 
 import AuthContext from '../AuthContext';
@@ -91,6 +92,8 @@ const RestaurantPerformance = () => {
       contentContainerStyle={styles.contentContainer}
 
     >
+      <StatusBar backgroundColor={'#3498db'}/>
+      
       <Text style={[styles.sectionTitle, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Weekly Performance</Text>
       {/* Overall Insights Section */}
       <Pressable style={styles.insightsContainer}>
@@ -134,7 +137,7 @@ const RestaurantPerformance = () => {
         </View>
       </Pressable>
 
-      <Text style={styles.sectionTitle}>Restaurants Performance</Text>
+      <Text style={[styles.sectionTitle, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Restaurants Performance</Text>
       
       {restaurants.map((restaurant) => (
         <View 

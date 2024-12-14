@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,9 +11,12 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator
+  ActivityIndicator, StatusBar
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+
+// CONTEXT
+import AuthContext from '../AuthContext';
 
 // STORAGE IMPORTS
 import axios from 'axios';
@@ -28,6 +31,9 @@ import * as ImagePicker from 'expo-image-picker';
 const { width } = Dimensions.get('window');
 
 const RestaurantScreen = ({route}) => {
+
+  const { darkMode } = useContext(AuthContext);
+
   // STATE VARIABLES FOR MANAGING SCREEN DATA
   const { restaurant } = route.params;
   const [menuData, setMenuData] = useState([]);
@@ -192,7 +198,7 @@ const RestaurantScreen = ({route}) => {
   // RENDER LOADING INDICATOR
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={[styles.loadingContainer, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
         <ActivityIndicator 
           size="large" 
           color={restaurant.color || '#000'}
@@ -201,23 +207,11 @@ const RestaurantScreen = ({route}) => {
     );
   }
 
-  // RENDER ERROR STATE
-  // if (error) {
-  //   return (
-  //     <View style={styles.errorContainer}>
-  //       <Text style={styles.errorText}>{error}</Text>
-  //       <Pressable 
-  //         style={[styles.retryButton, { backgroundColor: restaurant.color }]}
-  //         onPress={() => {}} // ADD RETRY LOGIC IF NEEDED
-  //       >
-  //         <Text style={styles.retryButtonText}>Retry</Text>
-  //       </Pressable>
-  //     </View>
-  //   );
-  // }
-
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
+
+      {/* <StatusBar backgroundColor={'#d3ddda'} barStyle={'dark-content'}/> */}
+      
       {/* RESTAURANT HEADER */}
       <View style={[styles.header, { backgroundColor: restaurant.color }]}>
         <Text style={styles.headerTitle}>{restaurant.name}</Text>
@@ -234,14 +228,14 @@ const RestaurantScreen = ({route}) => {
           data={menuData}
           keyExtractor={(item) => item.id + 1}
           renderItem={({ item }) => (
-            <View style={styles.menuCard}>
+            <View style={[styles.menuCard, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}>
               <Image 
                 source={{ uri: item.image }} 
                 style={styles.menuImage} 
               />
               <View style={styles.menuDetails}>
-                <Text style={styles.menuName}>{item.name}</Text>
-                <Text style={styles.menuPrice}>{item.price}</Text>
+                <Text style={[styles.menuName, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{item.name}</Text>
+                <Text style={[styles.menuPrice, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{item.price}</Text>
               </View>
               <View style={styles.actionButtons}>
                 <Pressable 
@@ -336,167 +330,199 @@ const RestaurantScreen = ({route}) => {
 
 const styles = StyleSheet.create({
   // LOADING CONTAINER STYLES
-  loadingContainer: {
+  loadingContainer: 
+  {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   
-  // ERROR CONTAINER STYLES
-  errorContainer: {
+  // EXISTING STYLES REMAIN THE SAME AS IN PREVIOUS VERSION
+  container: 
+  {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  errorText: {
-    fontSize: 18,
-    color: 'red',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  retryButton: {
-    padding: 10,
-    borderRadius: 5,
-  },
-  retryButtonText: {
-    color: 'white',
-    textAlign: 'center',
   },
 
-  // EXISTING STYLES REMAIN THE SAME AS IN PREVIOUS VERSION
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
+  header: 
+  {
     paddingVertical: 15,
     alignItems: 'center',
   },
-  headerTitle: {
+
+  headerTitle: 
+  {
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
   },
-  emptyMenuContainer: {
+
+  emptyMenuContainer: 
+  {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
-  emptyMenuText: {
+
+  emptyMenuText: 
+  {
     fontSize: 18,
     color: '#666',
     marginBottom: 10,
   },
-  emptyMenuSubtext: {
+
+  emptyMenuSubtext: 
+  {
     fontSize: 14,
     color: '#999',
   },
-  menuList: {
+
+  menuList: 
+  {
     padding: 10,
   },
-  menuCard: {
+
+  menuCard: 
+  {
     flexDirection: 'row',
-    backgroundColor: 'white',
     marginBottom: 10,
     borderRadius: 10,
     overflow: 'hidden',
     elevation: 2,
   },
-  menuImage: {
+
+  menuImage: 
+  {
     width: 100,
-    height: 100,
+    height: 80,
     resizeMode: 'cover',
   },
-  menuDetails: {
+
+  menuDetails: 
+  {
     flex: 1,
     padding: 10,
     justifyContent: 'center',
   },
-  menuName: {
+
+  menuName: 
+  {
     fontSize: 16,
     fontWeight: 'bold',
   },
-  menuPrice: {
+
+  menuPrice: 
+  {
     fontSize: 14,
     color: '#666',
   },
-  actionButtons: {
+
+  actionButtons: 
+  {
     justifyContent: 'center',
     alignItems: 'center',
   },
-  deleteButton: {
+
+  deleteButton: 
+  {
     backgroundColor: 'red',
     padding: 10,
+    marginRight: 10,
+    borderRadius: 10,
   },
-  addButtonWrapper: {
+
+  addButtonWrapper: 
+  {
     padding: 10,
   },
-  addButton: {
+
+  addButton: 
+  {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 15,
-    borderRadius: 10,
+    borderRadius: 7,
   },
-  addButtonText: {
+
+  addButtonText: 
+  {
     color: 'white',
     marginLeft: 5,
     fontWeight: 'bold',
   },
-  modalOverlay: {
+
+  modalOverlay: 
+  {
     flex: 1,
     justifyContent: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
-  modalContainer: {
+
+  modalContainer: 
+  {
     backgroundColor: 'white',
     margin: 20,
     borderRadius: 10,
     padding: 20,
   },
-  modalTitle: {
+
+  modalTitle: 
+  {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 15,
     textAlign: 'center',
   },
-  input: {
+
+  input: 
+  {
     borderWidth: 1,
     borderColor: '#ddd',
     padding: 10,
     marginBottom: 10,
     borderRadius: 5,
   },
-  modalButtonContainer: {
+
+  modalButtonContainer: 
+  {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 10,
   },
-  modalButton: {
+
+  modalButton: 
+  {
     flex: 1,
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
     marginHorizontal: 5,
   },
-  cancelButton: {
+
+  cancelButton: 
+  {
     backgroundColor: '#ddd',
   },
-  imagePickerButton: {
+
+  imagePickerButton: 
+  {
     backgroundColor: '#f0f0f0',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
     marginBottom: 10,
   },
-  pickedImage: {
+
+  pickedImage: 
+  {
     width: 100,
     height: 100,
     borderRadius: 5,
   },
-  imagePickerText: {
+
+  imagePickerText: 
+  {
     color: '#666',
   },
 });

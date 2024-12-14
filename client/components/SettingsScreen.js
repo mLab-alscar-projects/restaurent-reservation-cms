@@ -6,7 +6,8 @@ import {
   ScrollView, 
   Pressable, 
   Switch,
-  Dimensions
+  Dimensions, 
+  StatusBar
 } from 'react-native';
 import { 
   Users, 
@@ -70,35 +71,36 @@ const AdminSettingsScreen = ({navigation}) => {
   ];
 
   return (
-    <View style={styles.container}>
-
+    <View style={[styles.container, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>      
+    <StatusBar backgroundColor={'#3498db'}/>
+    
       <ScrollView 
         style={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
       >
         {settingsSections.map((section, sectionIndex) => (
           <View key={sectionIndex} style={styles.settingsSection}>
-            <View style={styles.sectionTitleContainer}>
+            <View style={[styles.sectionTitleContainer, ]}>
               <View style={styles.sectionIconContainer}>
                 {section.icon}
               </View>
-              <Text style={styles.sectionTitle}>{section.title}</Text>
+              <Text style={[styles.sectionTitle, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{section.title}</Text>
             </View>
 
             <View style={styles.settingsList}>
               {section.items.map((item, itemIndex) => (
                 <Pressable 
                   key={itemIndex} 
-                  style={styles.settingItem}
+                  style={[styles.settingItem, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}
                   onPress={item.type === 'nav' ? item.onPress : undefined}
                 >
                   <View style={styles.settingItemLeft}>
-                    <View style={styles.settingItemIconContainer}>
+                    <View style={[styles.settingItemIconContainer, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}>
                       {item.icon}
                     </View>
                     <View style={styles.settingItemTextContainer}>
-                      <Text style={styles.settingItemTitle}>{item.title}</Text>
-                      <Text style={styles.settingItemSubtitle}>{item.subtitle}</Text>
+                      <Text style={[styles.settingItemTitle, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>{item.title}</Text>
+                      <Text style={[styles.settingItemSubtitle, {color: darkMode ? 'rgba(255, 255, 255, .5)' : 'rgba(0, 0, 0, .5)'}]}>{item.subtitle}</Text>
                     </View>
                   </View>
                   
@@ -137,13 +139,15 @@ const styles = StyleSheet.create({
   settingsSection: {
     marginBottom: 25,
   },
-  sectionTitleContainer: {
+  sectionTitleContainer: 
+  {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
   },
-  sectionIconContainer: {
-    backgroundColor: '#f4f7fa',
+
+  sectionIconContainer: 
+  {
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -151,13 +155,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 15,
   },
-  sectionTitle: {
+  sectionTitle: 
+  {
     fontSize: 18,
     fontWeight: '600',
-    color: '#2c3e50',
   },
-  settingsList: {
-    backgroundColor: 'white',
+
+  settingsList: 
+  {
     borderRadius: 15,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -165,21 +170,20 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+
   settingItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 15,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f4f7fa',
+    borderRadius: 15,
   },
   settingItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   settingItemIconContainer: {
-    backgroundColor: '#f4f7fa',
     width: 45,
     height: 45,
     borderRadius: 22,

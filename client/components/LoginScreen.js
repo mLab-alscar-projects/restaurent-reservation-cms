@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, Pressable, TextInput, Alert, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, Pressable, TextInput, StatusBar, ActivityIndicator } from 'react-native';
 
 // SCREENS
 import SplashScreenChild from './SplashScreen';
@@ -39,12 +39,15 @@ const LoginScreen = ({ navigation }) => {
 
     return (
         <View style={[styles.Parent, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
+                <StatusBar backgroundColor={'#97CBDC'}/>
             {/* FIRST CHILD */}
             <View style={styles.firstChild}>
                 <View style={styles.sibling}>
                     <SplashScreenChild />
                 </View>
-                <View style={styles.skewedBottom} />
+                <View style={styles.skewedBottom} >
+                    <Text style={styles.Text}>Alscar Tables</Text>
+                </View>
             </View>
 
             {/* SECOND CHILD */}
@@ -140,6 +143,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         gap: 15,
+        marginTop: 20
     },
     inputWrapper: {
         width: '100%',
@@ -193,6 +197,21 @@ const styles = StyleSheet.create({
         letterSpacing: 1,
         color: 'red',
     },
+
+    // TEXT
+    Text: 
+    {
+        fontSize: 24,
+        letterSpacing: 3,
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+        width: '100%',
+        textAlign: 'center',
+        color: '#231934',
+        // transform: [{ rotate: '-8deg' }], 
+    },
+
+    // ENDS
 });
 
 export default LoginScreen;

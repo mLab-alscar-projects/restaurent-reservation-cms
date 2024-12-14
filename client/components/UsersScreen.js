@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useContext } from 'react';
 import { 
   View, 
   Text, 
@@ -9,6 +9,9 @@ import {
   Modal,
   Image
 } from 'react-native';
+
+import AuthContext from '../AuthContext';
+import { DarkTheme } from '@react-navigation/native';
 
 // Mock user data with more details
 const initialUsers = [
@@ -59,6 +62,9 @@ const initialUsers = [
 const PlaceholderImage = 'https://via.placeholder.com/150?text=User+Photo';
 
 const UsersScreen = () => {
+
+  const { darkMode } = useContext(AuthContext);
+
   const [users] = useState(initialUsers);
   const [filter, setFilter] = useState('all');
   const [selectedUser, setSelectedUser] = useState(null);
@@ -79,14 +85,14 @@ const UsersScreen = () => {
   // Render individual user item
   const renderUserItem = ({ item }) => (
     <TouchableOpacity 
-      style={styles.userItem}
+      style={[styles.userItem, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}
       onPress={() => setSelectedUser(item)}
     >
-      <Text style={styles.emailText}>{item.email}</Text>
+      <Text style={[styles.emailText, {color: darkMode ? 'rgba(255, 255, 255, .5)' : 'rgba(0, 0, 0, .5)'}]}>{item.email}</Text>
       <View 
         style={[
           styles.statusBadge, 
-          item.status === 'active' ? styles.activeBadge : styles.burnedBadge
+          item.status === 'active' ? styles.activeBadge : styles.burnedBadge, 
         ]}
       >
         <Text style={styles.statusText}>{item.status}</Text>
@@ -99,7 +105,8 @@ const UsersScreen = () => {
     <TouchableOpacity 
       style={[
         styles.filterButton, 
-        filter === status && styles.activeFilterButton
+        filter === status && styles.activeFilterButton,
+        { backgroundColor: darkMode ? 'rgba(255, 255, 255, .3)' : 'rgba(0, 0, 0, .3)' }
       ]}
       onPress={() => setFilter(status)}
     >
@@ -177,14 +184,14 @@ const UsersScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
       {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Users Management</Text>
+      <View style={[styles.header, { backgroundColor: darkMode ? '#333333' : '#f4f7fa', borderBottomColor: darkMode ? '#444' : '#e0e0e0' }]}>
+        <Text style={[styles.headerText, {color: darkMode ? 'white' : 'black'}]}>Users Management</Text>
       </View>
 
       {/* Filter Buttons */}
-      <View style={styles.filterContainer}>
+      <View style={[styles.filterContainer, {borderBottomColor: darkMode ? '#444' : '#e0e0e0'}]}>
         <FilterButton status="all" label="All" />
         <FilterButton status="active" label="Active" />
         <FilterButton status="burned" label="Burned" />
@@ -219,9 +226,7 @@ const styles = StyleSheet.create({
   header: 
   {
     padding: 15,
-    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
   },
 
   headerText: 
@@ -237,9 +242,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 10,
-    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
   },
 
   filterButton: 

@@ -7,7 +7,6 @@ const SplashScreenChild = () => {
     <View style={styles.Parent}>
         <View style={styles.firstChild}>
             <Image source={require('../assets/splashIcon.jpg')} style={styles.image} />
-            <Text style={styles.Text}>Alscar Tables</Text>
         </View>
     </View>
   );
@@ -48,22 +47,6 @@ const styles = StyleSheet.create({
         height: '100%',
         width: '100%',
         resizeMode: 'contain',
-    },
-
-    // ENDS
-
-
-    // TEXT
-    Text: 
-    {
-        fontSize: 24,
-        letterSpacing: 3,
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
-        width: '100%',
-        textAlign: 'center',
-        color: '#231934',
-        // transform: [{ rotate: '-8deg' }], 
     },
 
     // ENDS

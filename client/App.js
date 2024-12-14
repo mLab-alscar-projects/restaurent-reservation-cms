@@ -260,7 +260,7 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
       <NavigationContainer>
         <SafeAreaView backgroundColor= '#97CBDC'/>
         <StatusBar
-            backgroundColor={darkMode ? '#333' : '#f9f9f9'} 
+            backgroundColor={darkMode ? '#333333' : '#f4f7fa'} 
             barStyle={darkMode ? 'light-content' : 'dark-content'} 
         />
         <Stack.Navigator initialRouteName="Splash">
@@ -288,15 +288,15 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
               headerShown: true,
               headerTitle: 'Restaurant Menu', 
               headerStyle: {
-                backgroundColor: '#d3ddda', 
+                backgroundColor: darkMode ? '#333333' : '#f4f7fa', 
               },
               headerTitleStyle: {
-                color: '#000', 
+                color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)', 
                 fontSize: 18,
                 fontWeight: 'bold',
                 letterSpacing: 1
               },
-              headerTintColor: '#000', 
+              headerTintColor: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)', 
             }}
           />
 
