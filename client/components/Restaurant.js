@@ -27,6 +27,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 // IMAGE PICKER
 import * as ImagePicker from 'expo-image-picker';
+import RestaurantDetailsScreen from './RestaurantDetailsScreen';
 
 const { width } = Dimensions.get('window');
 
@@ -38,6 +39,7 @@ const RestaurantScreen = ({route}) => {
   const { restaurant } = route.params;
   const [menuData, setMenuData] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isInforVisible, setIsinfoVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newMenuItem, setNewMenuItem] = useState({
@@ -215,6 +217,9 @@ const RestaurantScreen = ({route}) => {
       {/* RESTAURANT HEADER */}
       <View style={[styles.header, { backgroundColor: restaurant.color }]}>
         <Text style={styles.headerTitle}>{restaurant.name}</Text>
+        <Pressable style={styles.infoButton} onPress={()=> setIsinfoVisible(true)}>
+          <MaterialIcons name='info' color={'#333'} size={30} />
+        </Pressable>
       </View>
 
       {/* MENU ITEMS LIST OR EMPTY STATE */}
@@ -324,6 +329,26 @@ const RestaurantScreen = ({route}) => {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* INFORMATION MODAL */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isInforVisible}
+        onRequestClose={() => setIsinfoVisible(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={styles.infoParentOverall}
+        >
+          <RestaurantDetailsScreen restaurant={restaurant} darkMode={darkMode}/>
+
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* ENDS */}
+
+
     </View>
   );
 };
@@ -525,6 +550,21 @@ const styles = StyleSheet.create({
   {
     color: '#666',
   },
+
+  infoButton:
+  {
+    position: 'absolute',
+    right: 15,
+    top: 15,
+    backgroundColor: 'rgba(255, 255, 255, .7)',
+    borderRadius: 35
+  },
+
+  infoParentOverall:
+  {
+    width: '100%',
+    height: '100%',
+  }
 });
 
 export default RestaurantScreen;
