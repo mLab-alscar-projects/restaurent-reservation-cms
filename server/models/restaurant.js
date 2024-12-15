@@ -6,7 +6,7 @@ const RestaurantSchema = new mongoose.Schema({
     // NAME
     name: 
     {
-        type: String, required: true, trim: true, minlength: 2, maxlength: 15
+        type: String, required: true, trim: true, minlength: 2, maxlength: 30
       },
     //   ENDS
 

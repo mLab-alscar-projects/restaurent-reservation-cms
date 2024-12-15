@@ -9,6 +9,7 @@ import { getUsers } from "../controllers/getUsersController.js";
 import createRestaurant from "../controllers/createRestaurantController.js";
 import getAllRestaurants from "../controllers/getAllRestaurantController.js";
 import GetRestaurantByID from "../controllers/getRestaurantByIdController.js";
+import updateRestaurant from "../controllers/updateRestaurantController.js";
 
 import { addMenu } from "../controllers/menuController.js";
 import { editMenu } from "../controllers/updateMenuController.js";
@@ -45,31 +46,43 @@ router.post(
   },
   createUser
 );
+// ENDS
 
 // LOGIN ROUTE
 router.post("/login",  LoginUser);
+// ENDS
 
 // FOR DEBUGGING CASE
 router.get("/users", getUsers);
+// ENDS
 
 // USER REGISTER AND LOGIN ENDS
 
 // POST RESTAURANT
 router.post("/restaurant", protect, createRestaurant);
+// ENDS
 
 // GET RESTAURANTS
 router.get("/fetchRestaurants", protect, getAllRestaurants);
 router.get("/fetchRestaurants/:id", protect, GetRestaurantByID);
+// ENDS
+
+// UPDATE RESTAURANT
+router.put("/updateRestaurant/:id", protect, updateRestaurant);
+// ENDS
 
 // ADD MENU
 router.post('/restaurants/:id/menu', protect, addMenu);
+// ENDS
 
 // GET MENU
 router.get("/restaurants/:restaurantId/menu", protect, getRestaurantMenu);
 router.get("/restaurant/:restaurantId/menu/:id", protect, GetMenuByID);
+// ENDS
 
 // PUT MENU
 router.put("/restaurants/:restaurantId/menu/:menuItemId", protect, editMenu);
+// ENDS
 
 
 export default router;
