@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -6,7 +6,8 @@ import {
   Image, 
   ScrollView, 
   Pressable,
-  Dimensions
+  Dimensions,
+  StatusBar
 } from 'react-native';
 
 import { 
@@ -20,12 +21,15 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
+import AuthContext from '../AuthContext';
 
 const { width } = Dimensions.get('window');
 
 const AdminProfileScreen = (
    {navigation}
 ) => {
+  const {darkMode, users, restaurants} = useContext(AuthContext);
+
   const [admin] = useState({
     name: "Oscar Poco",
     role: "Chief Administrator",
@@ -48,7 +52,7 @@ const AdminProfileScreen = (
     },
     { 
       icon: <Calendar color="#e74c3c" size={24} />, 
-      label: "Monthly Bookings", 
+      label: "Monthly Reservations", 
       value: "123" 
     }
   ];
@@ -88,8 +92,11 @@ const AdminProfileScreen = (
 
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerBackground}>
+    <View style={[styles.container, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
+
+      <StatusBar backgroundColor={'#3498db'}/>
+      
+      <View style={[styles.headerBackground, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}>
         <View style={styles.headerContent}>
           <View style={styles.headerTop}>
             <Pressable style={styles.settingsButton} onPress={()=> navigation.navigate('Settings')}>
@@ -110,7 +117,7 @@ const AdminProfileScreen = (
               </View>
             </View>
 
-            <Text style={styles.adminName}>{admin.name}</Text>
+            <Text style={[styles.adminName, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{admin.name}</Text>
             <Text style={styles.adminRole}>{admin.role}</Text>
             <Text style={styles.adminEmail}>{admin.email}</Text>
             <Text style={styles.lastLogin}>
@@ -122,18 +129,18 @@ const AdminProfileScreen = (
 
       <View style={styles.statsContainer}>
         {adminStats.map((stat, index) => (
-          <View key={index} style={styles.statCard}>
-            <View style={styles.statIconContainer}>
+          <View key={index} style={[styles.statCard, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}>
+            <View style={[styles.statIconContainer, { backgroundColor: darkMode ? '#rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}>
               {stat.icon}
             </View>
-            <Text style={styles.statValue}>{stat.value}</Text>
-            <Text style={styles.statLabel}>{stat.label}</Text>
+            <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{stat.value}</Text>
+            <Text style={[styles.statLabel, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>{stat.label}</Text>
           </View>
         ))}
       </View>
 
       <ScrollView 
-        style={styles.actionsContainer}
+        style={[styles.actionsContainer]}
         showsVerticalScrollIndicator={false}
       >
         {quickActions.map((action, index) => (
@@ -141,11 +148,12 @@ const AdminProfileScreen = (
             key={index} 
             style={[
               styles.actionItem,
-              action.destructive && styles.destructiveAction
+              action.destructive && styles.destructiveAction,
+              { backgroundColor: darkMode ? '#444' : '#ffffff' }
             ]}
             onPress={action.onPress} 
           >
-            <View style={styles.actionIconContainer}>
+            <View style={[styles.actionIconContainer, { backgroundColor: darkMode ? '#rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}>
               {action.icon}
             </View>
             <View style={styles.actionTextContainer}>
@@ -170,14 +178,10 @@ const styles = StyleSheet.create({
   container: 
   {
     flex: 1,
-    backgroundColor: '#f4f7fa',
   },
 
   headerBackground: 
   {
-    backgroundColor: 'white',
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -313,6 +317,7 @@ const styles = StyleSheet.create({
   {
     fontSize: 12,
     color: '#7f8c8d',
+    textAlign: 'center'
   },
   actionsContainer: 
   {
@@ -360,8 +365,9 @@ const styles = StyleSheet.create({
   {
     fontSize: 16,
     fontWeight: '600',
-    color: '#2c3e50',
     marginBottom: 5,
+    color: '#7f8c8d',
+
   },
 
   destructiveTitleColor: 
