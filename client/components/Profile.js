@@ -29,6 +29,9 @@ const AdminProfileScreen = (
    {navigation}
 ) => {
   const {darkMode, users, restaurants} = useContext(AuthContext);
+  const countRestaurants = restaurants.filter(restaurant => restaurant.isActive).length;
+  const countUsers = users.length;  
+  const user = AsyncStorage.getItem("userEmail");
 
   const [admin] = useState({
     name: "Oscar Poco",
@@ -43,17 +46,23 @@ const AdminProfileScreen = (
     { 
       icon: <Users color="#3498db" size={24} />, 
       label: "Total Users", 
-      value: "1,345" 
+      value: countUsers,
+      onPress: () => navigation.navigate('users'),
+
     },
     { 
       icon: <Grid color="#2ecc71" size={24} />, 
       label: "Active Restaurants", 
-      value: "3" 
+      value: countRestaurants,
+      onPress: () => navigation.navigate('Home'),
+
     },
     { 
       icon: <Calendar color="#e74c3c" size={24} />, 
       label: "Monthly Reservations", 
-      value: "123" 
+      value: "123" ,
+      onPress: () => navigation.navigate('ReservationsScreen'),
+
     }
   ];
 
@@ -100,7 +109,7 @@ const AdminProfileScreen = (
         <View style={styles.headerContent}>
           <View style={styles.headerTop}>
             <Pressable style={styles.settingsButton} onPress={()=> navigation.navigate('Settings')}>
-              <Settings color="#2c3e50" size={30} />
+              <Settings color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} size={30} />
             </Pressable>
           </View>
 
@@ -119,7 +128,7 @@ const AdminProfileScreen = (
 
             <Text style={[styles.adminName, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{admin.name}</Text>
             <Text style={styles.adminRole}>{admin.role}</Text>
-            <Text style={styles.adminEmail}>{admin.email}</Text>
+            <Text style={styles.adminEmail}>{user}</Text>
             <Text style={styles.lastLogin}>
               Last Login: {admin.lastLogin}
             </Text>
@@ -129,13 +138,13 @@ const AdminProfileScreen = (
 
       <View style={styles.statsContainer}>
         {adminStats.map((stat, index) => (
-          <View key={index} style={[styles.statCard, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}>
+          <Pressable key={index} style={[styles.statCard, { backgroundColor: darkMode ? '#444' : '#ffffff' }]} onPress={stat.onPress}>
             <View style={[styles.statIconContainer, { backgroundColor: darkMode ? '#rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}>
               {stat.icon}
             </View>
             <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{stat.value}</Text>
             <Text style={[styles.statLabel, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>{stat.label}</Text>
-          </View>
+          </Pressable>
         ))}
       </View>
 

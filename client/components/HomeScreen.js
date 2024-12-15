@@ -8,7 +8,7 @@ import {
   Dimensions,
   ScrollView,
   ActivityIndicator,
-  Animated
+  StatusBar
 } from 'react-native';
 
 import AuthContext from '../AuthContext';
@@ -16,7 +16,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ICONS
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import LongPressItemMenu from './LongPressFunction';
 
 
 // SCREEN DIMENSIONS
@@ -49,6 +48,8 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={[styles.parent, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
+
+      <StatusBar backgroundColor={darkMode ? '#333333' : '#f4f7fa'} />
       {/* TOP NAVIGATION SECTION */}
       <View style={styles.topNavigation}>
         <View style={styles.profileContainer}>

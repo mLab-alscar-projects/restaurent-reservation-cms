@@ -8,7 +8,8 @@ import {
   Image, 
   StyleSheet, 
   SafeAreaView, 
-  ActivityIndicator
+  ActivityIndicator,
+  StatusBar
 } from 'react-native';
 
 import MapView, { Marker } from 'react-native-maps';
@@ -83,6 +84,7 @@ const RestaurantFormScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: '#d3ddda' }]}>
+      <StatusBar backgroundColor="#3498db"/>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.title}>Add New Restaurant</Text>
         

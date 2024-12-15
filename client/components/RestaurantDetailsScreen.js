@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, Pressable } from 'react-native';
-import { StarIcon, MapPinIcon, ClockIcon, Edit } from 'lucide-react-native';
+import { StarIcon, MapPinIcon, ClockIcon, Edit, Radiation } from 'lucide-react-native';
 
 const RestaurantDetailsScreen = ({restaurant, darkMode}) => {
 
@@ -70,6 +70,11 @@ const RestaurantDetailsScreen = ({restaurant, darkMode}) => {
             <View style={styles.infoItem}>
               <MapPinIcon color="#E74C3C" size={20} />
               <Text style={[styles.infoText, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>{restaurant.location}</Text>
+            </View>
+
+            <View style={styles.infoItem}>
+              <Radiation color="#2ecc71" size={20} />
+              <Text style={[styles.infoText, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>{restaurant.isActive ? 'Active' : 'Not Active'}</Text>
             </View>
           </View>
 

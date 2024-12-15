@@ -243,12 +243,23 @@ const RestaurantScreen = ({route}) => {
                 <Text style={[styles.menuPrice, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{item.price}</Text>
               </View>
               <View style={styles.actionButtons}>
+
                 <Pressable 
                   onPress={() => handleDelete(item)} 
-                  style={styles.deleteButton}
+                  style={[styles.actionButton, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}
                 >
-                  <MaterialIcons name="delete" size={20} color="#fff" />
+                  <Text style={[styles.actionText, {color: '#e74b4b'}]}>Hide</Text>
                 </Pressable>
+
+                <Pressable 
+                  onPress={() => handleDelete(item)} 
+                  style={[styles.actionButton, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}
+                >
+
+                <Text style={[styles.actionText, {color: '#2ecc71'}]}>Edit</Text>
+
+                </Pressable>
+
               </View>
             </View>
           )}
@@ -411,7 +422,7 @@ const styles = StyleSheet.create({
   {
     flexDirection: 'row',
     marginBottom: 10,
-    borderRadius: 10,
+    borderRadius: 7,
     overflow: 'hidden',
     elevation: 2,
   },
@@ -446,14 +457,23 @@ const styles = StyleSheet.create({
   {
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 5
   },
 
-  deleteButton: 
+  actionButton: 
   {
-    backgroundColor: 'red',
-    padding: 10,
+    paddingHorizontal: 5,
+    paddingVertical: 6,
     marginRight: 10,
-    borderRadius: 10,
+    borderRadius: 5,
+    width: 60
+  },
+
+  actionText: 
+  {
+   textAlign: 'center',
+   letterSpacing: 1,
+   fontWeight: 600
   },
 
   addButtonWrapper: 
