@@ -3,7 +3,7 @@ import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, Pressable } fr
 import { StarIcon, MapPinIcon, ClockIcon, Edit } from 'lucide-react-native';
 
 const RestaurantDetailsScreen = ({restaurant, darkMode}) => {
-  // Sample restaurant data
+
   const restaurantData = {
     name: 'Gourmet Haven',
     image: require('../assets/munchies.jpg'), 

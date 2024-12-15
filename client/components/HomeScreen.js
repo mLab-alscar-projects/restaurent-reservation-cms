@@ -8,6 +8,7 @@ import {
   Dimensions,
   ScrollView,
   ActivityIndicator,
+  Animated
 } from 'react-native';
 
 import AuthContext from '../AuthContext';
@@ -15,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ICONS
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import LongPressItemMenu from './LongPressFunction';
 
 
 // SCREEN DIMENSIONS
@@ -24,6 +26,7 @@ const HomeScreen = ({ navigation }) => {
   const { restaurants, loader, darkMode } = useContext(AuthContext);
   const count = restaurants.length; 
   const [userEmail, setUserEmail] = useState('');
+  
 
   // GET THE USERNAME
   useEffect(() => {
@@ -38,6 +41,7 @@ const HomeScreen = ({ navigation }) => {
 
     fetchUserDeails();
   }, []);
+
 
   // GETTING THE INITIAL OF THE USER
   const firstLetter = userEmail ? userEmail.charAt(0).toUpperCase() : '';
@@ -169,6 +173,7 @@ const HomeScreen = ({ navigation }) => {
                     </View>
 
                     <View style={[styles.bottomColor, {backgroundColor: restaurant.color}]}/>
+                    
                   </View>
                 </Pressable>
               ))
@@ -178,6 +183,7 @@ const HomeScreen = ({ navigation }) => {
               </View>
             )}
           </View>
+
 
         </ScrollView>
 
