@@ -1,7 +1,7 @@
 import Menu from "../models/menu.js";
 
 
-export const addOrUpdateMenu = async (req, res) => {
+export const addMenu = async (req, res) => {
   const { id } = req.params; 
   const { menuItems } = req.body; 
 

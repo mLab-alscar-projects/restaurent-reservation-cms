@@ -52,6 +52,16 @@ const MenuSchema = new mongoose.Schema(
             message: props => `${props.value} is not a valid image path!`
             }
         },
+
+        isActive: 
+        {
+            type: Boolean, default: true
+        },
+
+        createdAt: 
+        {
+            type: Date, default: Date.now
+        },
     },
   ],
 }, { timestamps: true });

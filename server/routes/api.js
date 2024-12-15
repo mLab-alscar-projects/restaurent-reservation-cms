@@ -8,9 +8,12 @@ import { getUsers } from "../controllers/getUsersController.js";
 
 import createRestaurant from "../controllers/createRestaurantController.js";
 import getAllRestaurants from "../controllers/getAllRestaurantController.js";
+import GetRestaurantByID from "../controllers/getRestaurantByIdController.js";
 
-import { addOrUpdateMenu } from "../controllers/menuController.js";
+import { addMenu } from "../controllers/menuController.js";
+import { editMenu } from "../controllers/updateMenuController.js";
 import { getRestaurantMenu } from "../controllers/getRestaurantMenuController.js";
+import GetMenuByID from "../controllers/getMenuByIdControler.js";
 
 // VALIDATOR
 import { body, validationResult } from 'express-validator';
@@ -56,12 +59,17 @@ router.post("/restaurant", protect, createRestaurant);
 
 // GET RESTAURANTS
 router.get("/fetchRestaurants", protect, getAllRestaurants);
+router.get("/fetchRestaurants/:id", protect, GetRestaurantByID);
 
 // ADD MENU
-router.post('/restaurants/:id/menu', protect, addOrUpdateMenu);
+router.post('/restaurants/:id/menu', protect, addMenu);
 
 // GET MENU
 router.get("/restaurants/:restaurantId/menu", protect, getRestaurantMenu);
+router.get("/restaurant/:restaurantId/menu/:id", protect, GetMenuByID);
+
+// PUT MENU
+router.put("/restaurants/:restaurantId/menu/:menuItemId", protect, editMenu);
 
 
 export default router;
