@@ -11,7 +11,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
-  ActivityIndicator, StatusBar
+  ActivityIndicator
 } from 'react-native';
 import Toast from 'react-native-toast-message';
 
@@ -84,6 +84,37 @@ const RestaurantScreen = ({route}) => {
     fetchMenu();
   }, [restaurant._id]);
 
+  const fetchMenu = async () => {
+    // RESET LOADING AND ERROR STATES
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // RETRIEVE AUTH TOKEN
+      const token = await AsyncStorage.getItem('token');
+      
+      // FETCH MENU ITEMS
+      const response = await axios.get(
+        `https://acrid-street-production.up.railway.app/api/v2/restaurants/${restaurant._id}/menu`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      
+      // UPDATE MENU DATA
+      setMenuData(response.data.menuItems);
+    } catch (error) {
+      // SET ERROR STATE IF FETCHING FAILS
+      console.error("ERROR FETCHING MENU:", error);
+      setError('Failed to load menu items');
+    } finally {
+      // STOP LOADING INDICATOR
+      setIsLoading(false);
+    }
+  };
+
   // IMAGE PICKER FUNCTION
   const pickImage = async () => {
     // REQUEST MEDIA LIBRARY PERMISSIONS
@@ -132,7 +163,6 @@ const RestaurantScreen = ({route}) => {
       // Generate a unique ID using expo-random
       const id = Date.now().toString();
   
-      // Create the new item object
       const newItem = {
         id: id, 
         name: newMenuItem.name.trim(),
@@ -161,7 +191,6 @@ const RestaurantScreen = ({route}) => {
       setNewMenuItem({ name: '', price: '', image: null });
       setIsModalVisible(false);
   
-      console.log('MENU ITEM ADDED SUCCESSFULLY');
       Toast.show({
         type: 'success', 
         text1: `Success`,
@@ -174,26 +203,47 @@ const RestaurantScreen = ({route}) => {
   };
   
 
-  // DELETE MENU ITEM HANDLER
-  const handleDelete = async (item) => {
+  // EDIT MENU ITEM STATUS
+  const handleUpdateAvilability = async (item) => {
+
+    setIsLoading(true);
     try {
       // RETRIEVE AUTH TOKEN
       const token = await AsyncStorage.getItem('token');
-      
-      // SEND DELETE REQUEST
-      await axios.delete(
+
+      const updatedItem =
+      {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        image: item.image || null,
+        isActive: !item.isActive,
+      }
+
+      await axios.put(
         `https://acrid-street-production.up.railway.app/api/v2/restaurants/${restaurant._id}/menu/${item.id}`,
+        {updatedItem},
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
+
+      fetchMenu(item.id);
+      Toast.show({
+        type: 'success', 
+        text1: `Success`,
+        text2: 'You have successfully updated the Menu status',
+        position: 'bottom',
+      });
       
-      // REMOVE ITEM FROM LOCAL STATE
-      setMenuData(menuData.filter(menuItem => menuItem.id !== item.id));
+      
     } catch (error) {
-      console.error("ERROR DELETING MENU ITEM:", error);
+      console.error("ERROR UPDATING MENU STATUS:", error);
+    } finally
+    {
+      setIsLoading(false);
     }
   };
 
@@ -212,7 +262,6 @@ const RestaurantScreen = ({route}) => {
   return (
     <View style={[styles.container, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
 
-      {/* <StatusBar backgroundColor={'#d3ddda'} barStyle={'dark-content'}/> */}
       
       {/* RESTAURANT HEADER */}
       <View style={[styles.header, { backgroundColor: restaurant.color }]}>
@@ -241,18 +290,19 @@ const RestaurantScreen = ({route}) => {
               <View style={styles.menuDetails}>
                 <Text style={[styles.menuName, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{item.name}</Text>
                 <Text style={[styles.menuPrice, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{item.price}</Text>
+                <Text style={[styles.menuPrice, {color: item.isActive ? '#2ecc71' : '#e74b4b'}]}>{item.isActive ? 'Available' : 'Out of stock'}</Text>
               </View>
               <View style={styles.actionButtons}>
 
                 <Pressable 
-                  onPress={() => handleDelete(item)} 
+                  onPress={() => handleUpdateAvilability(item)} 
                   style={[styles.actionButton, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}
                 >
-                  <Text style={[styles.actionText, {color: '#e74b4b'}]}>Hide</Text>
+                  <Text style={[styles.actionText, {color: '#e74b4b'}]}>Status</Text>
                 </Pressable>
 
                 <Pressable 
-                  onPress={() => handleDelete(item)} 
+                  // onPress={() => handleDelete(item)} 
                   style={[styles.actionButton, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}
                 >
 
@@ -429,8 +479,8 @@ const styles = StyleSheet.create({
 
   menuImage: 
   {
-    width: 100,
-    height: 80,
+    width: 120,
+    height: '100%',
     resizeMode: 'cover',
   },
 
@@ -445,12 +495,14 @@ const styles = StyleSheet.create({
   {
     fontSize: 16,
     fontWeight: 'bold',
+    letterSpacing : 1
   },
 
   menuPrice: 
   {
     fontSize: 14,
     color: '#666',
+    letterSpacing : 1
   },
 
   actionButtons: 

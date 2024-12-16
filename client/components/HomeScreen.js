@@ -50,6 +50,7 @@ const HomeScreen = ({ navigation }) => {
     <View style={[styles.parent, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
 
       <StatusBar backgroundColor={darkMode ? '#333333' : '#f4f7fa'} />
+
       {/* TOP NAVIGATION SECTION */}
       <View style={styles.topNavigation}>
         <View style={styles.profileContainer}>
@@ -497,8 +498,7 @@ const styles = StyleSheet.create({
      bottom: 0,
      width: 300,
      height: 6,
-     borderBottomRightRadius: 12,
-     borderBottomLeftRadius: 12,
+    
   },
 
   restaurantLoaderContainer:

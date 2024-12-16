@@ -403,7 +403,9 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
                 letterSpacing: 1
               },
               headerTintColor: '#000', 
+              
             }}
+            
           />
 
           <Stack.Screen
