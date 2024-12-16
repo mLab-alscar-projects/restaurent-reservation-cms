@@ -1,6 +1,5 @@
 import React, { useEffect, useState,useContext } from 'react';
 import {
-  StyleSheet,
   Text,
   View,
   FlatList,
@@ -14,6 +13,7 @@ import {
   ActivityIndicator
 } from 'react-native';
 import Toast from 'react-native-toast-message';
+import styles from '../styles/styles';
 
 // CONTEXT
 import AuthContext from '../AuthContext';
@@ -38,6 +38,8 @@ const RestaurantScreen = ({route}) => {
   // STATE VARIABLES FOR MANAGING SCREEN DATA
   const { restaurant } = route.params;
   const [menuData, setMenuData] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isInforVisible, setIsinfoVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -144,6 +146,8 @@ const RestaurantScreen = ({route}) => {
   // ADD MENU ITEM HANDLER
   
   const handleAddMenuItem = async () => {
+
+    setIsLoading(true);
     if (!newMenuItem.name.trim() || !newMenuItem.price.trim()) {
       console.log('MISSING MENU ITEM DETAILS');
       return;
@@ -199,6 +203,9 @@ const RestaurantScreen = ({route}) => {
       });
     } catch (error) {
       console.error('ERROR ADDING MENU ITEM:', error.response?.data || error.message);
+    } finally
+    {
+      setIsLoading(false);
     }
   };
   
@@ -235,6 +242,52 @@ const RestaurantScreen = ({route}) => {
         type: 'success', 
         text1: `Success`,
         text2: 'You have successfully updated the Menu status',
+        position: 'bottom',
+      });
+      
+      
+    } catch (error) {
+      console.error("ERROR UPDATING MENU STATUS:", error);
+    } finally
+    {
+      setIsLoading(false);
+    }
+  };
+
+  console.log('Selected item : ',selectedItem);
+
+  // EDIT MENU ITEM
+  const  handleUpdateItem= async (selectedItem) => {
+
+    setIsLoading(true);
+    try {
+      // RETRIEVE AUTH TOKEN
+      const token = await AsyncStorage.getItem('token');
+
+      const updatedItem =
+      {
+        id: selectedItem.id,
+        name: newMenuItem.name.trim() || selectedItem.name,
+        price: selectedItem.price,
+        image: newMenuItem.name.trim() || selectedItem.image || null,
+        isActive: selectedItem.isActive,
+      }
+
+      await axios.put(
+        `https://acrid-street-production.up.railway.app/api/v2/restaurants/${restaurant._id}/menu/${selectedItem.id}`,
+        {updatedItem},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      fetchMenu(selectedItem.id);
+      Toast.show({
+        type: 'success', 
+        text1: `Success`,
+        text2: 'You have successfully updated the Menu',
         position: 'bottom',
       });
       
@@ -298,15 +351,21 @@ const RestaurantScreen = ({route}) => {
                   onPress={() => handleUpdateAvilability(item)} 
                   style={[styles.actionButton, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}
                 >
-                  <Text style={[styles.actionText, {color: '#e74b4b'}]}>Status</Text>
+                  <Text style={[styles.actionText, {color: '#3498db'}]}>{item.isActive ? 'Disable' : 'Enable'}</Text>
                 </Pressable>
 
                 <Pressable 
-                  // onPress={() => handleDelete(item)} 
+                  onPress={() => 
+                    {
+                      setIsEditing(true);
+                      setSelectedItem(item);
+                      setIsModalVisible(true);
+                    }
+                  } 
                   style={[styles.actionButton, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}
                 >
 
-                <Text style={[styles.actionText, {color: '#2ecc71'}]}>Edit</Text>
+                <Text style={[styles.actionText, {color: '#2ecc71'}]}>Update</Text>
 
                 </Pressable>
 
@@ -362,7 +421,7 @@ const RestaurantScreen = ({route}) => {
             >
               {newMenuItem.image ? (
                 <Image 
-                  source={{ uri: newMenuItem.image }} 
+                  source={{ uri: newMenuItem.image}} 
                   style={styles.pickedImage} 
                 />
               ) : (
@@ -376,16 +435,33 @@ const RestaurantScreen = ({route}) => {
                 onPress={() => {
                   setIsModalVisible(false);
                   setNewMenuItem({ name: '', price: '', image: null });
+                  setIsEditing(false);
+                  setSelectedItem(null);
                 }}
               >
                 <Text style={styles.modalButtonText}>CANCEL</Text>
               </Pressable>
+              
+
+              {isEditing ? 
+
               <Pressable
-                style={[styles.modalButton, styles.addButton]}
+                style={[styles.modalButton, styles.addButton, {backgroundColor: '#3498db'}]}
+                onPress={handleUpdateItem}
+              >
+                <Text style={styles.modalButtonText}> {isLoading ? <ActivityIndicator size={"small"}/> : 'UPDATE ITEM'}</Text>
+              </Pressable> 
+              
+              : 
+              
+              <Pressable
+                style={[styles.modalButton, styles.addButton, {backgroundColor: '#2ecc71'}]}
                 onPress={handleAddMenuItem}
               >
-                <Text style={styles.modalButtonText}>ADD ITEM</Text>
+                <Text style={[styles.modalButtonText, {color: '#333'}]}> {isLoading ? <ActivityIndicator size={"small"}/> : 'ADD ITEM'}</Text>
               </Pressable>
+              
+              }
             </View>
           </View>
         </KeyboardAvoidingView>
@@ -413,230 +489,5 @@ const RestaurantScreen = ({route}) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  // LOADING CONTAINER STYLES
-  loadingContainer: 
-  {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  
-  // EXISTING STYLES REMAIN THE SAME AS IN PREVIOUS VERSION
-  container: 
-  {
-    flex: 1,
-  },
-
-  header: 
-  {
-    paddingVertical: 15,
-    alignItems: 'center',
-  },
-
-  headerTitle: 
-  {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-
-  emptyMenuContainer: 
-  {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-
-  emptyMenuText: 
-  {
-    fontSize: 18,
-    color: '#666',
-    marginBottom: 10,
-  },
-
-  emptyMenuSubtext: 
-  {
-    fontSize: 14,
-    color: '#999',
-  },
-
-  menuList: 
-  {
-    padding: 10,
-  },
-
-  menuCard: 
-  {
-    flexDirection: 'row',
-    marginBottom: 10,
-    borderRadius: 7,
-    overflow: 'hidden',
-    elevation: 2,
-  },
-
-  menuImage: 
-  {
-    width: 120,
-    height: '100%',
-    resizeMode: 'cover',
-  },
-
-  menuDetails: 
-  {
-    flex: 1,
-    padding: 10,
-    justifyContent: 'center',
-  },
-
-  menuName: 
-  {
-    fontSize: 16,
-    fontWeight: 'bold',
-    letterSpacing : 1
-  },
-
-  menuPrice: 
-  {
-    fontSize: 14,
-    color: '#666',
-    letterSpacing : 1
-  },
-
-  actionButtons: 
-  {
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 5
-  },
-
-  actionButton: 
-  {
-    paddingHorizontal: 5,
-    paddingVertical: 6,
-    marginRight: 10,
-    borderRadius: 5,
-    width: 60
-  },
-
-  actionText: 
-  {
-   textAlign: 'center',
-   letterSpacing: 1,
-   fontWeight: 600
-  },
-
-  addButtonWrapper: 
-  {
-    padding: 10,
-  },
-
-  addButton: 
-  {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 15,
-    borderRadius: 7,
-  },
-
-  addButtonText: 
-  {
-    color: 'white',
-    marginLeft: 5,
-    fontWeight: 'bold',
-  },
-
-  modalOverlay: 
-  {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-
-  modalContainer: 
-  {
-    backgroundColor: 'white',
-    margin: 20,
-    borderRadius: 10,
-    padding: 20,
-  },
-
-  modalTitle: 
-  {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-
-  input: 
-  {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-
-  modalButtonContainer: 
-  {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-
-  modalButton: 
-  {
-    flex: 1,
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginHorizontal: 5,
-  },
-
-  cancelButton: 
-  {
-    backgroundColor: '#ddd',
-  },
-
-  imagePickerButton: 
-  {
-    backgroundColor: '#f0f0f0',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-
-  pickedImage: 
-  {
-    width: 100,
-    height: 100,
-    borderRadius: 5,
-  },
-
-  imagePickerText: 
-  {
-    color: '#666',
-  },
-
-  infoButton:
-  {
-    position: 'absolute',
-    right: 15,
-    top: 15,
-    backgroundColor: 'rgba(255, 255, 255, .7)',
-    borderRadius: 35
-  },
-
-  infoParentOverall:
-  {
-    width: '100%',
-    height: '100%',
-  }
-});
 
 export default RestaurantScreen;
