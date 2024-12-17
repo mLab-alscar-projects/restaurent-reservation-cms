@@ -254,10 +254,10 @@ const RestaurantScreen = ({route}) => {
     }
   };
 
-  console.log('Selected item : ',selectedItem);
+  // console.log('Selected item : ',selectedItem);
 
   // EDIT MENU ITEM
-  const  handleUpdateItem= async (selectedItem) => {
+  const  handleUpdateItem= async () => {
 
     setIsLoading(true);
     try {
@@ -267,9 +267,9 @@ const RestaurantScreen = ({route}) => {
       const updatedItem =
       {
         id: selectedItem.id,
-        name: newMenuItem.name.trim() || selectedItem.name,
-        price: selectedItem.price,
-        image: newMenuItem.name.trim() || selectedItem.image || null,
+        name: newMenuItem.name.trim(),
+        price: newMenuItem.price,
+        image: newMenuItem.image,
         isActive: selectedItem.isActive,
       }
 
@@ -293,7 +293,7 @@ const RestaurantScreen = ({route}) => {
       
       
     } catch (error) {
-      console.error("ERROR UPDATING MENU STATUS:", error);
+      console.error("ERROR UPDATING MENU ITEM:", error.response?.data || error.message);
     } finally
     {
       setIsLoading(false);
@@ -360,6 +360,13 @@ const RestaurantScreen = ({route}) => {
                       setIsEditing(true);
                       setSelectedItem(item);
                       setIsModalVisible(true);
+                      setNewMenuItem(
+                        {
+                          name: item.name,
+                          price: item.price,
+                          image: item.image,
+                        }
+                      )
                     }
                   } 
                   style={[styles.actionButton, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}
