@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
     marginHorizontal: 5,
-    backgroundColor: '#f1f1f1',
+    backgroundColor: 'rgba(0, 0, 0, .1)',
     borderRadius: 10,
   },
 
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
 
   filterButtonText: 
   {
-    color: '#2c3e50',
+    color: '#2ecc71',
     fontWeight: '600',
     letterSpacing: 1
   },

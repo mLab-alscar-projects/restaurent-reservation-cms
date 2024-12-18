@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, Pressable } from 'react-native';
 import { StarIcon, MapPinIcon, ClockIcon, Edit, Radiation } from 'lucide-react-native';
 
-const RestaurantDetailsScreen = ({restaurant, darkMode}) => {
+const RestaurantDetailsScreen = ({restaurant, darkMode, navigation,}) => {
 
   const restaurantData = {
     name: 'Gourmet Haven',
@@ -84,7 +84,7 @@ const RestaurantDetailsScreen = ({restaurant, darkMode}) => {
           </View>
 
           <View style={styles.actionButtons}>
-            <Pressable style={[styles.actionEdit, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}>
+            <Pressable style={[styles.actionEdit, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]} onPress={()=> navigation.navigate('RestaurantFormScreen', {restaurant})}>
               <Text style={[styles.actionText, {color: '#2ecc71'}]}>Update</Text>
             </Pressable>
 

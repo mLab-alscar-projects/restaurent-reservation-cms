@@ -16,10 +16,11 @@ import MapView, { Marker } from 'react-native-maps';
 import * as ImagePicker from 'expo-image-picker';
 import AuthContext from '../AuthContext';
 
-const RestaurantFormScreen = ({navigation}) => {
+const RestaurantFormScreen = ({navigation, route}) => {
 
   const {addRestaurant} = useContext(AuthContext);
-  const {fetchRestauirants} = useContext(AuthContext);
+  const {fetchRestaurants} = useContext(AuthContext);
+  // const {restaurant} = route.params;
 
   const [loading, setLoading] = useState(false);
   const [restaurantData, setRestaurantData] = useState({
@@ -72,7 +73,7 @@ const RestaurantFormScreen = ({navigation}) => {
     addRestaurant(name, tables, color, location, timeslot, cuisine, description, latitude, longitude, image)
       .then(() => {
         console.log("Restaurant added successfully!");
-        fetchRestauirants();
+        fetchRestaurants();
         navigation.navigate('Home');
       })
       .catch((error) => {
