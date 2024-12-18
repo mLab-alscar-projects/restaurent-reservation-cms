@@ -20,23 +20,23 @@ const RestaurantFormScreen = ({navigation, route}) => {
 
   const {addRestaurant} = useContext(AuthContext);
   const {fetchRestaurants} = useContext(AuthContext);
-  // const {restaurant} = route.params;
+  const {restaurant} = route.params || {};
 
   const [loading, setLoading] = useState(false);
   const [restaurantData, setRestaurantData] = useState({
-    name: "",
-    tables: 7,
-    color: '',
-    description: "",
-    location: "",
-    timeslot: "",
-    cuisine: "",
-    image: null,
-    latitude: -26.2041,  
-    longitude: 27.9924
+    name: restaurant?.name || "",
+    tables: restaurant?.tables || 7,
+    color: restaurant?.color || "",
+    description: restaurant?.description || "",
+    location: restaurant?.location || "",
+    timeslot: restaurant?.timeslot || "",
+    cuisine: restaurant?.cuisine || "",
+    image: restaurant?.image || null,
+    latitude: restaurant?.latitude || -26.2041,  
+    longitude: restaurant?.longitude || 27.9924
   });
 
-  const [imageUri, setImageUri] = useState(null);
+  const [imageUri, setImageUri] = useState(restaurant?.image || null);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -70,17 +70,24 @@ const RestaurantFormScreen = ({navigation, route}) => {
     } = restaurantData;
   
     setLoading(true);
-    addRestaurant(name, tables, color, location, timeslot, cuisine, description, latitude, longitude, image)
-      .then(() => {
-        console.log("Restaurant added successfully!");
-        fetchRestaurants();
-        navigation.navigate('Home');
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error("Error adding restaurant:", error);
-      });
+  
+    if (restaurant) {
+      // Edit restaurant logic
+      console.log("Editing restaurant:", restaurant.id);
+      // Add your update restaurant logic here
+    } else {
+      addRestaurant(name, tables, color, location, timeslot, cuisine, description, latitude, longitude, image)
+        .then(() => {
+          fetchRestaurants();
+          navigation.navigate('Home');
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.error("Error adding restaurant:", error);
+        });
+    }
   };
+  
   
 
   return (

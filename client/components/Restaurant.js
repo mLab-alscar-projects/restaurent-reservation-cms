@@ -31,7 +31,7 @@ import RestaurantDetailsScreen from './RestaurantDetailsScreen';
 
 const { width } = Dimensions.get('window');
 
-const RestaurantScreen = ({route}) => {
+const RestaurantScreen = ({route, navigation}) => {
 
   const { darkMode } = useContext(AuthContext);
 
@@ -319,7 +319,7 @@ const RestaurantScreen = ({route}) => {
       {/* RESTAURANT HEADER */}
       <View style={[styles.header, { backgroundColor: restaurant.color }]}>
         <Text style={styles.headerTitle}>{restaurant.name}</Text>
-        <Pressable style={styles.infoButton} onPress={()=> setIsinfoVisible(true)}>
+        <Pressable style={styles.infoButton} onPress={() => navigation.navigate('RestaurantDetailsScreen', {restaurant})}>
           <MaterialIcons name='info' color={'#333'} size={30} />
         </Pressable>
       </View>

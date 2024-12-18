@@ -1,8 +1,15 @@
-import React from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, Pressable } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, Pressable, StatusBar } from 'react-native';
 import { StarIcon, MapPinIcon, ClockIcon, Edit, Radiation } from 'lucide-react-native';
+import axios from 'axios';
 
-const RestaurantDetailsScreen = ({restaurant, darkMode, navigation,}) => {
+const RestaurantDetailsScreen = ({navigation, route}) => {
+
+  // EDIT RESTAURANT
+  const handleEit = async() => {}
+
+
+  const { restaurant, darkMode } = route.params;
 
   const restaurantData = {
     name: 'Gourmet Haven',
@@ -45,6 +52,9 @@ const RestaurantDetailsScreen = ({restaurant, darkMode, navigation,}) => {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
+
+      <StatusBar backgroundColor="#3498db"/>
+      
       <ScrollView>
         {/* Restaurant Image */}
         <Image 

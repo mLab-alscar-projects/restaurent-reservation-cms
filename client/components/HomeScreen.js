@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
-    elevation: 5,
+    elevation: 4,
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
   },
