@@ -5,7 +5,7 @@ import {
   View,
   Pressable,
   Image,
-  Dimensions,
+
   ScrollView,
   ActivityIndicator,
   StatusBar
@@ -18,8 +18,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, Octicons } from '@expo/vector-icons';
 
 const HomeScreen = ({ navigation }) => {
-  const { restaurants, loader, darkMode } = useContext(AuthContext);
+  const { restaurants, loader, darkMode, reservations } = useContext(AuthContext);
   const count = restaurants.length; 
+  const countReservations = reservations.length;
+  const percentage = countReservations > 0 ? (count / countReservations) * 100: 0;
+  const countNotifications = reservations.filter(reservation => !reservation.isRead).length;
+
+
   const [userEmail, setUserEmail] = useState('');
   
 
@@ -63,7 +68,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.iconContainer}>
           <Pressable style={styles.iconButton} onPress={() => navigation.navigate('Notification')}>
             <Octicons name="bell-fill" size={27} color={'rgba(255, 175, 3, 0.97)'} />
-            <Text style={[styles.notificationNUmber, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>20</Text>
+            <Text style={[styles.notificationNUmber, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>{countNotifications}</Text>
           </Pressable>
           <Pressable style={styles.iconButton} onPress={() => navigation.navigate('Settings')}>
             <Ionicons name="settings-outline" size={28} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />
@@ -99,7 +104,7 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.statsContainer}>
 
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>45</Text>
+              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{countReservations || 0}</Text>
               <Text style={[styles.statLabel, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>Tables reserved</Text>
             </View>
 
@@ -109,7 +114,7 @@ const HomeScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{count || 0}%</Text>
+              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{percentage || 0}%</Text>
               <Text style={[styles.statLabel, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>Avg Performance</Text>
             </View>
 

@@ -19,9 +19,6 @@ import RestaurantFormScreen from './components/RestaurantFormScreen';
 import UsersScreen from './components/UsersScreen';
 import RestaurantDetailsScreen from './components/RestaurantDetailsScreen';
 
-// DATA
-import { reservationsData } from './components/data';
-
 // AXIOS
 import axios from 'axios';
 import AuthContext from './AuthContext';
@@ -64,6 +61,7 @@ export default function App() {
 
 
 const [restaurantsDatas, setRestaurantsData] = useState([]);
+const [reservationsData, setReservationData] = useState([]);
 const [users, setUsers] = useState([]);
 const [loading, setLoading] = useState(false);
 const [darkMode, setDarkMode]= useState(true);
@@ -73,7 +71,7 @@ const reservations = reservationsData;
 
 // FETCH DATA
 useEffect(() => {
-  const fetchRestauirants = async()=>{
+  const fetchRestaurants = async()=>{
 
     try {
 
@@ -111,7 +109,51 @@ useEffect(() => {
     }
   }
 
-  fetchRestauirants();
+  fetchRestaurants();
+
+}, []);
+
+// FETCH RESERVATIONS
+useEffect(() => {
+  const fetchReservations = async()=>{
+
+    try {
+
+        setLoading(true);
+        const token = await AsyncStorage.getItem('token');
+
+        if (!token) {
+          console.error("No token found, cannot fetch reservations.");
+          return;
+        }
+
+        const response = await axios.
+        get('https://lumpy-clover-production.up.railway.app/api/get-reservations',
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+
+        );
+
+        setReservationData(response.data.reservations);
+
+      } catch (error) {
+
+        console.error("Error fetching data:", {
+          message: error.message,
+          response: error.response ? error.response.data : "No response data",
+          status: error.response ? error.response.status : "No status",
+          request: error.request,
+
+        });
+    } finally {
+      setLoading(false); 
+    }
+  }
+
+  fetchReservations();
 
 }, []);
 
@@ -156,6 +198,45 @@ const fetchRestaurants = async()=>{
   }
 }
 
+// FETCH RESERVATIONS
+const fetchReservations = async()=>{
+
+  try {
+
+      setLoading(true);
+      const token = await AsyncStorage.getItem('token');
+
+      if (!token) {
+        console.error("No token found, cannot fetch reservations.");
+        return;
+      }
+
+      const response = await axios.
+      get('https://lumpy-clover-production.up.railway.app/api/get-reservations',
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+
+      );
+
+      setReservationData(response.data.reservations);
+
+    } catch (error) {
+
+      console.error("Error fetching data:", {
+        message: error.message,
+        response: error.response ? error.response.data : "No response data",
+        status: error.response ? error.response.status : "No status",
+        request: error.request,
+
+      });
+  } finally {
+    setLoading(false); 
+  }
+}
+
 
 // FETCH USERS FUNCTION
 const fetchUsers = async()=>{
@@ -182,7 +263,6 @@ const fetchUsers = async()=>{
       );
 
       setUsers(response.data);
-      console.log(users)
 
     } catch (error) {
 
@@ -302,7 +382,7 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
 
   return (
     <AuthContext.Provider 
-    value={{ handleLogin, addRestaurant, fetchRestaurants, restaurants: restaurantsDatas, loader: loading, darkMode, setDarkMode, fetchUsers, users }}>
+    value={{ handleLogin, addRestaurant, fetchRestaurants, restaurants: restaurantsDatas, loader: loading, darkMode, setDarkMode, fetchUsers, users, fetchReservations, reservations: reservationsData }}>
       <NavigationContainer>
         <SafeAreaView backgroundColor= '#97CBDC'/>
         <StatusBar
