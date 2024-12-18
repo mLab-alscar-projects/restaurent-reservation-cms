@@ -1,15 +1,20 @@
 import React, {useState, useEffect} from 'react';
-import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, Pressable, StatusBar } from 'react-native';
-import { StarIcon, MapPinIcon, ClockIcon, Edit, Radiation } from 'lucide-react-native';
+import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, Pressable, StatusBar, ActivityIndicator } from 'react-native';
+
+// ICONS
+import { StarIcon, MapPinIcon, ClockIcon, Radiation } from 'lucide-react-native';
+import Toast from 'react-native-toast-message';
+
+// STORAGE
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RestaurantDetailsScreen = ({navigation, route}) => {
 
-  // EDIT RESTAURANT
-  const handleEit = async() => {}
-
 
   const { restaurant, darkMode } = route.params;
+  const [isActive, setIsActive] = useState(restaurant.isActive);
+  const [loading, setLoader] = useState(false);
 
   const restaurantData = {
     name: 'Gourmet Haven',
@@ -39,6 +44,50 @@ const RestaurantDetailsScreen = ({navigation, route}) => {
     ]
   };
 
+   // EDIT RESTAURANT
+   const handleEdit = async () => {
+    setLoader(true);
+
+    const updatedData = {
+      isActive: !isActive,
+    };
+
+    try {
+      const token = await AsyncStorage.getItem("token");
+      const response = await axios.put(
+        `https://acrid-street-production.up.railway.app/api/v2/updateRestaurant/${restaurant._id}`,
+        {updatedData},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        setIsActive(updatedData.isActive); 
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Restaurant status updated successfully",
+          position: "bottom",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating restaurant status:", error.response?.data || error.message);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to update restaurant status",
+        position: "bottom",
+      });
+    } finally {
+      setLoader(false);
+    }
+  };
+
+
+  // RENDER STARS
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, index) => (
       <StarIcon 
@@ -84,7 +133,7 @@ const RestaurantDetailsScreen = ({navigation, route}) => {
 
             <View style={styles.infoItem}>
               <Radiation color="#2ecc71" size={20} />
-              <Text style={[styles.infoText, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>{restaurant.isActive ? 'Active' : 'Not Active'}</Text>
+              <Text style={[styles.infoText, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>{isActive ? 'Active' : 'Not Active'}</Text>
             </View>
           </View>
 
@@ -98,8 +147,8 @@ const RestaurantDetailsScreen = ({navigation, route}) => {
               <Text style={[styles.actionText, {color: '#2ecc71'}]}>Update</Text>
             </Pressable>
 
-            <Pressable style={[styles.actionHide, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}>
-              <Text style={[styles.actionText, {color: '#3498db'}]}>{restaurantData.isActive ? 'Disable' : 'Enable'}</Text>
+            <Pressable style={[styles.actionHide, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]} onPress={handleEdit}>
+              <Text style={[styles.actionText, {color: '#3498db'}]}>{loading ? <ActivityIndicator size={'small'} color={restaurant.color} /> : isActive ? 'Disable' : 'Enable'}</Text>
             </Pressable>
           </View>
 
@@ -261,7 +310,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginRight: 10,
     borderRadius: 3,
-    width: 65
+    width: 70
   },
 
   actionHide:
@@ -270,14 +319,15 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginRight: 10,
     borderRadius: 3,
-    width: 65
+    width: 70
   },
 
   actionText:
   {
     fontSize: 14,
     letterSpacing: 2,
-    fontWeight: 900
+    fontWeight: 900,
+    textAlign: 'center'
   }
 });
 

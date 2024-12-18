@@ -15,6 +15,9 @@ import {
 import MapView, { Marker } from 'react-native-maps';
 import * as ImagePicker from 'expo-image-picker';
 import AuthContext from '../AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const RestaurantFormScreen = ({navigation, route}) => {
 
@@ -55,7 +58,9 @@ const RestaurantFormScreen = ({navigation, route}) => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+
+    // EXTRACT DATA FROM RESTAURANT DATA
     const {
       name,
       tables,
@@ -71,22 +76,91 @@ const RestaurantFormScreen = ({navigation, route}) => {
   
     setLoading(true);
   
-    if (restaurant) {
-      // Edit restaurant logic
-      console.log("Editing restaurant:", restaurant.id);
-      // Add your update restaurant logic here
-    } else {
-      addRestaurant(name, tables, color, location, timeslot, cuisine, description, latitude, longitude, image)
-        .then(() => {
-          fetchRestaurants();
-          navigation.navigate('Home');
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.error("Error adding restaurant:", error);
+    try {
+      if (restaurant) {
+        // UPDATE RESTAURANT
+        const updatedData = {
+          name,
+          tables,
+          color,
+          location,
+          timeslot,
+          cuisine,
+          description,
+          latitude,
+          longitude,
+          image,
+        };
+  
+        const token = await AsyncStorage.getItem("token");
+        const response = await axios.put(
+          `https://acrid-street-production.up.railway.app/api/v2/updateRestaurant/${restaurant._id}`,
+          {updatedData},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+  
+        if (response.status === 201) {
+          Toast.show({
+            type: "success",
+            text1: "Success",
+            text2: "Restaurant updated successfully",
+            position: "bottom",
+          });
+
+          // NAVIGATE TO HOME
+          navigation.navigate("Home");
+        }
+
+        // FETCH RESTAURANTS
+        await fetchRestaurants();
+
+      } else {
+
+        // ADD RESTAURANT
+        await addRestaurant(
+          name,
+          tables,
+          color,
+          location,
+          timeslot,
+          cuisine,
+          description,
+          latitude,
+          longitude,
+          image
+        );
+
+        // FETCH RESTAURANTS AFTER UPDATING
+        await fetchRestaurants();
+        Toast.show({
+          type: "success",
+          text1: "Success",
+          text2: "Restaurant added successfully",
+          position: "bottom",
         });
+
+        // NAVIGATE TO HOME
+        navigation.navigate("Home");
+      }
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to save restaurant data",
+        position: "bottom",
+      });
+    } finally {
+      setLoading(false);
     }
   };
+
+  // ENDS
+  
   
   
 

@@ -93,7 +93,6 @@ useEffect(() => {
             },
           }
 
-
         );
 
         setRestaurantsData(response.data.restaurants);
@@ -223,7 +222,6 @@ const handleLogin = async (email, password, setMessage) => {
           await AsyncStorage.setItem('token', token);
           await AsyncStorage.setItem('userEmail', userEmail);
 
-          console.log("Login successful. User:", response.data);
           return true;
       } else {
           setMessage("Login failed. Please try again.");
