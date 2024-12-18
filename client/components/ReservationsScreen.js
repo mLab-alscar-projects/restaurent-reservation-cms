@@ -53,14 +53,15 @@ const reservations = [
     specialRequests: "Birthday celebration",
     totalCost: "$240.75"
   },
-  // ... other reservations
 ];
 
 const PlaceholderImage = 'https://via.placeholder.com/150?text=Restaurant+Photo';
 
-const ReservationScreen = () => {
+const ReservationScreen = ({route}) => {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [filter, setFilter] = useState('All');
+  const { restaurant } = route.params;
+
 
   // Filter reservations based on selected status
   const filteredReservations = filter === 'All' 
@@ -186,7 +187,7 @@ const ReservationScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerText}>Reservations</Text>
+        <Text style={styles.headerText}>{restaurant.name} reservations</Text>
       </View>
 
       {/* Filter Buttons */}
@@ -244,11 +245,16 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  headerText: {
-    fontSize: 22,
+
+  headerText: 
+  {
+    fontSize: 20,
     fontWeight: '700',
     color: '#333',
+    textAlign: 'center',
+    letterSpacing: 1
   },
+
   filterContainer: {
     flexDirection: 'row',
     justifyContent: 'center',

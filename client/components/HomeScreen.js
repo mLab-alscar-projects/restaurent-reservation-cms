@@ -63,7 +63,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.iconContainer}>
           <Pressable style={styles.iconButton} onPress={() => navigation.navigate('Notification')}>
             <Octicons name="bell-fill" size={27} color={'rgba(255, 175, 3, 0.97)'} />
-            <Text style={[styles.notificationNUmber, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>0</Text>
+            <Text style={[styles.notificationNUmber, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>20</Text>
           </Pressable>
           <Pressable style={styles.iconButton} onPress={() => navigation.navigate('Settings')}>
             <Ionicons name="settings-outline" size={28} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />
@@ -269,10 +269,11 @@ const styles = StyleSheet.create({
 
   notificationNUmber:
   {
-    top: 0,
+    top: -7,
     right: 5,
     position: 'absolute',
-    fontSize: 15,
+    fontWeight: 'bold',
+    fontSize: 12,
   },
 
   // PRODUCTIVITY INSIGHTS
