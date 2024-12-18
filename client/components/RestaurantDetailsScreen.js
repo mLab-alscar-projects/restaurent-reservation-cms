@@ -84,12 +84,12 @@ const RestaurantDetailsScreen = ({restaurant, darkMode}) => {
           </View>
 
           <View style={styles.actionButtons}>
-            <Pressable style={[styles.actionEdit, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .3)' : 'rgba(0, 0, 0, .2)' }]}>
-                <Edit color="#000" size={25} />
+            <Pressable style={[styles.actionEdit, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}>
+              <Text style={[styles.actionText, {color: '#2ecc71'}]}>Update</Text>
             </Pressable>
 
-            <Pressable style={[styles.actionHide, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .3)' : 'rgba(0, 0, 0, .2)' }]}>
-                <Text style={styles.actionText}>Hide</Text>
+            <Pressable style={[styles.actionHide, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}>
+              <Text style={[styles.actionText, {color: '#3498db'}]}>{restaurantData.isActive ? 'Disable' : 'Enable'}</Text>
             </Pressable>
           </View>
 
@@ -247,21 +247,20 @@ const styles = StyleSheet.create({
 
   actionEdit:
   {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'blue',
-    padding: 8,
-    borderRadius: 35
+    paddingHorizontal: 5,
+    paddingVertical: 8,
+    marginRight: 10,
+    borderRadius: 3,
+    width: 65
   },
 
   actionHide:
   {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'blue',
-    paddingHorizontal: 17,
+    paddingHorizontal: 5,
     paddingVertical: 8,
-    borderRadius: 35
+    marginRight: 10,
+    borderRadius: 3,
+    width: 65
   },
 
   actionText:

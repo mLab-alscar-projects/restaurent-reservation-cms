@@ -17,11 +17,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // ICONS
 import { Ionicons, Octicons } from '@expo/vector-icons';
 
-
-
-// SCREEN DIMENSIONS
-const { width, height } = Dimensions.get('window');
-
 const HomeScreen = ({ navigation }) => {
   const { restaurants, loader, darkMode } = useContext(AuthContext);
   const count = restaurants.length; 
