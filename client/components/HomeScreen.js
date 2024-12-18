@@ -56,7 +56,7 @@ const HomeScreen = ({ navigation }) => {
             </Pressable>
           </View>
           <View>
-            <Text style={[styles.greetingText, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Hello, Oscar</Text>
+            <Text style={[styles.greetingText, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Hello, Admin</Text>
             <Text style={[styles.subGreetingText, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>Productivity Dashboard</Text>
           </View>
         </View>
@@ -144,20 +144,28 @@ const HomeScreen = ({ navigation }) => {
                   key={index}
                   style={[
                     styles.restaurantCard,
-                    { backgroundColor: restaurant.color },
+                    {
+                      backgroundColor: restaurant.isActive
+                        ? restaurant.color 
+                        : 'black', 
+                    },
                   ]}
                   onPress={() => navigation.navigate('Restaurant', { restaurant })}
-                  >
+                >
                   <View style={styles.restaurantImageContainer}>
                     <Image
                       source={{ uri: restaurant.image }}
                       style={styles.restaurantImage}
                       resizeMode="cover"
                     />
-                    <View style={styles.restaurantImageOverlay} />
+
+                    {!restaurant.isActive && (
+                      <Text style={styles.inactiveRestaurantOverlay}>NOT ACTIVE</Text>
+                    )}
+                    <View style={[styles.restaurantImageOverlay, { backgroundColor: restaurant.isActive ? 'rgba(0, 0, 0, 0.3)' : 'black' }]} />
                   </View>
 
-                  <View style={styles.restaurantDetailsOverlay}>
+                  <View style={[styles.restaurantDetailsOverlay, { backgroundColor: restaurant.isActive ? 'rgba(255, 255, 255, 0.8)' : 'black' }]}>
                     <Text style={styles.restaurantName}>{restaurant.name}</Text>
                     <Text style={styles.restaurantDescription}>
                       {restaurant.description}
@@ -248,6 +256,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#2c3e50',
+    letterSpacing: 1
   },
 
   subGreetingText:
@@ -441,7 +450,6 @@ const styles = StyleSheet.create({
   restaurantDetailsOverlay: 
   {
     padding: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     position :'relative'
   },
   restaurantName: {
@@ -518,6 +526,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     letterSpacing: 1
+  },
+
+  inactiveRestaurantOverlay:
+  {
+    position: 'absolute',
+    bottom: 50,
+    fontSize: 20,
+    letterSpacing: 1,
+    color: 'red',
+    zIndex: 1,
+    alignSelf: 'center'
   }
 });
 
