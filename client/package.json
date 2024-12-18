@@ -28,7 +28,7 @@
     "react-native-charts-wrapper": "^0.6.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-maps": "^1.20.1",
-    "react-native-reanimated": "^3.16.4",
+    "react-native-reanimated": "^3.16.5",
     "react-native-safe-area-context": "^5.0.0",
     "react-native-screens": "^4.3.0",
     "react-native-svg": "^15.10.1",

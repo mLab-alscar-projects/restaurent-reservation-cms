@@ -28,9 +28,10 @@ const { width } = Dimensions.get('window');
 const AdminProfileScreen = (
    {navigation}
 ) => {
-  const {darkMode, users, restaurants} = useContext(AuthContext);
+  const {darkMode, users, restaurants, reservations} = useContext(AuthContext);
   const countRestaurants = restaurants.filter(restaurant => restaurant.isActive).length;
   const countUsers = users.length;  
+  const countReservations = reservations.length;
   const user = AsyncStorage.getItem("userEmail");
 
   const [admin] = useState({
@@ -60,7 +61,7 @@ const AdminProfileScreen = (
     { 
       icon: <Calendar color="#e74c3c" size={24} />, 
       label: "Monthly Reservations", 
-      value: "123" ,
+      value: countReservations ,
       onPress: () => navigation.navigate('ReservationsScreen'),
 
     }

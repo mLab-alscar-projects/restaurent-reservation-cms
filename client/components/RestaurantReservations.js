@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -12,17 +12,67 @@ import {
 } from 'react-native';
 
 import AuthContext from '../AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 // ICONS
 import { Ionicons } from '@expo/vector-icons';
 
 
-const ReservationScreen = () => {
-  const [selectedReservation, setSelectedReservation] = useState(null);
-  const { loader, darkMode, reservations } = useContext(AuthContext);
-  const [filter, setFilter] = useState('All');
+const RestaurantReservations = ({route}) => {
 
-  // Format date function
+  const { restaurant } = route.params;
+  const [selectedReservation, setSelectedReservation] = useState(null);
+//   const { darkMode } = useContext(AuthContext);
+  const [filter, setFilter] = useState('All');
+  const [loading, setLoading] = useState(false);
+  const [reservations, setReservations] = useState([]);
+
+  // FETCH RESERVATIONS
+useEffect(() => {
+    const fetchReservations = async()=>{
+  
+      try {
+  
+          setLoading(true);
+          const token = await AsyncStorage.getItem('token');
+  
+          if (!token) {
+            console.error("No token found, cannot fetch reservations.");
+            return;
+          }
+  
+          const response = await axios.
+          get(`https://lumpy-clover-production.up.railway.app/api/get-reservation/${(restaurant._id)}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+  
+          );
+  
+          setReservations(response.data);
+  
+        } catch (error) {
+  
+          console.error("Error fetching data:", {
+            message: error.message,
+            response: error.response ? error.response.data : "No response data",
+            status: error.response ? error.response.status : "No status",
+            request: error.request,
+  
+          });
+      } finally {
+        setLoading(false); 
+      }
+    }
+  
+    fetchReservations();
+  
+  }, []);
+
+  // FORMART DATE
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -32,7 +82,7 @@ const ReservationScreen = () => {
     });
   };
 
-  // Filter reservations based on active status
+  // FILTER RESERVATIONS
   const filteredReservations = filter === 'All' 
     ? reservations 
     : reservations.filter(reservation => {
@@ -40,7 +90,7 @@ const ReservationScreen = () => {
         return !reservation.isActive;
       });
 
-  // Render individual reservation item
+  // RENDER RESERVATIONS
   const renderReservationItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.reservationItem}
@@ -66,7 +116,7 @@ const ReservationScreen = () => {
     </TouchableOpacity>
   );
 
-  // Reservation Details Modal
+  // RESERVATION MODAL
   const ReservationDetailsModal = () => {
     if (!selectedReservation) return null;
 
@@ -178,7 +228,7 @@ const ReservationScreen = () => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerText}>Reservations</Text>
+        <Text style={styles.headerText}>{restaurant.name}  Reservations</Text>
       </View>
 
       {/* Filter Buttons */}
@@ -382,4 +432,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReservationScreen;
+export default RestaurantReservations;

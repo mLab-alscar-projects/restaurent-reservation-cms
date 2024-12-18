@@ -7,32 +7,31 @@ import {
   ScrollView,
   StatusBar,
   Animated,
-  TouchableOpacity,
   RefreshControl,
+  SafeAreaView
 } from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
-import { Ionicons } from '@expo/vector-icons';
-
 import AuthContext from '../AuthContext';
 
+// ICONS
+import { Ionicons } from '@expo/vector-icons';
+
 const NotificationsScreen = ({navigation}) => {
-  // State management
+
+  const { loader, darkMode, reservations, restaurants } = useContext(AuthContext);
   const [activeFilter, setActiveFilter] = useState('All');
   const [refreshing, setRefreshing] = useState(false);
-  const { restaurants, loader, darkMode } = useContext(AuthContext);
+  
 
-  const reservations = [
-    { id: 1, restaurant: "Eat'in", time: '12:00 PM', isActive: true, details: 'Table for 2' },
-    { id: 2, restaurant: "Foodies' Delight", time: '1:30 PM', isActive: false, details: 'Canceled' },
-    { id: 3, restaurant: 'Munchies', time: '6:00 PM', isActive: true, details: 'Outdoor seating' },
-    { id: 4, restaurant: 'The Grill House', time: '7:00 PM', isActive: true, details: 'Birthday celebration' },
-    { id: 5, restaurant: 'Vegan Bites', time: '5:00 PM', isActive: false, details: 'Postponed' },
-    { id: 6, restaurant: 'Ocean Breeze', time: '8:30 PM', isActive: true, details: 'Romantic dinner' },
-    { id: 7, restaurant: 'Pasta Paradise', time: '1:00 PM', isActive: false, details: 'Lunch meeting' },
-    { id: 8, restaurant: 'Sushi World', time: '3:30 PM', isActive: true, details: 'Special chef tasting' },
-    { id: 9, restaurant: 'Taco Fiesta', time: '11:00 AM', isActive: true, details: 'Group lunch' },
-    { id: 10, restaurant: 'Burger Haven', time: '9:00 PM', isActive: false, details: 'Rescheduled' },
-  ];
+  // Format date function
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+  };
 
   // Memoized filtered reservations
   const filteredReservations = useMemo(() => {
@@ -44,7 +43,6 @@ const NotificationsScreen = ({navigation}) => {
   // Refresh control handler
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    // Simulate a network request
     setTimeout(() => {
       setRefreshing(false);
     }, 1000);
@@ -70,20 +68,20 @@ const NotificationsScreen = ({navigation}) => {
 
     return (
       <Swipeable renderRightActions={renderRightActions}>
-        <View 
-          key={reservation.id} 
-          style={[
-            styles.reservationCard,
-            !reservation.isActive && styles.inactiveReservation
-          ]}
-        >
+        <View style={[
+          styles.reservationCard,
+          !reservation.isActive && styles.inactiveReservation
+        ]}>
           <View style={styles.reservationContentContainer}>
             <View style={styles.reservationTextContainer}>
               <Text style={styles.reservationText}>
-                {reservation.restaurant} - {reservation.time}
+                {reservation.restaurantName} - {formatDate(reservation.dateOfPayment)}
               </Text>
               <Text style={styles.reservationDetailsText}>
-                {reservation.details}
+                Tables: {reservation.numberOfTables} | Amount: R{reservation.amount}
+              </Text>
+              <Text style={styles.reservationDetailsText}>
+                {reservation.message}
               </Text>
             </View>
             {reservation.isActive && (
@@ -98,7 +96,7 @@ const NotificationsScreen = ({navigation}) => {
   };
 
   return (
-    <View style={[styles.parent, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
+    <SafeAreaView style={[styles.parent, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
       <StatusBar 
         backgroundColor={'#3498db'}
         barStyle={darkMode ? 'light-content' : 'dark-content'}
@@ -137,19 +135,30 @@ const NotificationsScreen = ({navigation}) => {
       </View>
 
       {/* Restaurants Section */}
-      <Text style={[styles.sectionTitle, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .7)'}]}>Restaurants</Text>
+      <Text style={[styles.sectionTitle, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .7)'}]}>
+        Restaurants
+      </Text>
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.horizontalScroll}>
+        contentContainerStyle={styles.horizontalScroll}
+      >
         {restaurants.map((restaurant, index) => (
           <Pressable 
             key={index} 
             style={[styles.restaurantCard, {backgroundColor: restaurant.color}]}
-            onPress={()=> navigation.navigate('ReservationsScreen', { restaurant })}
+            onPress={() => navigation.navigate('RestaurantReservations', { restaurant })}
           >
-            <View style={[styles.restaurantCardOverlay,{ backgroundColor: darkMode ? 'rgba(0, 0, 0, .9)' : 'rgba(255, 255, 255, .9)' }]}>
-              <Text style={[styles.restaurantName, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .7)'}]}>{restaurant.name}</Text>
+            <View style={[
+              styles.restaurantCardOverlay,
+              { backgroundColor: darkMode ? 'rgba(0, 0, 0, .9)' : 'rgba(255, 255, 255, .9)' }
+            ]}>
+              <Text style={[
+                styles.restaurantName,
+                {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .7)'}
+              ]}>
+                {restaurant.name}
+              </Text>
               {restaurant.cuisine && (
                 <Text style={styles.restaurantCuisine}>{restaurant.cuisine}</Text>
               )}
@@ -159,7 +168,10 @@ const NotificationsScreen = ({navigation}) => {
       </ScrollView>
 
       {/* Reservations Section */}
-      <Text style={[styles.sectionTitle, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .7)'}]}>
+      <Text style={[
+        styles.sectionTitle,
+        {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .7)'}
+      ]}>
         {activeFilter === 'Active' ? 'Active Reservations' : 'All Reservations'}
       </Text>
 
@@ -176,64 +188,51 @@ const NotificationsScreen = ({navigation}) => {
           }
         >
           {filteredReservations.map((reservation) => (
-            <ReservationItem key={reservation.id} reservation={reservation} />
+            <ReservationItem key={reservation._id} reservation={reservation} />
           ))}
           {filteredReservations.length === 0 && (
             <Text style={styles.noReservationsText}>No reservations found</Text>
           )}
         </ScrollView>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  parent: 
-  {
+  parent: {
     flex: 1,
     backgroundColor: '#f4f7fa',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     paddingTop: 20,
   },
-
-  filterContainer: 
-  {
+  filterContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginVertical: 15,
     paddingHorizontal: 20,
     paddingVertical: 10
   },
-
-  filterButton: 
-  {
+  filterButton: {
     paddingVertical: 10,
     paddingHorizontal: 15,
     marginHorizontal: 5,
     backgroundColor: 'rgba(0, 0, 0, .1)',
     borderRadius: 10,
   },
-
-  activeFilterButton: 
-  {
+  activeFilterButton: {
     backgroundColor: '#3498db',
   },
-
-  filterButtonText: 
-  {
+  filterButtonText: {
     color: '#2ecc71',
     fontWeight: '600',
     letterSpacing: 1
   },
-
-  activeFilterButtonText: 
-  {
+  activeFilterButtonText: {
     color: 'white',
   },
-
-  sectionTitle: 
-  {
+  sectionTitle: {
     fontSize: 18,
     fontWeight: '700',
     color: '#2c3e50',
@@ -241,17 +240,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     letterSpacing: 1
   },
-
-  horizontalScroll: 
-  {
+  horizontalScroll: {
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginBottom: 20,
     height: 120,
   },
-
-  restaurantCard: 
-  {
+  restaurantCard: {
     width: 150,
     height: '100%',
     backgroundColor: '#ffffff',
@@ -266,46 +261,34 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 5,
   },
-
-  restaurantCardOverlay: 
-  {
-    width:'100%',
+  restaurantCardOverlay: {
+    width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
   },
-
-  restaurantName: 
-  {
+  restaurantName: {
     fontSize: 16,
     fontWeight: '600',
     color: '#2c3e50',
     textAlign: 'center',
   },
-
-  restaurantCuisine: 
-  {
+  restaurantCuisine: {
     fontSize: 12,
     color: '#7f8c8d',
     marginTop: 5,
   },
-
-  reservationsListParent: 
-  {
+  reservationsListParent: {
     justifyContent: 'flex-start',
     height: '55%'
   },
-
-  reservationsList: 
-  {
+  reservationsList: {
     paddingHorizontal: 10,
     justifyContent: 'flex-start',
     paddingVertical: 25,
   },
-
-  reservationCard: 
-  {
+  reservationCard: {
     backgroundColor: '#ffffff',
     marginBottom: 10,
     borderRadius: 10,
@@ -315,61 +298,52 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 1,
   },
-
-  inactiveReservation: 
-  {
+  inactiveReservation: {
     opacity: 0.5,
   },
-
-  reservationContentContainer: 
-  {
+  reservationContentContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 15,
   },
-
-  reservationText: 
-  {
+  reservationTextContainer: {
+    flex: 1,
+  },
+  reservationText: {
     fontSize: 16,
     color: '#2c3e50',
     flex: 1,
   },
-
-  activeStatusBadge: 
-  {
+  reservationDetailsText: {
+    fontSize: 12,
+    color: '#7f8c8d',
+    marginTop: 5,
+  },
+  activeStatusBadge: {
     backgroundColor: '#2ecc71',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 10,
   },
-
-  activeStatusText: 
-  {
+  activeStatusText: {
     color: 'white',
     fontSize: 12,
     fontWeight: '600',
   },
-
-  noReservationsText: 
-  {
+  noReservationsText: {
     fontSize: 16,
     color: '#7f8c8d',
     textAlign: 'center',
     marginTop: 10,
   },
-
-  // SWIPE TO DELETE
-  swipeActionContainer: 
-  {
+  swipeActionContainer: {
     width: 80,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
-  deleteButton: 
-  {
+  deleteButton: {
     backgroundColor: '#e74c3c',
     width: 60,
     height: '80%',
@@ -377,18 +351,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 10,
     marginVertical: 5,
-  },
-  
-  reservationTextContainer: 
-  {
-    flex: 1,
-  },
-  
-  reservationDetailsText: 
-  {
-    fontSize: 12,
-    color: '#7f8c8d',
-    marginTop: 5,
   },
 });
 

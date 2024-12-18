@@ -18,6 +18,7 @@ import RestaurantPerformance from './components/RestaurantPerformance';
 import RestaurantFormScreen from './components/RestaurantFormScreen';
 import UsersScreen from './components/UsersScreen';
 import RestaurantDetailsScreen from './components/RestaurantDetailsScreen';
+import RestaurantReservations from './components/RestaurantReservations';
 
 // AXIOS
 import axios from 'axios';
@@ -550,6 +551,25 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
             options={{
               headerShown: true,
               headerTitle: 'Restaurant details', 
+              headerStyle: {
+                backgroundColor: '#3498db', 
+              },
+              headerTitleStyle: {
+                color: '#fff', 
+                fontSize: 18,
+                fontWeight: 'bold',
+                letterSpacing: 1
+              },
+              headerTintColor: '#000', 
+            }}
+          />
+
+          <Stack.Screen
+            name="RestaurantReservations"
+            component={RestaurantReservations}
+            options={{
+              headerShown: true,
+              headerTitle: 'reservations', 
               headerStyle: {
                 backgroundColor: '#3498db', 
               },
