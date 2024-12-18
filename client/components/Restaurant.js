@@ -147,7 +147,7 @@ const RestaurantScreen = ({route}) => {
   
   const handleAddMenuItem = async () => {
 
-    setIsLoading(true);
+    setIsLoading(true);                                                                                                                       
     if (!newMenuItem.name.trim() || !newMenuItem.price.trim()) {
       console.log('MISSING MENU ITEM DETAILS');
       return;

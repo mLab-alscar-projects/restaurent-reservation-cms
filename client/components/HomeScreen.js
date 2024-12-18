@@ -15,7 +15,8 @@ import AuthContext from '../AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ICONS
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { Ionicons, Octicons } from '@expo/vector-icons';
+
 
 
 // SCREEN DIMENSIONS
@@ -61,15 +62,16 @@ const HomeScreen = ({ navigation }) => {
           </View>
           <View>
             <Text style={[styles.greetingText, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Hello, Oscar</Text>
-            <Text style={styles.subGreetingText}>Productivity Dashboard</Text>
+            <Text style={[styles.subGreetingText, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>Productivity Dashboard</Text>
           </View>
         </View>
         <View style={styles.iconContainer}>
           <Pressable style={styles.iconButton} onPress={() => navigation.navigate('Notification')}>
-            <Text style={styles.iconText}>🔔</Text>
+            <Octicons name="bell-fill" size={27} color={'rgba(255, 175, 3, 0.97)'} />
+            <Text style={[styles.notificationNUmber, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>0</Text>
           </Pressable>
           <Pressable style={styles.iconButton} onPress={() => navigation.navigate('Settings')}>
-            <Text style={styles.iconText}>⚙️</Text>
+            <Ionicons name="settings-outline" size={28} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />
           </Pressable>
         </View>
       </View>
@@ -103,17 +105,17 @@ const HomeScreen = ({ navigation }) => {
 
             <View style={styles.statItem}>
               <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>45</Text>
-              <Text style={styles.statLabel}>Tables reserved</Text>
+              <Text style={[styles.statLabel, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>Tables reserved</Text>
             </View>
 
             <View style={styles.statItem}>
               <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{count || 0}</Text>
-              <Text style={styles.statLabel}>Restaurants</Text>
+              <Text style={[styles.statLabel, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>Restaurants</Text>
             </View>
 
             <View style={styles.statItem}>
               <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{count || 0}%</Text>
-              <Text style={styles.statLabel}>Avg Performance</Text>
+              <Text style={[styles.statLabel, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>Avg Performance</Text>
             </View>
 
           </View>
@@ -124,13 +126,13 @@ const HomeScreen = ({ navigation }) => {
       <View style={styles.bookingSection}>
 
         <Pressable style={[styles.addRestaurantContainer, { backgroundColor: darkMode ? '#444' : '#ffffff' }]} onPress={() => navigation.navigate('RestaurantFormScreen')}>
-          <Text style={[styles.addRestaurantText, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Add a Restaurant</Text>
+          <Text style={[styles.addRestaurantText, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>Add a Restaurant</Text>
         </Pressable>
 
         {loader ? 
         <View style={styles.restaurantLoaderContainer}>
-          <ActivityIndicator size={'large'} color={'#333'} />
-          <Text style={styles.LoaderText}>Loading restaurants</Text>
+          <ActivityIndicator size={'large'} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />
+          <Text style={[styles.LoaderText, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Loading ...</Text>
         </View>
         
         :
@@ -209,7 +211,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingRight: 10,
     paddingTop: 20,
     paddingBottom: 20,
   },
@@ -222,9 +224,9 @@ const styles = StyleSheet.create({
 
   profileImagePlaceholder:
   {
-    width: 40,
+    width: 50,
     height: 40,
-    borderRadius: 7,
+    borderRadius: 5,
     backgroundColor: '#f5f5ff',
     justifyContent: 'center',
     alignItems: 'center',
@@ -234,6 +236,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 5,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
   },
 
   profileInitials:
@@ -254,10 +258,13 @@ const styles = StyleSheet.create({
   subGreetingText:
   {
     fontSize: 14,
-    color: '#7f8c8d',
   },
-  iconContainer: {
+
+  iconContainer: 
+  {
     flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10
   },
 
   iconButton:
@@ -265,9 +272,12 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 
-  iconText:
+  notificationNUmber:
   {
-    fontSize: 20,
+    top: 0,
+    right: 5,
+    position: 'absolute',
+    fontSize: 15,
   },
 
   // PRODUCTIVITY INSIGHTS
@@ -329,7 +339,6 @@ const styles = StyleSheet.create({
   barLabel: {
     marginTop: 5,
     fontSize: 12,
-    color: '#333',
   },
 
   statsContainer:
@@ -347,13 +356,11 @@ const styles = StyleSheet.create({
   {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#2c3e50',
   },
 
   statLabel:
   {
     fontSize: 12,
-    color: '#7f8c8d',
   },
 
   // RESTAURANT CARD STYLES
@@ -514,7 +521,7 @@ const styles = StyleSheet.create({
   {
     fontSize: 18,
     textAlign: 'center',
-    letterSpacing: 2
+    letterSpacing: 1
   }
 });
 
