@@ -33,7 +33,7 @@ const RestaurantPerformance = () => {
     const weeklyTotal = reservations.filter(r => new Date(r.dateOfPayment) >= startOfWeek).length;
     const monthlyTotal = reservations.filter(r => new Date(r.dateOfPayment) >= startOfMonth).length;
 
-    // Calculate overall occupancy rate
+    // CALCULATE OVERALL OCCUPANCY RATE
     const totalCapacity = restaurants.reduce((sum, restaurant) => sum + (restaurant.tables || 0), 0);
     const occupancyRate = totalCapacity > 0 ? (dailyTotal / totalCapacity) * 100 : 0;
 
@@ -46,7 +46,7 @@ const RestaurantPerformance = () => {
     };
   };
 
-  // Fetch specific restaurant reservations
+  // FETCH RESERVATIONS BASED ON RESTAURANT ID
   const fetchRestaurantReservations = async (restaurantId) => {
     try {
       setLoading(true);
@@ -67,7 +67,7 @@ const RestaurantPerformance = () => {
     }
   };
 
-  // Calculate stats for a specific restaurant
+  // CALCULATE STATS FOR INDIVIDUAL RESTAURANT
   const calculateRestaurantStats = (restaurantReservations, restaurant) => {
     const today = new Date();
     const startOfDay = new Date(today.setHours(0, 0, 0, 0));

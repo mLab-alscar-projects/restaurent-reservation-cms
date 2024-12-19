@@ -146,7 +146,7 @@ const AdminProfileScreen = (
             <Text style={[styles.adminName, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{user.name}</Text>
             <Text style={styles.adminRole}>{user.phone || ''}</Text>
             <Text style={styles.adminEmail}>{user.email || ''}</Text>
-            <Text style={styles.adminEmail}>{user.restaurantName || ''}</Text>
+            <Text style={styles.restaurantName}>{user.restaurantName || ''}</Text>
             <Text style={styles.lastLogin}>
               Account created on: {admin.lastLogin}
             </Text>
@@ -226,7 +226,6 @@ const styles = StyleSheet.create({
   {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    marginBottom: 20,
   },
 
   settingsButton: 
@@ -278,7 +277,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#2c3e50',
     marginBottom: 5,
+    letterSpacing: 1
   },
+
   adminRole: 
   {
     fontSize: 16,
@@ -291,6 +292,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#7f8c8d',
     marginBottom: 5,
+  },
+
+  restaurantName: 
+  {
+    fontSize: 14,
+    color: '#7f8c8d',
+    marginBottom: 5,
+    textTransform: 'capitalize',
+    letterSpacing: 1
   },
 
   lastLogin: 

@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   Modal,
   StatusBar,
-  ScrollView
+  ScrollView,
+  Pressable
 } from 'react-native';
 
 import AuthContext from '../AuthContext';
@@ -89,7 +90,7 @@ const ReservationScreen = () => {
             <Text style={styles.modalHeaderTitle}>Reservation Details</Text>
           </View>
 
-          <ScrollView style={styles.modalContent}>
+          <ScrollView contentContainerStyle={styles.modalContent}>
             {/* Restaurant Details */}
             <View style={styles.detailSection}>
               <Text style={styles.sectionTitle}>Restaurant Information</Text>
@@ -130,6 +131,7 @@ const ReservationScreen = () => {
                 <Text style={styles.detailLabel}>Amount</Text>
                 <Text style={styles.detailValue}>R{selectedReservation.amount}</Text>
               </View>
+              
             </View>
 
             {/* Contact Information */}
@@ -152,7 +154,7 @@ const ReservationScreen = () => {
               <Text style={styles.sectionTitle}>Booking Reference</Text>
               <View style={styles.detailRow}>
                 <Ionicons name="document-text" size={20} color="#007AFF" />
-                <Text style={styles.detailLabel}>Reference ID</Text>
+                <Text style={styles.detailLabel}>Ref ID</Text>
                 <Text style={styles.detailValue}>{selectedReservation._id}</Text>
               </View>
               <View style={styles.detailRow}>
@@ -162,10 +164,14 @@ const ReservationScreen = () => {
                   styles.detailValue,
                   { color: selectedReservation.isActive ? '#4CAF50' : '#FF9800' }
                 ]}>
-                  {selectedReservation.isActive ? 'Active' : 'Inactive'}
+                  {selectedReservation.isActive ? 'Coming up' : 'completed'}
                 </Text>
               </View>
             </View>
+
+            <Pressable style={styles.updateButton}>
+                <Text style={styles.updateButtonText}>Update stats</Text>
+            </Pressable>
           </ScrollView>
         </SafeAreaView>
       </Modal>
@@ -326,6 +332,8 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 16,
   },
+
+  // MODAL
   modalContainer: {
     flex: 1,
     backgroundColor: '#F2F2F7',
@@ -346,7 +354,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   modalContent: {
-    flex: 1,
+    paddingBottom: 20,
   },
   detailSection: {
     backgroundColor: 'white',
@@ -376,10 +384,33 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     flex: 2,
-    fontSize: 15,
+    fontSize: 14,
     color: '#333',
     textAlign: 'right',
   },
+
+  updateButton:
+  {
+    width: '92%',
+    alignSelf: 'center',
+    marginTop: 10,
+    padding: 15,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 15,
+    backgroundColor: '#3498db',
+  },
+
+  updateButtonText:
+  {
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 900,
+    letterSpacing: 1
+  }
 });
 
 export default ReservationScreen;

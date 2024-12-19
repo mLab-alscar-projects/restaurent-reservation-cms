@@ -7,39 +7,75 @@ import {
   SafeAreaView, 
   TouchableOpacity,
   Modal,
-  Image
+  Image,
+  ActivityIndicator
 } from 'react-native';
 
 import AuthContext from '../AuthContext';
 
-const PlaceholderImage = 'https://via.placeholder.com/150?text=User+Photo';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const PlaceholderImage = require('../assets/admin.jpg');
 
 const UsersScreen = () => {
 
   const { darkMode } = useContext(AuthContext);
 
   const {users, fetchUsers} = useContext(AuthContext);
+
   const [filter, setFilter] = useState('all');
+  const [loading, setLoading] = useState(false);
+
   const [selectedUser, setSelectedUser] = useState(null);
+  const [userReservation, setUserReservation] = useState([]);
+  const numberOfReservations = userReservation.length || 0;
 
-  // useEffect(() => {
-  //   fetchUsers(users).then()
-  // })
 
-  // Filtered users based on selected filter
+  // FETCH RESERVATIONS BASED ON RESTAURANT ID
+  useEffect(() => {
+    const fetchRestaurantReservations = async () => {
+      try {
+        setLoading(true);
+        const token = await AsyncStorage.getItem('token');
+        
+        if (selectedUser){
+            const response = await axios.get(
+              `https://lumpy-clover-production.up.railway.app/api/user-reservations/${selectedUser.id}`,
+              {
+                headers: { Authorization: `Bearer ${token}` }
+              }
+            );
+  
+            setUserReservation(response.data);
+            return response
+        }
+        
+  
+      } catch (error) {
+        console.error('Error fetching restaurant reservations:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRestaurantReservations();
+  }, [selectedUser]);
+
+  // FILTER BASED ON THE STATUS
   const filteredUsers = useMemo(() => {
     if (filter === 'all') return users;
     return users.filter(user => user.status === filter);
   }, [users, filter]);
 
-  // User count statistics
+  // USER COUNT STATS
   const userStats = useMemo(() => ({
     all: users.length,
     active: users.filter(user => user.status === 'active').length,
     burned: users.filter(user => user.status === 'burned').length
   }), [users]);
 
-  // Render individual user item
+  // RENDER USER
   const renderUserItem = ({ item }) => (
     <TouchableOpacity 
       style={[styles.userItem, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}
@@ -94,14 +130,19 @@ const UsersScreen = () => {
             {/* Close Button */}
             <TouchableOpacity 
               style={styles.modalCloseButton}
-              onPress={() => setSelectedUser(null)}
+              onPress={() => 
+                {
+                  setSelectedUser(null);
+                  setUserReservation([])
+                }
+              }
             >
               <Text style={styles.modalCloseButtonText}>×</Text>
             </TouchableOpacity>
 
             {/* User Image */}
             <Image 
-              source={{ uri: selectedUser.picture || PlaceholderImage }}
+              source={ selectedUser.picture || PlaceholderImage }
               style={styles.userImage}
             />
 
@@ -113,6 +154,11 @@ const UsersScreen = () => {
             <View style={styles.modalDetailContainer}>
               <Text style={styles.modalDetailLabel}>Email</Text>
               <Text style={styles.modalDetailValue}>{selectedUser.email}</Text>
+            </View>
+
+            <View style={styles.modalDetailContainer}>
+              <Text style={styles.modalDetailLabel}>Number of reserves</Text>
+              <Text style={styles.modalDetailValue}>{loading? <ActivityIndicator/> : numberOfReservations}</Text>
             </View>
 
             {selectedUser.phone && (
@@ -324,9 +370,9 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
     backgroundColor: '#f0f0f0',
-    borderRadius: 15,
-    width: 30,
-    height: 30,
+    borderRadius: 35,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -335,6 +381,7 @@ const styles = StyleSheet.create({
   {
     fontSize: 20,
     color: '#333',
+    textAlign: 'center'
   },
 
   userImage: 

@@ -236,7 +236,7 @@ export const styles = StyleSheet.create({
 
     modalContent: 
     {
-        flex: 1,
+      paddingBottom: 20,
     },
 
     detailSection: 
@@ -280,4 +280,27 @@ export const styles = StyleSheet.create({
         color: '#333',
         textAlign: 'right',
     },
+
+    updateButton:
+    {
+      width: '92%',
+      alignSelf: 'center',
+      marginTop: 10,
+      padding: 15,
+      borderRadius: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingVertical: 15,
+      backgroundColor: '#3498db',
+    },
+  
+    updateButtonText:
+    {
+      textAlign: 'center',
+      textTransform: 'uppercase',
+      fontSize: 16,
+      color: '#333',
+      fontWeight: 900,
+      letterSpacing: 1
+    }
   });

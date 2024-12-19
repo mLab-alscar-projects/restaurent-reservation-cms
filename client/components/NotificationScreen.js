@@ -119,7 +119,7 @@ const NotificationsScreen = ({ navigation }) => {
             <Text style={styles.modalHeaderTitle}>Reservation Details</Text>
           </View>
 
-          <ScrollView style={styles.modalContent}>
+          <ScrollView contentContainerStyle={styles.modalContent}>
             {/* Restaurant Details */}
             <View style={styles.detailSection}>
               <Text style={styles.sectionTitle}>Restaurant Information</Text>
@@ -198,6 +198,9 @@ const NotificationsScreen = ({ navigation }) => {
                 </Text>
               </View>
             </View>
+            <Pressable style={styles.updateButton}>
+              <Text style={styles.updateButtonText}>Update stats</Text>
+            </Pressable>
           </ScrollView>
         </SafeAreaView>
       </Modal>
