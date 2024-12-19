@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  FlatList, 
-  StyleSheet, 
-  SafeAreaView, 
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  SafeAreaView,
   TouchableOpacity,
   Modal,
   StatusBar,
@@ -20,57 +20,57 @@ import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 
 
-const RestaurantReservations = ({route}) => {
+const RestaurantReservations = ({ route }) => {
 
   const { restaurant } = route.params;
   const [selectedReservation, setSelectedReservation] = useState(null);
-//   const { darkMode } = useContext(AuthContext);
+  //   const { darkMode } = useContext(AuthContext);
   const [filter, setFilter] = useState('All');
   const [loading, setLoading] = useState(false);
   const [reservations, setReservations] = useState([]);
 
   // FETCH RESERVATIONS
-useEffect(() => {
-    const fetchReservations = async()=>{
-  
+  useEffect(() => {
+    const fetchReservations = async () => {
+
       try {
-  
-          setLoading(true);
-          const token = await AsyncStorage.getItem('token');
-  
-          if (!token) {
-            console.error("No token found, cannot fetch reservations.");
-            return;
-          }
-  
-          const response = await axios.
+
+        setLoading(true);
+        const token = await AsyncStorage.getItem('token');
+
+        if (!token) {
+          console.error("No token found, cannot fetch reservations.");
+          return;
+        }
+
+        const response = await axios.
           get(`https://lumpy-clover-production.up.railway.app/api/restaurant-reservations/${(restaurant._id)}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
             }
-  
+
           );
-  
-          setReservations(response.data);
-  
-        } catch (error) {
-  
-          console.error("Error fetching data:", {
-            message: error.message,
-            response: error.response ? error.response.data : "No response data",
-            status: error.response ? error.response.status : "No status",
-            request: error.request,
-  
-          });
+
+        setReservations(response.data);
+
+      } catch (error) {
+
+        console.error("Error fetching data:", {
+          message: error.message,
+          response: error.response ? error.response.data : "No response data",
+          status: error.response ? error.response.status : "No status",
+          request: error.request,
+
+        });
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     }
-  
+
     fetchReservations();
-  
+
   }, []);
 
   // FORMART DATE
@@ -84,16 +84,16 @@ useEffect(() => {
   };
 
   // FILTER RESERVATIONS
-  const filteredReservations = filter === 'All' 
-    ? reservations 
+  const filteredReservations = filter === 'All'
+    ? reservations
     : reservations.filter(reservation => {
-        if (filter === 'Active') return reservation.isActive;
-        return !reservation.isActive;
-      });
+      if (filter === 'Active') return reservation.isActive;
+      return !reservation.isActive;
+    });
 
   // RENDER RESERVATIONS
   const renderReservationItem = ({ item }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.reservationItem}
       onPress={() => setSelectedReservation(item)}
     >
@@ -103,7 +103,7 @@ useEffect(() => {
         <Text style={styles.reservationInfo}>Time: {item.timeslot}</Text>
         <Text style={styles.reservationInfo}>Tables: {item.numberOfTables}</Text>
         <View style={[
-          styles.statusBadge, 
+          styles.statusBadge,
           item.isActive ? styles.activeBadge : styles.inactiveBadge
         ]}>
           <Text style={[
@@ -131,7 +131,7 @@ useEffect(() => {
         <SafeAreaView style={styles.modalContainer}>
           {/* Header */}
           <View style={styles.modalHeader}>
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={() => setSelectedReservation(null)}
               style={styles.modalBackButton}
             >
@@ -253,25 +253,25 @@ useEffect(() => {
         ))}
       </View>
 
-      {loading? 
+      {loading ?
 
-      <View style={styles.loader}>
+        <View style={styles.loader}>
           <ActivityIndicator size="large" color={restaurant.color} />
           <Text style={styles.loaderText}>Loading ...</Text>
-      </View>
-      
-      : 
-      <FlatList
-        data={filteredReservations}
-        renderItem={renderReservationItem}
-        keyExtractor={(item) => item._id}
-        contentContainerStyle={styles.listContainer}
-        ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No reservations found</Text>
-          </View>
-        }
-      />
+        </View>
+
+        :
+        <FlatList
+          data={filteredReservations}
+          renderItem={renderReservationItem}
+          keyExtractor={(item) => item._id}
+          contentContainerStyle={styles.listContainer}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No reservations found</Text>
+            </View>
+          }
+        />
       }
 
       {/* Reservation Details Modal */}

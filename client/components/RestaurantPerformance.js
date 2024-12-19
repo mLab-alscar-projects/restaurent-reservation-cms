@@ -1,190 +1,234 @@
-
 import React, { useState, useContext } from 'react';
-
-import 
-{ 
-  View, 
-  Text, 
-  ScrollView, 
-  StyleSheet, 
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Modal,
   Dimensions,
-  Pressable,
-  StatusBar 
+  ActivityIndicator,
+  SafeAreaView,
+  StatusBar
 } from 'react-native';
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContext from '../AuthContext';
 
-import { ProgressChart } from 'react-native-chart-kit';
-
 const RestaurantPerformance = () => {
+  const { restaurants, reservations } = useContext(AuthContext);
+  const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [restaurantReservations, setRestaurantReservations] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const { loader, darkMode } = useContext(AuthContext);
+  // Calculate overall stats from all reservations
+  const calculateOverallStats = () => {
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const startOfWeek = new Date(today.setDate(today.getDate() - 7));
+    const startOfMonth = new Date(today.setDate(today.getDate() - 30));
 
- 
-  const [restaurants] = useState([
-    { 
-      id: 1, 
-      name: "Eat'in", 
-      weeklyData: [0.65, 0.59, .70, .36],
-      totalReservations: 45,
-      averageRating: 4.5,
-      color: '#3498db',
-      darkColor: '#216a9b',
-    },
-    { 
-      id: 2, 
-      name: "Foodies's Delight", 
-      weeklyData: [0.55, 0.62, .70, .36],
-      totalReservations: 38,
-      averageRating: 4.2,
-      color: '#2ecc71',
-      darkColor: '#1e8c50',
+    const dailyTotal = reservations.filter(r => new Date(r.dateOfPayment) >= startOfDay).length;
+    const weeklyTotal = reservations.filter(r => new Date(r.dateOfPayment) >= startOfWeek).length;
+    const monthlyTotal = reservations.filter(r => new Date(r.dateOfPayment) >= startOfMonth).length;
 
-    },
-    { 
-      id: 3, 
-      name: "Munchies", 
-      weeklyData: [0.70, 0.65, .70, .36],
-      averageRating: 4.7,
-      color: '#9b59b6',
-      totalReservations: 58,
-      darkColor: '#6d3f86',
+    // Calculate overall occupancy rate
+    const totalCapacity = restaurants.reduce((sum, restaurant) => sum + (restaurant.tables || 0), 0);
+    const occupancyRate = totalCapacity > 0 ? (dailyTotal / totalCapacity) * 100 : 0;
 
-    }
-  ]);
-
- 
-  const totalReservations = restaurants.reduce((sum, rest) => sum + rest.totalReservations, 0);
-  const averagePerformance = (restaurants.reduce((sum, rest) => 
-    sum + (rest.weeklyData.reduce((a, b) => a + b, 0) / rest.weeklyData.length), 0) 
-    / restaurants.length * 100).toFixed(0);
-
-  
-  const chartConfig = (restaurant) => ({
-    backgroundGradientFrom: darkMode ? '#444' : '#fff',
-    backgroundGradientTo: darkMode ? '#444' : '#fff',
-    color: (opacity = 1) => {
-
-      if (restaurant.color.startsWith('#')) {
-        // Convert hex to rgba
-        const hexToRgba = (hex, opacity) => {
-          const r = parseInt(hex.slice(1, 3), 16);
-          const g = parseInt(hex.slice(3, 5), 16);
-          const b = parseInt(hex.slice(5, 7), 16);
-          return `rgba(${r}, ${g}, ${b}, ${opacity})`;
-        };
-        return hexToRgba(restaurant.color, opacity);
-      }
-     
-      return restaurant.color;
-    },
-    strokeWidth: 2,
-    barPercentage: 0.5,
-  });
-
-  const calculateWeeklyAverage = (weeklyData) => {
-    return (weeklyData.reduce((a, b) => a + b, 0) / weeklyData.length * 100).toFixed(0);
+    return {
+      daily: dailyTotal,
+      weekly: weeklyTotal,
+      monthly: monthlyTotal,
+      total: reservations.length,
+      occupancy: Math.round(occupancyRate)
+    };
   };
 
+  // Fetch specific restaurant reservations
+  const fetchRestaurantReservations = async (restaurantId) => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem('token');
+      
+      const response = await axios.get(
+        `https://lumpy-clover-production.up.railway.app/api/restaurant-reservations/${restaurantId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      
+      setRestaurantReservations(response.data);
+    } catch (error) {
+      console.error('Error fetching restaurant reservations:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Calculate stats for a specific restaurant
+  const calculateRestaurantStats = (restaurantReservations, restaurant) => {
+    const today = new Date();
+    const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+    const startOfWeek = new Date(today.setDate(today.getDate() - 7));
+    const startOfMonth = new Date(today.setDate(today.getDate() - 30));
+
+    const dailyTotal = restaurantReservations.filter(r => new Date(r.dateOfPayment) >= startOfDay).length;
+    const weeklyTotal = restaurantReservations.filter(r => new Date(r.dateOfPayment) >= startOfWeek).length;
+    const monthlyTotal = restaurantReservations.filter(r => new Date(r.dateOfPayment) >= startOfMonth).length;
+
+    const occupancyRate = restaurant.tables ? (dailyTotal / restaurant.tables) * 100 : 0;
+
+    return {
+      daily: dailyTotal,
+      weekly: weeklyTotal,
+      monthly: monthlyTotal,
+      total: restaurantReservations.length,
+      occupancy: Math.round(occupancyRate)
+    };
+  };
+
+  const handleRestaurantPress = async (restaurant) => {
+    setSelectedRestaurant(restaurant);
+    setModalVisible(true);
+    await fetchRestaurantReservations(restaurant._id);
+  };
+
+  const overallStats = calculateOverallStats();
+
   return (
-    <ScrollView 
-      style={[styles.container, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}
-      contentContainerStyle={styles.contentContainer}
-
-    >
-      <StatusBar backgroundColor={'#3498db'}/>
-      
-      <Text style={[styles.sectionTitle, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Weekly Performance</Text>
-      {/* Overall Insights Section */}
-      <Pressable style={styles.insightsContainer}>
-        <View style={[styles.primaryInsightCard, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}>
-          <View style={styles.chartTitleContainer}>
-            <Text style={[styles.chartTitle, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Weekly Productivity</Text>
-            <Text style={styles.trendIcon}>📈</Text>
+    <SafeAreaView style={styles.container}>
+       <StatusBar backgroundColor={'#3498db'}/>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Overall Performance Section */}
+        <View style={styles.headerSection}>
+          <Text style={styles.headerTitle}>Overall Performance</Text>
+          <View style={styles.performanceCard}>
+            <Text style={styles.cardTitle}>Today's Overall Occupancy</Text>
+            <Text style={styles.occupancyText}>{overallStats.occupancy}%</Text>
+            <View style={styles.progressBar}>
+              <View style={[styles.progressFill, { width: `${overallStats.occupancy}%` }]} />
+            </View>
           </View>
 
-          {/* MOCK CHART VISUALIZATION */}
-          <View style={styles.chartContainer}>
-            {[65, 59, 80, 81, 56, 70, 90].map((value, index) => (
-              <View key={index} style={styles.barContainer}>
-                <View
-                  style={[
-                    styles.chartBar,
-                    { height: value, backgroundColor: `rgba(52, 152, 219, ${value / 100})` }
-                  ]}
-                />
-                <Text style={[styles.barLabel, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>
-                  {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]}
-                </Text>
-              </View>
-            ))}
-          </View>
-
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{totalReservations}</Text>
-              <Text style={[styles.statLabel, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)', fontWeight: 900}]}>Tables reserved</Text>
+          <View style={styles.statsGrid}>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{overallStats.daily}</Text>
+              <Text style={styles.statLabel}>Today</Text>
             </View>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{restaurants.length}</Text>
-              <Text style={[styles.statLabel, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)', fontWeight: 900}]}>Restaurants</Text>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{overallStats.weekly}</Text>
+              <Text style={styles.statLabel}>This Week</Text>
             </View>
-            <View style={styles.statItem}>
-              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{averagePerformance}%</Text>
-              <Text style={[styles.statLabel, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)', fontWeight: 900}]}>Avg Performance</Text>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{overallStats.monthly}</Text>
+              <Text style={styles.statLabel}>This Month</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{overallStats.total}</Text>
+              <Text style={styles.statLabel}>Total</Text>
             </View>
           </View>
         </View>
-      </Pressable>
 
-      <Text style={[styles.sectionTitle, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Restaurants Performance</Text>
-      
-      {restaurants.map((restaurant) => (
-        <View 
-          key={restaurant.id} 
-          style={[styles.restaurantContainer, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}
+        {/* Restaurants List */}
+        <Text style={styles.sectionTitle}>Restaurants</Text>
+        <View style={styles.restaurantsList}>
+          {restaurants.map((restaurant) => (
+            <TouchableOpacity
+              key={restaurant._id}
+              style={styles.restaurantCard}
+              onPress={() => handleRestaurantPress(restaurant)}
+            >
+              <Text style={styles.restaurantName}>{restaurant.name}</Text>
+              <Text style={styles.restaurantDetails}>
+                Capacity: {restaurant.tables} tables
+              </Text>
+              <Text style={styles.restaurantLocation}>{restaurant.location}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Restaurant Modal */}
+        <Modal
+          visible={modalVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setModalVisible(false)}
         >
-          <Text style={[styles.restaurantName, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{restaurant.name}</Text>
-          
-          {/* Progress Chart */}
-          <ProgressChart
-            data={{
-              labels: ['Daily','Weekly', 'Monthly', 'Yearly'],
-              data: restaurant.weeklyData
-            }}
-            width={Dimensions.get('window').width - 40}
-            height={150}
-            chartConfig={chartConfig(restaurant)}
-            hideLegend={false}
-            style={[styles.progressChart, {backgroundColor: '#000'}]}
-          />
-          
-          {/* Performance Stats */}
-          <View style={styles.statsRow}>
-            <View style={[styles.statCard, {backgroundColor: restaurant.darkColor}]}>
-              <Text style={styles.statValue}>
-                {calculateWeeklyAverage(restaurant.weeklyData)}%
-              </Text>
-              <Text style={styles.statLabel}>Weekly</Text>
-            </View>
-            
-            <View style={[styles.statCard, {backgroundColor: restaurant.darkColor}]}>
-              <Text style={styles.statValue}>
-                {restaurant.totalReservations}
-              </Text>
-              <Text style={styles.statLabel}>Reservations</Text>
-            </View>
-            
-            <View style={[styles.statCard, {backgroundColor: restaurant.darkColor}]}>
-              <Text style={styles.statValue}>
-                {restaurant.averageRating}
-              </Text>
-              <Text style={styles.statLabel}>Avg Rating</Text>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              {loading ? (
+                <ActivityIndicator size="large" color="#0066FF" />
+              ) : selectedRestaurant && (
+                <>
+                  <View style={styles.modalHeader}>
+                    <Text style={styles.modalTitle}>{selectedRestaurant.name}</Text>
+                    <TouchableOpacity
+                      style={styles.closeButton}
+                      onPress={() => setModalVisible(false)}
+                    >
+                      <Text style={styles.closeButtonText}>×</Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  {restaurantReservations.length > 0 ? (
+                    <>
+                      <View style={styles.modalPerformanceCard}>
+                        <Text style={styles.cardTitle}>Today's Occupancy</Text>
+                        <Text style={styles.occupancyText}>
+                          {calculateRestaurantStats(restaurantReservations, selectedRestaurant).occupancy}%
+                        </Text>
+                        <View style={styles.progressBar}>
+                          <View 
+                            style={[
+                              styles.progressFill, 
+                              { 
+                                width: `${calculateRestaurantStats(restaurantReservations, selectedRestaurant).occupancy}%` 
+                              }
+                            ]} 
+                          />
+                        </View>
+                      </View>
+
+                      <View style={styles.statsGrid}>
+                        <View style={styles.statCard}>
+                          <Text style={styles.statValue}>
+                            {calculateRestaurantStats(restaurantReservations, selectedRestaurant).daily}
+                          </Text>
+                          <Text style={styles.statLabel}>Today</Text>
+                        </View>
+                        <View style={styles.statCard}>
+                          <Text style={styles.statValue}>
+                            {calculateRestaurantStats(restaurantReservations, selectedRestaurant).weekly}
+                          </Text>
+                          <Text style={styles.statLabel}>This Week</Text>
+                        </View>
+                        <View style={styles.statCard}>
+                          <Text style={styles.statValue}>
+                            {calculateRestaurantStats(restaurantReservations, selectedRestaurant).monthly}
+                          </Text>
+                          <Text style={styles.statLabel}>This Month</Text>
+                        </View>
+                        <View style={styles.statCard}>
+                          <Text style={styles.statValue}>
+                            {calculateRestaurantStats(restaurantReservations, selectedRestaurant).total}
+                          </Text>
+                          <Text style={styles.statLabel}>Total</Text>
+                        </View>
+                      </View>
+                    </>
+                  ) : (
+                    <Text style={styles.noDataText}>No reservations found</Text>
+                  )}
+                </>
+              )}
             </View>
           </View>
-        </View>
-      ))}
-    </ScrollView>
+        </Modal>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -193,124 +237,124 @@ const styles = StyleSheet.create({
   container: 
   {
     flex: 1,
+    backgroundColor: '#F5F6FA',
   },
 
-  contentContainer: 
+  scrollContent: 
   {
-    paddingVertical: 20,
+    padding: 16,
   },
 
-  insightsContainer: 
+  headerSection: 
   {
-    marginBottom: 20
+    marginBottom: 24,
   },
 
-  primaryInsightCard: 
+  headerTitle: 
   {
-    backgroundColor: 'white',
-    padding: 15,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 16,
+  },
+
+  performanceCard: 
+  {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3
+    elevation: 3,
   },
 
-  chartTitleContainer: 
+  cardTitle: 
   {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10
+    fontSize: 16,
+    color: '#666666',
+    marginBottom: 8,
   },
 
-  chartTitle: 
+  occupancyText: 
   {
-    fontSize: 18,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#333'
+    color: '#0066FF',
+    marginBottom: 8,
   },
 
-  trendIcon: 
+  progressBar: 
   {
-    fontSize: 20
+    height: 8,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 4,
+    overflow: 'hidden',
   },
 
-  chartContainer: 
+  progressFill: 
   {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    height: 150,
-    marginBottom: 10
+    height: '100%',
+    backgroundColor: '#0066FF',
+    borderRadius: 4,
   },
 
-  barContainer: 
-  {
-    alignItems: 'center',
-    width: '13%'
-  },
-
-  chartBar: 
-  {
-    width: '100%',
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5
-  },
-
-  barLabel: 
-  {
-    marginTop: 5,
-    fontSize: 10,
-    color: '#7f8c8d'
-  },
-
-  statsContainer: 
+  statsGrid: 
   {
     flexDirection: 'row',
+    flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginTop: 10
+    gap: 16,
   },
 
-  statItem: 
+  statCard: 
   {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    width: (Dimensions.get('window').width - 64) / 2,
     alignItems: 'center',
-    width: '30%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
 
   statValue: 
   {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#d3ddda'
+    color: '#1A1A1A',
+    marginBottom: 4,
   },
 
   statLabel: 
   {
-    fontSize: 12,
-    color: '#f9f9f9',
-    textAlign: 'center',
-    marginTop: 5,
-    letterSpacing: 1,
+    fontSize: 14,
+    color: '#666666',
   },
 
   sectionTitle: 
   {
-    fontSize: 16,
-    letterSpacing: 2,
+    fontSize: 20,
     fontWeight: 'bold',
-    textTransform: 'uppercase',
-    color: '#444',
-    width: '100%',
-    marginBottom: 15,
-    textAlign: 'center',
+    color: '#1A1A1A',
+    marginBottom: 16,
   },
 
-  restaurantContainer: 
+  restaurantsList: 
   {
-    backgroundColor: 'white',
-    marginBottom: 20,
-    padding: 15,
+    gap: 16,
+  },
+
+  restaurantCard: 
+  {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -320,36 +364,88 @@ const styles = StyleSheet.create({
 
   restaurantName: 
   {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#333',
-    textAlign: 'center',
-    letterSpacing: 2,
+    color: '#1A1A1A',
+    marginBottom: 8,
   },
 
-  progressChart: 
+  restaurantDetails: 
   {
-    marginVertical: 8,
-    borderRadius: 16,
-    
+    fontSize: 14,
+    color: '#666666',
+    marginBottom: 4,
   },
 
-  statsRow: 
+  restaurantLocation: 
+  {
+    fontSize: 14,
+    color: '#666666',
+  },
+
+  // MODAL
+  modalContainer: 
+  {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+
+  modalContent: 
+  {
+    backgroundColor: '#F5F6FA',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 20,
+    minHeight: '80%',
+  },
+
+  modalHeader: 
   {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 10
+    alignItems: 'center',
+    marginBottom: 20,
   },
 
-  statCard: 
+  modalTitle: 
   {
-    alignItems: 'center',
-    backgroundColor: '#333',
-    borderRadius: 5,
-    padding: 10,
-    width: '30%'
-  }
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+  },
+
+  closeButton: 
+  {
+    padding: 8,
+  },
+
+  closeButtonText: 
+  {
+    fontSize: 32,
+    color: '#666666',
+  },
+
+  modalPerformanceCard: 
+  {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  
+  noDataText: 
+  {
+    fontSize: 16,
+    color: '#666666',
+    textAlign: 'center',
+    marginTop: 20,
+  },
 });
 
 export default RestaurantPerformance;
