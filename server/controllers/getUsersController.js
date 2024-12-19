@@ -14,10 +14,11 @@ export const getUsers = async(req, res)=>{
                 email: user.email,
                 role: user.role || '',
                 name: user.name || '',
+                password: user.password || '',
                 phone: user.phone || '',
                 isActive: user.isActive || '',
                 restaurantName: user.restaurantName || '',
-                timestamp: user.timestamps || "",
+                timestamp: user.createdAt || "",
             }));
 
             res.status(200).json({

@@ -5,6 +5,7 @@ import { protect } from "../middlewares/authMiddleware.js";
 import { LoginUser } from "../controllers/userLogin.js";
 import { createUser } from "../controllers/userRegister.js";
 import { getUsers } from "../controllers/getUsersController.js";
+import { updateUser } from "../controllers/updateUserController.js";
 
 import createRestaurant from "../controllers/createRestaurantController.js";
 import getAllRestaurants from "../controllers/getAllRestaurantController.js";
@@ -49,6 +50,9 @@ router.post(
     }
     next();
   },
+
+  protect,
+
   createUser
 );
 // ENDS
@@ -57,8 +61,12 @@ router.post(
 router.post("/login",  LoginUser);
 // ENDS
 
-// FOR DEBUGGING CASE
+// GET USERS
 router.get("/users", getUsers);
+// ENDS
+
+// UPDATE USERS
+router.put("/update/:id", protect, updateUser);
 // ENDS
 
 // USER REGISTER AND LOGIN ENDS
