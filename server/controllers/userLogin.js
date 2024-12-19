@@ -20,7 +20,8 @@ export const LoginUser = async(req, res)=>{
 
         const UserToken = GenerateToken(fetchUser._id);
                 res.status(200)
-                .json({message:  "User logged in successfully with", 
+                .json({
+                    message:  "User logged in successfully with", 
                     id: fetchUser._id, 
                     email: fetchUser.email, 
                     token: UserToken,

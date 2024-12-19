@@ -10,17 +10,20 @@ export const getUsers = async(req, res)=>{
 
         if (allUsers.length > 0) {
             const users = allUsers.map(user => ({
-                id: fetchUser._id,
-                email: fetchUser.email,
-                token: UserToken,
-                role: fetchUser.role || '',
-                name: fetchUser.name || '',
-                phone: fetchUser.phone || '',
-                isActive: fetchUser.isActive || '',
-                restaurantName: fetchUser.restaurantName || '',
+                id: user._id,
+                email: user.email,
+                role: user.role || '',
+                name: user.name || '',
+                phone: user.phone || '',
+                isActive: user.isActive || '',
+                restaurantName: user.restaurantName || '',
+                timestamp: user.timestamps || "",
             }));
 
-            res.status(200).json(users);
+            res.status(200).json({
+                message: 'Succesfully fetched users',
+                admins: users
+            });
         }
 
         else{
