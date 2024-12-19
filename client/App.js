@@ -302,6 +302,7 @@ const handleLogin = async (email, password, setMessage) => {
 
           await AsyncStorage.setItem('token', token);
           await AsyncStorage.setItem('userEmail', userEmail);
+          await AsyncStorage.setItem('userData', JSON.stringify(response.data));
 
           return true;
       } else {
@@ -569,7 +570,7 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
             component={RestaurantReservations}
             options={{
               headerShown: true,
-              headerTitle: 'reservations', 
+              headerTitle: 'Reservations', 
               headerStyle: {
                 backgroundColor: '#3498db', 
               },

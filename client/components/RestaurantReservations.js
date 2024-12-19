@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   Modal,
   StatusBar,
-  ScrollView
+  ScrollView,
+  ActivityIndicator
 } from 'react-native';
 
 import AuthContext from '../AuthContext';
@@ -43,7 +44,7 @@ useEffect(() => {
           }
   
           const response = await axios.
-          get(`https://lumpy-clover-production.up.railway.app/api/get-reservation/${(restaurant._id)}`,
+          get(`https://lumpy-clover-production.up.railway.app/api/restaurant-reservations/${(restaurant._id)}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -228,7 +229,7 @@ useEffect(() => {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.headerText}>{restaurant.name}  Reservations</Text>
+        <Text style={styles.headerText}>{restaurant.name} Reservations</Text>
       </View>
 
       {/* Filter Buttons */}
@@ -252,7 +253,14 @@ useEffect(() => {
         ))}
       </View>
 
-      {/* Reservation List */}
+      {loading? 
+
+      <View style={styles.loader}>
+          <ActivityIndicator size="large" color={restaurant.color} />
+          <Text style={styles.loaderText}>Loading ...</Text>
+      </View>
+      
+      : 
       <FlatList
         data={filteredReservations}
         renderItem={renderReservationItem}
@@ -264,6 +272,7 @@ useEffect(() => {
           </View>
         }
       />
+      }
 
       {/* Reservation Details Modal */}
       <ReservationDetailsModal />
@@ -429,6 +438,24 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: '#333',
     textAlign: 'right',
+  },
+
+  loader:
+  {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+    gap: 20
+  },
+
+  loaderText: 
+  {
+    fontSize: 18,
+    fontWeight: 600,
+    color: '#333',
+    textAlign: 'center',
+    letterSpacing: 1
   },
 });
 

@@ -36,6 +36,11 @@ router.post(
       .withMessage('Password must be at least 8 characters long')
       .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/)
       .withMessage('Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character'),
+
+    body('phone')
+    .isNumeric({ min: 10, max: 11 })
+    .withMessage("PLease enter a valid phone number")
+    
   ],
   (req, res, next) => {
     const errors = validationResult(req);

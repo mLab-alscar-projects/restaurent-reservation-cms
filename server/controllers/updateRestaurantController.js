@@ -11,7 +11,7 @@ const updateRestaurant = async (req, res) => {
 
     if (!restaurant) 
         {
-            return restaurant.status(404).json({message: "Rerstaurant not found wpth the id"});
+            return restaurant.status(404).json({message: "Rerstaurant not found with the id"});
         }
 
     res.status(201).json({message: 'Successfully updated restaurant', data: restaurant});
@@ -19,7 +19,7 @@ const updateRestaurant = async (req, res) => {
    } catch (error) {
     
     res.status(500).json({message: 'Failed to update restaurant', error: error.message});
-    console.error("Failed to update restaurant", error.message)
+    console.error("Failed to update restaurant", error.message);
    }
 };
 

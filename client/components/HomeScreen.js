@@ -5,7 +5,6 @@ import {
   View,
   Pressable,
   Image,
-
   ScrollView,
   ActivityIndicator,
   StatusBar
@@ -19,23 +18,26 @@ import { Ionicons, Octicons } from '@expo/vector-icons';
 
 const HomeScreen = ({ navigation }) => {
   const { restaurants, loader, darkMode, reservations } = useContext(AuthContext);
+  const [user, setUser] = useState('');
+
+
+  // CALCULATIONS
   const count = restaurants.length; 
   const countReservations = reservations.length;
   const percentage = countReservations > 0 ? (count / countReservations) * 100: 0;
+  const formattedPercentage = percentage.toFixed(1);
   const countNotifications = reservations.filter(reservation => !reservation.isRead).length;
-
-
-  const [userEmail, setUserEmail] = useState('');
   
 
-  // GET THE USERNAME
+  // GET THE USER
   useEffect(() => {
     const fetchUserDeails = async()=>
       {
-        const user = await AsyncStorage.getItem('userEmail');
+        const user = await AsyncStorage.getItem('userData');
         if (user) 
           {
-          setUserEmail(user);
+            const userData = JSON.parse(user);
+            setUser(userData);
           }
       }
 
@@ -44,7 +46,9 @@ const HomeScreen = ({ navigation }) => {
 
 
   // GETTING THE INITIAL OF THE USER
-  const firstLetter = userEmail ? userEmail.charAt(0).toUpperCase() : '';
+  const firstLetter = user.name ? user.name.charAt(0).toUpperCase() : '';
+  const userFirstName = user?.name || ""; 
+  const firstName = userFirstName.split(' ')[0];
 
 
   return (
@@ -61,7 +65,7 @@ const HomeScreen = ({ navigation }) => {
             </Pressable>
           </View>
           <View>
-            <Text style={[styles.greetingText, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Hello, Admin</Text>
+            <Text style={[styles.greetingText, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>Hello, {firstName}</Text>
             <Text style={[styles.subGreetingText, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>Productivity Dashboard</Text>
           </View>
         </View>
@@ -114,7 +118,7 @@ const HomeScreen = ({ navigation }) => {
             </View>
 
             <View style={styles.statItem}>
-              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{percentage || 0}%</Text>
+              <Text style={[styles.statValue, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{formattedPercentage || 0}%</Text>
               <Text style={[styles.statLabel, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>Avg Performance</Text>
             </View>
 

@@ -6,7 +6,10 @@ const userSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     isActive: { type: Boolean, default: true },
-    role: { type: String, default: 'super-admin' },
+    role: { type: String, required: true },
+    restaurantName: { type: String, required: true },
+    name: { type: String, required: true },
+    phone: { type: Number, required: true },
 
 }, { timestamps: true });
 

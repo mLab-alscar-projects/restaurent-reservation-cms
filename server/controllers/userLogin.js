@@ -23,7 +23,12 @@ export const LoginUser = async(req, res)=>{
                 .json({message:  "User logged in successfully with", 
                     id: fetchUser._id, 
                     email: fetchUser.email, 
-                    token: UserToken
+                    token: UserToken,
+                    role: fetchUser.role || '',
+                    name: fetchUser.name || '',
+                    phone: fetchUser.phone || '',
+                    isActive: fetchUser.isActive || '',
+                    restaurantName: fetchUser.restaurantName || '',
                 });
 
     } catch (error) {

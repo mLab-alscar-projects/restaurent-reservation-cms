@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -32,7 +32,23 @@ const AdminProfileScreen = (
   const countRestaurants = restaurants.filter(restaurant => restaurant.isActive).length;
   const countUsers = users.length;  
   const countReservations = reservations.length;
-  const user = AsyncStorage.getItem("userEmail");
+  const [user, setUser] = useState('');
+  
+
+   // GET THE USER
+   useEffect(() => {
+    const fetchUserDeails = async()=>
+      {
+        const user = await AsyncStorage.getItem('userData');
+        if (user) 
+          {
+            const userData = JSON.parse(user);
+            setUser(userData);
+          }
+      }
+
+    fetchUserDeails();
+  }, []);
 
   const [admin] = useState({
     name: "Oscar Poco",
@@ -70,7 +86,7 @@ const AdminProfileScreen = (
   const handleLogout = async () => { 
     try { 
       await AsyncStorage.removeItem('token'); 
-      await AsyncStorage.removeItem('userEmail'); 
+      await AsyncStorage.removeItem('userData'); 
       navigation.navigate("Login"); 
       Toast.show({
         type: 'success', 
@@ -122,16 +138,17 @@ const AdminProfileScreen = (
               />
               <View style={styles.accessBadge}>
                 <Text style={styles.accessBadgeText}>
-                  {admin.accessLevel}
+                  {user.role}
                 </Text>
               </View>
             </View>
 
-            <Text style={[styles.adminName, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{admin.name}</Text>
-            <Text style={styles.adminRole}>{admin.role}</Text>
-            <Text style={styles.adminEmail}>{user}</Text>
+            <Text style={[styles.adminName, {color: darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'}]}>{user.name}</Text>
+            <Text style={styles.adminRole}>{user.phone || ''}</Text>
+            <Text style={styles.adminEmail}>{user.email || ''}</Text>
+            <Text style={styles.adminEmail}>{user.restaurantName || ''}</Text>
             <Text style={styles.lastLogin}>
-              Last Login: {admin.lastLogin}
+              Account created on: {admin.lastLogin}
             </Text>
           </View>
         </View>

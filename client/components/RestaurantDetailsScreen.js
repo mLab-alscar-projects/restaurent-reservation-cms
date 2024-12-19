@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { View, Text, Image, ScrollView, StyleSheet, SafeAreaView, Pressable, StatusBar, ActivityIndicator } from 'react-native';
 
 // ICONS
@@ -8,11 +8,13 @@ import Toast from 'react-native-toast-message';
 // STORAGE
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AuthContext from '../AuthContext';
 
 const RestaurantDetailsScreen = ({navigation, route}) => {
 
 
   const { restaurant, darkMode } = route.params;
+  const { fetchRestaurants } = useContext(AuthContext);
   const [isActive, setIsActive] = useState(restaurant.isActive);
   const [loading, setLoader] = useState(false);
 
@@ -72,6 +74,8 @@ const RestaurantDetailsScreen = ({navigation, route}) => {
           text2: "Restaurant status updated successfully",
           position: "bottom",
         });
+
+        await fetchRestaurants();
       }
     } catch (error) {
       console.error("Error updating restaurant status:", error.response?.data || error.message);
