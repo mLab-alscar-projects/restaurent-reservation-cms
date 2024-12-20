@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useContext } from 'react';
 import {
-  StyleSheet,
   Text,
   View,
   Pressable,
@@ -12,18 +11,53 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
-import { Swipeable } from 'react-native-gesture-handler';
+
+// STORAGE
 import AuthContext from '../AuthContext';
+
+// ICONS
+import { Swipeable } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from '../styles/ReservationsStyle';
 
 const NotificationsScreen = ({ navigation }) => {
-  const { loader, darkMode, reservations, restaurants } = useContext(AuthContext);
+
+  const { loader, darkMode, reservations, restaurants, markAsRead,fetchReservations } = useContext(AuthContext);
+
   const [activeFilter, setActiveFilter] = useState('All');
   const [refreshing, setRefreshing] = useState(false);
   const [selectedReservation, setSelectedReservation] = useState(null);
 
-  // Format date function
+  // MARK AS READ
+  const handleMarkAsRead = async (reservation) => {
+    if (!reservation.isRead) {
+      try {
+        await markAsRead(reservation);
+      } catch (error) {
+        console.error('Error marking as read:', error.message);
+      }
+    }
+  };
+
+  // FILTERED RESERVATIONS
+  const filteredReservations = useMemo(() => {
+    return activeFilter === 'Active'
+      ? reservations.filter((reservation) => !reservation.isRead)
+      : reservations;
+  }, [reservations, activeFilter]);
+
+  // REFRESH CONTROL
+  const onRefresh = React.useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await fetchReservations();
+    } catch (error) {
+      console.error('Error refreshing reservations:', error.message);
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString('en-US', {
@@ -33,22 +67,6 @@ const NotificationsScreen = ({ navigation }) => {
     });
   };
 
-  // Memoized filtered reservations
-  const filteredReservations = useMemo(() => {
-    return activeFilter === 'Active'
-      ? reservations.filter((reservation) => reservation.isActive)
-      : reservations;
-  }, [activeFilter]);
-
-  // Refresh control handler
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
-  }, []);
-
-  // Swipeable reservation item
   const ReservationItem = ({ reservation }) => {
     const renderRightActions = (progress, dragX) => {
       const scale = dragX.interpolate({
@@ -71,9 +89,14 @@ const NotificationsScreen = ({ navigation }) => {
         <TouchableOpacity
           style={[
             styles.reservationCard,
-            !reservation.isActive && styles.inactiveReservation,
+            reservation.isRead && styles.inactiveReservation,
           ]}
-          onPress={() => setSelectedReservation(reservation)}
+          onPress={() => 
+            {
+              setSelectedReservation(reservation);
+              handleMarkAsRead(reservation);
+            }
+          }
         >
           <View style={styles.reservationContentContainer}>
             <View style={styles.reservationTextContainer}>
@@ -245,7 +268,7 @@ const NotificationsScreen = ({ navigation }) => {
               activeFilter === 'Active' && styles.activeFilterButtonText,
             ]}
           >
-            Active Only
+            Unread 
           </Text>
         </Pressable>
       </View>

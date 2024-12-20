@@ -37,7 +37,7 @@ const RestaurantScreen = ({route, navigation}) => {
 
   // STATE VARIABLES FOR MANAGING SCREEN DATA
   const { restaurant } = route.params;
-  
+
   const [menuData, setMenuData] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -254,8 +254,6 @@ const RestaurantScreen = ({route, navigation}) => {
       setIsLoading(false);
     }
   };
-
-  // console.log('Selected item : ',selectedItem);
 
   // EDIT MENU ITEM
   const  handleUpdateItem= async () => {

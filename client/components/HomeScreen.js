@@ -26,7 +26,12 @@ const HomeScreen = ({ navigation }) => {
   const countReservations = reservations.length;
   const percentage = countReservations > 0 ? (count / countReservations) * 100: 0;
   const formattedPercentage = percentage.toFixed(1);
-  const countNotifications = reservations.filter(reservation => !reservation.isRead).length;
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  useEffect(() => {
+    const unreadCount = reservations.filter(reservation => !reservation.isRead).length;
+    setNotificationCount(unreadCount);
+  }, [reservations]);
   
 
   // GET THE USER
@@ -72,7 +77,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.iconContainer}>
           <Pressable style={styles.iconButton} onPress={() => navigation.navigate('Notification')}>
             <Octicons name="bell-fill" size={27} color={'rgba(255, 175, 3, 0.97)'} />
-            <Text style={[styles.notificationNUmber, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>{countNotifications}</Text>
+            <Text style={[styles.notificationNUmber, {color: darkMode ? '#rgba(255, 255, 255, .7)' : '#7f8c8d'}]}>{notificationCount}</Text>
           </Pressable>
           <Pressable style={styles.iconButton} onPress={() => navigation.navigate('Settings')}>
             <Ionicons name="settings-outline" size={28} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />

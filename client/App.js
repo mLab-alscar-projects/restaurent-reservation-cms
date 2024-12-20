@@ -381,10 +381,47 @@ const addRestaurant = async (name, tables, color, location, timeslot, cuisine, d
 }
 
 
+ // MARK RESERVATION AS READ
+ 
+ const markAsRead = async (reservation) => {
+
+  const updatedData = {
+    isRead: true,
+  };
+
+  try {
+    const token = await AsyncStorage.getItem("token");
+    const response = await axios.put(
+      `https://lumpy-clover-production.up.railway.app/api/update-reservation/${reservation._id}`,
+      {updatedData},
+     
+    );
+
+    if (response.status === 201) {
+
+      setReservationData((prev) =>
+        prev.map((reservationItem) =>
+          reservationItem._id === reservation._id
+            ? { ...reservationItem, isActive: false }
+            : reservationItem
+        )
+      );
+    } else {
+      console.error("Failed to mark reservation as read:", response.data);
+    }
+
+  } catch (error) {
+    console.error("Error marking as read:", error.response?.data || error.message);
+  } 
+};
+// ENDS
+
+
+
 
   return (
     <AuthContext.Provider 
-    value={{ handleLogin, addRestaurant, fetchRestaurants, restaurants: restaurantsDatas, loader: loading, darkMode, setDarkMode, fetchUsers, users, fetchReservations, reservations: reservationsData }}>
+    value={{ handleLogin, addRestaurant, fetchRestaurants, restaurants: restaurantsDatas, loader: loading, darkMode, setDarkMode, fetchUsers, users, fetchReservations, reservations: reservationsData, markAsRead }}>
       <NavigationContainer>
         <SafeAreaView backgroundColor= '#97CBDC'/>
         <StatusBar
