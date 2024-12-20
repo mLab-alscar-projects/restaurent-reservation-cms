@@ -14,37 +14,60 @@ const RestaurantDetailsScreen = ({navigation, route}) => {
 
 
   const { restaurant, darkMode } = route.params;
+  
   const { fetchRestaurants } = useContext(AuthContext);
   const [isActive, setIsActive] = useState(restaurant.isActive);
   const [loading, setLoader] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
 
-  const restaurantData = {
-    name: 'Gourmet Haven',
-    image: require('../assets/munchies.jpg'), 
-    rating: 4.7,
-    workingHours: '11:00 AM - 10:00 PM',
-    location: '123 Culinary Street, Foodville',
-    reviews: [
-      {
-        id: '1',
-        username: 'Food Lover',
-        rating: 5,
-        comment: 'Absolutely amazing cuisine and wonderful ambiance!'
-      },
-      {
-        id: '2', 
-        username: 'Culinary Critic',
-        rating: 4.5,
-        comment: 'Exceptional dishes with fresh ingredients.'
-      },
-      {
-        id: '3',
-        username: 'Casual Diner',
-        rating: 4,
-        comment: 'Great experience, friendly staff and delicious food.'
+  // FETCH REVIEWS
+  useEffect(() => {
+
+    const fetchReviews = async () => {
+      setLoading(true);
+      try {
+        const token = await AsyncStorage.getItem("token");
+
+        const response = await axios.get(`https://lumpy-clover-production.up.railway.app/api/reviews/restaurant/${restaurant._id}`, {headers: { Authorization : `Bearer ${token}`}});
+
+        if (response.status === 200) {
+          Toast.show({
+            type: "success",
+            text1: "Success",
+            text2: "Successfully fetched reviews",
+            position: "bottom",
+          });
+
+          const reviewsData = response.data.reviews;
+          setReviews(reviewsData);
+          
+          // CALCULATE REVIEWS
+          const totalRating = reviewsData.reduce((sum, review) => sum + (review.rating || 0), 0);
+          const calculatedAverage = reviewsData.length > 0 ? totalRating / reviewsData.length : 0;
+          setAverageRating(calculatedAverage);
+        }
+      } catch (error) {
+        
+        const errMessage = error.response?.data || `Failed t fetch reviews.${error.message}`;
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: errMessage,
+          position: "bottom",
+        });
+        console.error(errMessage);
+
+      } finally {
+        setLoading(false);
       }
-    ]
-  };
+
+    }
+
+    fetchReviews();
+
+  }, [restaurant._id]);
 
    // EDIT RESTAURANT
    const handleEdit = async () => {
@@ -122,7 +145,7 @@ const RestaurantDetailsScreen = ({navigation, route}) => {
           <View style={styles.infoRow}>
             <View style={styles.infoItem}>
               <StarIcon color="#FFD700" size={20} />
-              <Text style={[styles.infoText, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>{restaurantData.rating} / 5</Text>
+              <Text style={[styles.infoText, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>{averageRating} / 5</Text>
             </View>
             
             <View style={styles.infoItem}>
@@ -141,9 +164,8 @@ const RestaurantDetailsScreen = ({navigation, route}) => {
             </View>
           </View>
 
-          {/* Overall Rating Visualization */}
           <View style={styles.ratingContainer}>
-            {renderStars(restaurantData.rating)}
+            {renderStars(averageRating)}
           </View>
 
           <View style={styles.actionButtons}>
@@ -158,20 +180,54 @@ const RestaurantDetailsScreen = ({navigation, route}) => {
 
         </View>
 
-        {/* Reviews Section */}
+        {/* REVIEWS SECTION */}
         <View style={[styles.reviewsSection, { backgroundColor: darkMode ? '#444' : '#ffffff' }]}>
-          <Text style={[styles.reviewsTitle, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>Customer Reviews</Text>
-          {restaurantData.reviews.map(review => (
-            <View key={review.id} style={[styles.reviewCard, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
-              <View style={styles.reviewHeader}>
-                <Text style={[styles.reviewUsername, {color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)'}]}>{review.username}</Text>
-                <View style={styles.reviewRating}>
-                  {renderStars(review.rating)}
+          <Text
+            style={[
+              styles.reviewsTitle,
+              { color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)' },
+            ]}
+          >
+            Customer Reviews
+          </Text>
+          {reviews.length === 0 ? (
+            <Text style={{ color: darkMode ? '#ccc' : '#333' }}>No reviews available.</Text>
+          ) : (
+            reviews.map((review) => (
+              <View
+                key={review._id}
+                style={[styles.reviewCard, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}
+              >
+                <View style={styles.reviewHeader}>
+                  <Text
+                    style={[
+                      styles.reviewUsername,
+                      { color: darkMode ? 'rgba(255, 255, 255, .7)' : 'rgba(0, 0, 0, .5)' },
+                    ]}
+                  >
+                    {review.heading}
+                  </Text>
+                  <View style={styles.reviewRating}>{renderStars(review.rating)}</View>
                 </View>
+                <Text
+                  style={[
+                    styles.reviewComment,
+                    { color: darkMode ? 'rgba(255, 255, 255, .5)' : 'rgba(0, 0, 0, .5)' },
+                  ]}
+                >
+                  {review.message}
+                </Text>
+                <Text
+                  style={[
+                    styles.reviewComment,
+                    { color: darkMode ? 'rgba(255, 255, 255, .5)' : 'rgba(0, 0, 0, .5)' },
+                  ]}
+                >
+                  {new Date(review.createdAt).toLocaleDateString()}
+                </Text>
               </View>
-              <Text style={[styles.reviewComment, {color: darkMode ? 'rgba(255, 255, 255, .5)' : 'rgba(0, 0, 0, .5)'}]}>{review.comment}</Text>
-            </View>
-          ))}
+            ))
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

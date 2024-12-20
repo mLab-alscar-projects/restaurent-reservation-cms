@@ -37,6 +37,7 @@ const RestaurantScreen = ({route, navigation}) => {
 
   // STATE VARIABLES FOR MANAGING SCREEN DATA
   const { restaurant } = route.params;
+  
   const [menuData, setMenuData] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
