@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema({
     // ADMIN PHONE NUMBER
     phone: 
     { 
-        type: Number, 
+        type: String, 
         required: true 
     },
 

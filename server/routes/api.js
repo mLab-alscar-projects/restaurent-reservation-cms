@@ -62,7 +62,7 @@ router.post("/login",  LoginUser);
 // ENDS
 
 // GET USERS
-router.get("/users", getUsers);
+router.get("/users", protect, getUsers);
 // ENDS
 
 // UPDATE USERS
