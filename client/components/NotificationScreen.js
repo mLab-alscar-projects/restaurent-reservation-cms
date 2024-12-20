@@ -22,7 +22,7 @@ import { styles } from '../styles/ReservationsStyle';
 
 const NotificationsScreen = ({ navigation }) => {
 
-  const { loader, darkMode, reservations, restaurants, markAsRead,fetchReservations } = useContext(AuthContext);
+  const { darkMode, reservations, restaurants, markAsRead,fetchReservations } = useContext(AuthContext);
 
   const [activeFilter, setActiveFilter] = useState('All');
   const [refreshing, setRefreshing] = useState(false);
@@ -76,11 +76,11 @@ const NotificationsScreen = ({ navigation }) => {
       });
 
       return (
-        <View style={styles.swipeActionContainer}>
+        <Pressable style={styles.swipeActionContainer} onPress={() => handleMarkAsRead(reservation)}>
           <Animated.View style={[styles.deleteButton, { transform: [{ scale }] }]}>
-            <Ionicons name="trash-outline" size={24} color="white" />
+            <Ionicons name="mail-unread-outline" size={25} color="#333" />
           </Animated.View>
-        </View>
+        </Pressable>
       );
     };
 
@@ -234,7 +234,6 @@ const NotificationsScreen = ({ navigation }) => {
     <SafeAreaView style={[styles.parent, { backgroundColor: darkMode ? '#333333' : '#f4f7fa' }]}>
       <StatusBar
         backgroundColor={'#3498db'}
-        barStyle={darkMode ? 'light-content' : 'dark-content'}
       />
 
       {/* Filter Toggle */}

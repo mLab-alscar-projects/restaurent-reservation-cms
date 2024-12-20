@@ -197,12 +197,12 @@ export const styles = StyleSheet.create({
 
     deleteButton: 
     {
-      backgroundColor: '#e74c3c',
+      backgroundColor: '#d3ddda',
       width: 60,
-      height: '80%',
+      height: '90%',
       justifyContent: 'center',
       alignItems: 'center',
-    //   borderRadius: 10,
+      borderRadius: 7,
       marginVertical: 5,
     },
 

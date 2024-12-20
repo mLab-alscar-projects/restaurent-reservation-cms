@@ -110,7 +110,7 @@ const RestaurantReservations = ({ route }) => {
             styles.statusText,
             item.isActive ? styles.activeText : styles.inactiveText
           ]}>
-            {item.isActive ? 'Active' : 'Inactive'}
+            {item.isActive ? 'Pending' : 'Completed'}
           </Text>
         </View>
       </View>
@@ -234,7 +234,7 @@ const RestaurantReservations = ({ route }) => {
 
       {/* Filter Buttons */}
       <View style={styles.filterContainer}>
-        {['All', 'Active', 'Inactive'].map((status) => (
+        {['All', 'Pending', 'Completed'].map((status) => (
           <TouchableOpacity
             key={status}
             style={[
