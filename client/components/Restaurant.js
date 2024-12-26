@@ -27,7 +27,13 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 // IMAGE PICKER
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 import RestaurantDetailsScreen from './RestaurantDetailsScreen';
+
+// FIREBASE
+import { storage } from '../firebase/firebaseConfig.js';
+import { ref, uploadBytes, getDownloadURL  } from "firebase/storage";
+
 
 const { width } = Dimensions.get('window');
 
@@ -50,6 +56,9 @@ const RestaurantScreen = ({route, navigation}) => {
     price: '',
     image: null,
   });
+
+  // FIREBASE LINK
+  const [imageUploadUrl, setImageUploadUrl] = useState(null);
 
   // FETCH MENU DATA ON COMPONENT MOUNT
   useEffect(() => {
@@ -144,6 +153,51 @@ const RestaurantScreen = ({route, navigation}) => {
     }
   };
 
+  // UPLOAD IMAGE FUNCTION TO FIREBASE STORAGE
+  useEffect(() => {
+    const uploadImage = async () => {
+      if (!newMenuItem.image) return;
+  
+      try {
+        // Convert local file to blob
+        const response = await fetch(newMenuItem.image);
+        const blob = await response.blob();
+  
+        const fileName = `menu-items/${Date.now()}_${restaurant.id}.jpg`;
+        const storageRef = ref(storage, fileName);
+        const snapshot = await uploadBytes(storageRef, blob);
+        const url = await getDownloadURL(snapshot.ref);
+        setImageUploadUrl(url);
+  
+      } catch (error) {
+        console.error('Upload failed:', {
+          error: error.message,
+          path: newMenuItem.image
+        });
+  
+        // Try alternative method if first fails
+        try {
+          const base64 = await FileSystem.readAsStringAsync(newMenuItem.image, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+          
+          const blob = await fetch(`data:image/jpeg;base64,${base64}`).then(r => r.blob());
+          
+          const fileName = `menu-items/${Date.now()}_${restaurant._id}.jpg`;
+          const storageRef = ref(storage, fileName);
+          const snapshot = await uploadBytes(storageRef, blob);
+          const url = await getDownloadURL(snapshot.ref);
+          setImageUploadUrl(url);
+        } catch (secondError) {
+          console.error('Secondary upload method failed:', secondError);
+        }
+      }
+    };
+  
+    uploadImage();
+  }, [newMenuItem.image]);
+  // ENDS
+
   // ADD MENU ITEM HANDLER
   
   const handleAddMenuItem = async () => {
@@ -172,7 +226,7 @@ const RestaurantScreen = ({route, navigation}) => {
         id: id, 
         name: newMenuItem.name.trim(),
         price: price,
-        image: newMenuItem.image || null,
+        image: imageUploadUrl || null,
       };
   
   
@@ -268,7 +322,7 @@ const RestaurantScreen = ({route, navigation}) => {
         id: selectedItem.id,
         name: newMenuItem.name.trim(),
         price: newMenuItem.price,
-        image: newMenuItem.image,
+        image: imageUploadUrl,
         isActive: selectedItem.isActive,
       }
 
@@ -366,6 +420,7 @@ const RestaurantScreen = ({route, navigation}) => {
                           image: item.image,
                         }
                       )
+                    setImageUploadUrl(item.image);
                     }
                   } 
                   style={[styles.actionButton, { backgroundColor: darkMode ? 'rgba(255, 255, 255, .1)' : 'rgba(0, 0, 0, .1)' }]}

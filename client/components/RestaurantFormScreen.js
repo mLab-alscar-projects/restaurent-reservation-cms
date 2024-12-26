@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -12,11 +12,17 @@ import {
   StatusBar
 } from 'react-native';
 
-import MapView, { Marker } from 'react-native-maps';
-import * as ImagePicker from 'expo-image-picker';
+// STORAGE AND FIREBASE
 import AuthContext from '../AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ref, uploadBytes, getDownloadURL  } from "firebase/storage";
+import { storage } from '../firebase/firebaseConfig';
+import * as FileSystem from 'expo-file-system';
 import axios from 'axios';
+
+// EXTRA IMPORTS
+import MapView, { Marker } from 'react-native-maps';
+import * as ImagePicker from 'expo-image-picker';
 import Toast from 'react-native-toast-message';
 
 const RestaurantFormScreen = ({navigation, route}) => {
@@ -25,6 +31,7 @@ const RestaurantFormScreen = ({navigation, route}) => {
   const {fetchRestaurants} = useContext(AuthContext);
   const {restaurant} = route.params || {};
 
+ 
   const [loading, setLoading] = useState(false);
   const [restaurantData, setRestaurantData] = useState({
     name: restaurant?.name || "",
@@ -35,117 +42,155 @@ const RestaurantFormScreen = ({navigation, route}) => {
     timeslot: restaurant?.timeslot || "",
     cuisine: restaurant?.cuisine || "",
     image: restaurant?.image || null,
-    latitude: restaurant?.latitude || -26.2041,  
+    latitude: restaurant?.latitude || -26.2041,
     longitude: restaurant?.longitude || 27.9924
   });
 
-  const [imageUri, setImageUri] = useState(restaurant?.image || null);
+  // UPLOAD IMAGE FUNCTION TO FIREBASE STORAGE
+  useEffect(() => {
+    const uploadImage = async () => {
+      // Skip if no image or if image is already a URL
+      if (!restaurantData.image || restaurantData.image.startsWith('http')) return;
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaType,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+      setLoading(true);
 
-    if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
-      setRestaurantData(prev => ({
-        ...prev,
-        image: result.assets[0].uri
-      }));
-    }
-  };
+      const uploadToFirebase = async (blob, retryCount = 0) => {
+        try {
+          const fileName = `restaurants/${Date.now()}_${retryCount}_restaurant.jpg`;
+          const storageRef = ref(storage, fileName);
+          const snapshot = await uploadBytes(storageRef, blob);
+          const url = await getDownloadURL(snapshot.ref);
 
-  const handleSubmit = async () => {
+          setRestaurantData(prev => ({ ...prev, image: url }));
+          setLoading(false);
 
-    // EXTRACT DATA FROM RESTAURANT DATA
-    const {
-      name,
-      tables,
-      color,
-      location,
-      timeslot,
-      cuisine,
-      description,
-      latitude,
-      longitude,
-      image,
-    } = restaurantData;
-  
-    setLoading(true);
-  
-    try {
-      if (restaurant) {
-        // UPDATE RESTAURANT
-        const updatedData = {
-          name,
-          tables,
-          color,
-          location,
-          timeslot,
-          cuisine,
-          description,
-          latitude,
-          longitude,
-          image,
-        };
-  
-        const token = await AsyncStorage.getItem("token");
-        const response = await axios.put(
-          `https://acrid-street-production.up.railway.app/api/v2/updateRestaurant/${restaurant._id}`,
-          {updatedData},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-  
-        if (response.status === 201) {
           Toast.show({
             type: "success",
             text1: "Success",
-            text2: "Restaurant updated successfully",
+            text2: "Image uploaded successfully",
             position: "bottom",
           });
-
-          // NAVIGATE TO HOME
-          navigation.navigate("Home");
+        } catch (error) {
+          throw error;
         }
+      };
 
-        // FETCH RESTAURANTS
-        await fetchRestaurants();
+      try {
+        // First attempt: Direct fetch
+        const response = await fetch(restaurantData.image);
+        const blob = await response.blob();
+        await uploadToFirebase(blob);
 
-      } else {
-
-        // ADD RESTAURANT
-        await addRestaurant(
-          name,
-          tables,
-          color,
-          location,
-          timeslot,
-          cuisine,
-          description,
-          latitude,
-          longitude,
-          image
-        );
-
-        // FETCH RESTAURANTS AFTER UPDATING
-        await fetchRestaurants();
-        Toast.show({
-          type: "success",
-          text1: "Success",
-          text2: "Restaurant added successfully",
-          position: "bottom",
+      } catch (error) {
+        console.error('Primary upload method failed:', {
+          error: error.message,
+          path: restaurantData.image
         });
 
-        // NAVIGATE TO HOME
-        navigation.navigate("Home");
+        try {
+          // Second attempt: FileSystem
+          const base64 = await FileSystem.readAsStringAsync(restaurantData.image, {
+            encoding: FileSystem.EncodingType.Base64,
+          });
+
+          const blob = await fetch(`data:image/jpeg;base64,${base64}`).then(r => r.blob());
+          await uploadToFirebase(blob, 1);
+
+        } catch (secondError) {
+          console.error('Secondary upload method failed:', secondError);
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: "Failed to upload image",
+            position: "bottom",
+          });
+          setLoading(false);
+        }
       }
+    };
+
+    uploadImage();
+  }, [restaurantData.image]);
+
+  // IMAGE PICKER FUNCTION
+  const pickImage = async () => {
+    try {
+      // REQUEST MEDIA LIBRARY PERMISSIONS
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Toast.show({
+          type: "error",
+          text1: "Permission denied",
+          text2: "Please allow access to your media library",
+          position: "bottom",
+        });
+        return;
+      }
+
+      // LAUNCH IMAGE PICKER
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      // UPDATE STATE WITH SELECTED IMAGE
+      if (!result.canceled) {
+        setRestaurantData(prev => ({
+          ...prev,
+          image: result.assets[0].uri
+        }));
+      }
+    } catch (error) {
+      console.error('Image picker error:', error);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Failed to pick image",
+        position: "bottom",
+      });
+    }
+  };
+
+
+  // HANDLE SUBMIT
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      if (restaurant) {
+        const token = await AsyncStorage.getItem("token");
+        await axios.put(
+          `https://acrid-street-production.up.railway.app/api/v2/updateRestaurant/${restaurant._id}`,
+          {updatedData: restaurantData},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+      } else {
+        await addRestaurant(
+          restaurantData.name,
+          restaurantData.tables,
+          restaurantData.color,
+          restaurantData.location,
+          restaurantData.timeslot,
+          restaurantData.cuisine,
+          restaurantData.description,
+          restaurantData.latitude,
+          restaurantData.longitude,
+          restaurantData.image
+        );
+      }
+
+      await fetchRestaurants();
+      Toast.show({
+        type: "success",
+        text1: "Success",
+        text2: restaurant ? "Restaurant updated successfully" : "Restaurant added successfully",
+        position: "bottom",
+      });
+      navigation.navigate("Home");
+
     } catch (error) {
       console.error("Error:", error.response?.data || error.message);
       Toast.show({
@@ -158,7 +203,6 @@ const RestaurantFormScreen = ({navigation, route}) => {
       setLoading(false);
     }
   };
-
   // ENDS
   
   
@@ -291,9 +335,9 @@ const RestaurantFormScreen = ({navigation, route}) => {
           <TouchableOpacity onPress={pickImage} style={styles.imagePicker}>
             <Text style={styles.imagePickerText}>Pick an image</Text>
           </TouchableOpacity>
-          {imageUri && (
+          {restaurantData.image && (
             <Image 
-              source={{ uri: imageUri }} 
+              source={{ uri: restaurantData.image }} 
               style={styles.imagePreview} 
             />
           )}
@@ -304,7 +348,9 @@ const RestaurantFormScreen = ({navigation, route}) => {
           onPress={handleSubmit}
         >
           {!loading ? 
-          <Text style={styles.submitButtonText}>Add Restaurant</Text>
+          <Text style={styles.submitButtonText}>
+            {restaurant? 'Update Restaurant' : 'Add Restaurant'}
+          </Text> 
           :
 
           <ActivityIndicator size="small" color="#0000ff"/>

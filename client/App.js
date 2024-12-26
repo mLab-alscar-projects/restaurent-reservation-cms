@@ -2,8 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, ActivityIndicator, SafeAreaView, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
+// EXTRA IMPORTS
 import Toast from 'react-native-toast-message';
+
+// STORAGE AND FIREBASE
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 // SCREENS
 import SplashScreenChild from './components/SplashScreen';
@@ -65,7 +70,7 @@ const [restaurantsDatas, setRestaurantsData] = useState([]);
 const [reservationsData, setReservationData] = useState([]);
 const [users, setUsers] = useState([]);
 const [loading, setLoading] = useState(false);
-const [darkMode, setDarkMode]= useState(true);
+const [darkMode, setDarkMode]= useState(false);
 
 
 const reservations = reservationsData;
