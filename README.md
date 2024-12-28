@@ -153,6 +153,10 @@ npm run test
 3. Build and deploy frontend to app stores or build for expo testing
 4. Configure environment variables on hosting platform
 
+## User Guide
+### The user guide is for both CMS and ADMIN REGISTER APPS
+- https://docs.google.com/document/d/1hfre7d8EEEO0MKkQEIykZgPm5pCHrRP5m-34usdk5wc/edit?usp=sharing
+
 ## Contributing
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
