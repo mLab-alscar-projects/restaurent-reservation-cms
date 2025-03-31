@@ -4,8 +4,8 @@
 A comprehensive restaurant reservation management system with a React Native frontend and MongoDB backend. The system allows restaurant administrators to manage reservations, restaurant details, and user data through a centralized CMS (Content Management System).
 
 ## Credentials
-email: aurora@alscarr.com
-password : Oscar@2000
+- email: aurora@alscar.com
+- password : Oscar@2000
 
 ## Features
 - Table reservation management
