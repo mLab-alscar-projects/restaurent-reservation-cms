@@ -6,7 +6,7 @@ A comprehensive restaurant reservation management system with a React Native fro
 ## Features
 - Table reservation management
 - Restaurant profile management
-- User management system
+- User management system 
 - Image storage integration with Firebase
 - Real-time updates on reservation status
 - Administrative dashboard for analytics
