@@ -5,7 +5,7 @@ A comprehensive restaurant reservation management system with a React Native fro
 
 ## Credentials
 - email: aurora@alscar.com
-- password : Oscar@2000
+- password : Oscar@2024
 
 ## Features
 - Table reservation management
