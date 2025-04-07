@@ -40,8 +40,8 @@ Before you begin, ensure you have the following installed:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/oscarpoco/mLab-alscar-projects/restaurant-reservation-cms.git
-cd restaurant-reservation-system
+git clone https://github.com/oscarpoco/mLab-alscar-projects/restaurent-reservation-cms.git
+cd restaurent-reservation-cms
 ```
 
 ### 2. Frontend Setup (React Native)
@@ -52,21 +52,13 @@ cd client
 # Install dependencies
 npm install
 
-# Create .env file
-cp .env.example .env
-
-# Update .env with your configuration
-# FIREBASE_API_KEY=your_api_key
-# FIREBASE_STORAGE_BUCKET=your_bucket_url
-# API_BASE_URL=your_backend_url
-
-# Start the development server
+# Start the development app
 npx expo start -c
 ```
 
 ### 3. Backend Setup (MongoDB & Express)
 ```bash
-# Navigate to server directory
+# Navigate to server directory from main directory
 cd server
 
 # Install dependencies
@@ -84,23 +76,7 @@ cp .env.example .env
 npm run dev
 ```
 
-### 4. Firebase Setup
-1. Create a new Firebase project
-2. Enable Storage in Firebase Console
-3. Update Firebase configuration in frontend
-
 ## Environment Variables
-
-### Frontend (.env)
-```
-FIREBASE_API_KEY=
-FIREBASE_AUTH_DOMAIN=
-FIREBASE_PROJECT_ID=
-FIREBASE_STORAGE_BUCKET=
-FIREBASE_MESSAGING_SENDER_ID=
-FIREBASE_APP_ID=
-API_BASE_URL=
-```
 
 ### Backend (.env)
 ```
