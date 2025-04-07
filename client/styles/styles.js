@@ -104,14 +104,15 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     marginRight: 10,
     borderRadius: 5,
-    width: 60
+    width: 'auto'
   },
 
   actionText: 
   {
    textAlign: 'center',
    letterSpacing: 1,
-   fontWeight: 600
+   fontWeight: 600,
+   fontSize: 12
   },
 
   addButtonWrapper: 

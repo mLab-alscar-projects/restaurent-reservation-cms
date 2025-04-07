@@ -370,21 +370,21 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginRight: 10,
     borderRadius: 3,
-    width: 70
+    width: 'auto'
   },
 
   actionHide:
   {
-    paddingHorizontal: 5,
+    paddingHorizontal: 7,
     paddingVertical: 8,
     marginRight: 10,
     borderRadius: 3,
-    width: 70
+    width: 'auto'
   },
 
   actionText:
   {
-    fontSize: 14,
+    fontSize: 12,
     letterSpacing: 2,
     fontWeight: 900,
     textAlign: 'center'
