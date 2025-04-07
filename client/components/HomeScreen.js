@@ -192,8 +192,6 @@ const HomeScreen = ({ navigation }) => {
                         {restaurant.tables} Tables Available
                       </Text>
                     </View>
-
-                    <View style={[styles.bottomColor, {backgroundColor: restaurant.color}]}/>
                     
                   </View>
                 </Pressable>
@@ -204,7 +202,6 @@ const HomeScreen = ({ navigation }) => {
               </View>
             )}
           </View>
-
 
         </ScrollView>
 
@@ -243,16 +240,11 @@ const styles = StyleSheet.create({
   {
     width: 50,
     height: 40,
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: '#f5f5ff',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 4,
     borderTopLeftRadius: 0,
     borderBottomLeftRadius: 0,
   },
@@ -308,11 +300,6 @@ const styles = StyleSheet.create({
   primaryInsightCard:
   {
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 5,
     width: '100%'
   },
 
@@ -393,12 +380,7 @@ const styles = StyleSheet.create({
   {
     marginBottom: 20,
     padding: 15,
-    borderRadius: 7,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
+    borderRadius: 10,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -427,11 +409,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 12,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
   },
 
   firstRestaurantCard: 
@@ -515,15 +492,6 @@ const styles = StyleSheet.create({
   {
     fontSize: 24,
     letterSpacing: 2
-  },
-
-  bottomColor:
-  {
-     position :'absolute',
-     bottom: 0,
-     width: 300,
-     height: 6,
-    
   },
 
   restaurantLoaderContainer:
