@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 8,
     marginHorizontal: 5,
-    borderRadius: 20,
+    borderRadius: 12,
     backgroundColor: '#F0F0F0',
   },
   activeFilterButton: {
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   },
   reservationItem: {
     backgroundColor: 'white',
-    borderRadius: 10,
+    borderRadius: 16,
     marginBottom: 15,
     padding: 15,
     shadowColor: '#000',
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
     right: 10,
     paddingHorizontal: 10,
     paddingVertical: 5,
-    borderRadius: 15,
+    borderRadius: 8,
   },
   activeBadge: {
     backgroundColor: '#E8F5E9',

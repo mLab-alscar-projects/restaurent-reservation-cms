@@ -292,15 +292,11 @@ const styles = StyleSheet.create({
   },
 
   // PRODUCTIVITY INSIGHTS
-  insightsContainer:
-  {
-    marginBottom: 20,
-  },
 
   primaryInsightCard:
   {
     padding: 20,
-    width: '100%'
+    width: '100%',
   },
 
   chartTitleContainer:

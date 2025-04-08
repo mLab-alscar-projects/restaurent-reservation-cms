@@ -209,7 +209,7 @@ const RestaurantFormScreen = ({navigation, route}) => {
   
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: '#d3ddda' }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: '#f4f7fa' }]}>
       <StatusBar backgroundColor="#3498db"/>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.title}>Add New Restaurant</Text>
@@ -389,7 +389,7 @@ const styles = StyleSheet.create({
   },
   input: {
     backgroundColor: 'white',
-    padding: 10,
+    padding: 12,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ddd',
@@ -398,12 +398,14 @@ const styles = StyleSheet.create({
     height: 200,
     width: '100%',
     marginBottom: 15,
-    borderRadius: 8,
+    borderRadius: 16,
   },
   imagePicker: {
     backgroundColor: '#2ecc71',
     padding: 15,
     alignItems: 'center',
+    borderRadius: 16,
+
   },
   imagePickerText: {
     color: '#f9f9f9',
@@ -417,11 +419,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 250,
     marginTop: 15,
-    borderRadius: 8,
+    borderRadius: 16,
   },
   submitButton: {
     padding: 15,
-    borderRadius: 8,
+    borderRadius: 16,
     alignItems: 'center',
     marginTop: 20,
     backgroundColor: '#3498db',

@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 8,
     marginHorizontal: 5,
-    borderRadius: 20,
+    borderRadius: 16,
     backgroundColor: '#F0F0F0',
   },
   activeFilterButton: {

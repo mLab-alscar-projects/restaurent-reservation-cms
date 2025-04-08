@@ -72,7 +72,7 @@ const UsersScreen = () => {
   const userStats = useMemo(() => ({
     all: users.length,
     active: users.filter(user => user.status === 'active').length,
-    burned: users.filter(user => user.status === 'burned').length
+    burned: users.filter(user => user.status !== 'active').length
   }), [users]);
 
   // RENDER USER
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   {
     paddingVertical: 8,
     paddingHorizontal: 15,
-    borderRadius: 20,
+    borderRadius: 12,
     backgroundColor: '#f0f0f0',
   },
 

@@ -57,7 +57,7 @@ const LoginScreen = ({ navigation }) => {
                 {/* EMAIL */}
                 <View style={styles.inputWrapper}>
                     <View style={styles.label}>
-                        <Zocial name='email' size={20} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />
+                        <MaterialIcons name='email' size={24} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />
                         <Text style={[styles.labelText, { color: darkMode ? '#ffffff' : '#000000' }]}>Email</Text>
                     </View>
                     <TextInput
@@ -72,7 +72,7 @@ const LoginScreen = ({ navigation }) => {
                 {/* PASSWORD */}
                 <View style={styles.inputWrapper}>
                     <View style={styles.label}>
-                        <MaterialIcons name='lock' size={20} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />
+                        <MaterialIcons name='lock' size={24} color={darkMode ? '#ffffff' : 'rgba(0, 0, 0, .5)'} />
                         <Text style={[styles.labelText, { color: darkMode ? '#ffffff' : '#000000' }]}>Password</Text>
                     </View>
                     <TextInput
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-start',
         flexDirection: 'column',
-        paddingVertical: 10,
+        paddingVertical: 5,
     },
     label: {
         justifyContent: 'center',
@@ -162,14 +162,13 @@ const styles = StyleSheet.create({
     },
     labelText: {
         fontSize: 16,
-        letterSpacing: 1,
-        color: 'rgba(0, 0, 0,.5)',
+        color: 'rgba(0, 0, 0, .3)',
     },
     input: {
         fontSize: 16,
-        borderBottomWidth: 3,
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(0, 0, 0, .2)',
         width: '100%',
-        height: 40,
     },
     buttonWrapper: {
         width: '100%',
@@ -182,7 +181,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: 50,
-        borderRadius: 7,
+        borderRadius: 15,
         backgroundColor: '#97CBDC',
     },
     buttonText: {
@@ -210,7 +209,6 @@ const styles = StyleSheet.create({
         width: '100%',
         textAlign: 'center',
         color: '#231934',
-        // transform: [{ rotate: '-8deg' }], 
     },
 
     // ENDS
